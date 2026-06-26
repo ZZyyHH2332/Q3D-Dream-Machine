@@ -36,3 +36,8 @@ npm-debug.log*
 *.tmp
 *.bak
 .cache/
+
+# === 运行时产物 ===
+assets/generated/
+assets/uploads/
+works-index.json

@@ -7,6 +7,7 @@ import {
   openInBrowser,
   findLatestAvatar,
 } from "../utils/file.js";
+import { addOrUpdateWork } from "../utils/works-index.js";
 
 export function registerSpawnPet(server: any): void {
   server.registerTool(
@@ -102,6 +103,14 @@ export function registerSpawnPet(server: any): void {
         const outputDir = getSessionPath(config.outputDir, sessionId);
         const petPath = path.join(outputDir, "pet.html");
         fs.writeFileSync(petPath, template, "utf-8");
+
+        // Update works index
+        addOrUpdateWork(sessionId, {
+          status: "pet_spawned",
+          petPath,
+          petName: name,
+          personality,
+        });
 
         // Open in browser
         await openInBrowser(petPath);

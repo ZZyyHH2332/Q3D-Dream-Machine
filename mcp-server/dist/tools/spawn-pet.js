@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs";
 import { config } from "../config.js";
 import { getSessionPath, openInBrowser, findLatestAvatar, } from "../utils/file.js";
+import { addOrUpdateWork } from "../utils/works-index.js";
 export function registerSpawnPet(server) {
     server.registerTool("q3d_spawn_pet", "创建桌面宠物页面并打开浏览器", {
         avatarPath: {
@@ -70,6 +71,13 @@ export function registerSpawnPet(server) {
             const outputDir = getSessionPath(config.outputDir, sessionId);
             const petPath = path.join(outputDir, "pet.html");
             fs.writeFileSync(petPath, template, "utf-8");
+            // Update works index
+            addOrUpdateWork(sessionId, {
+                status: "pet_spawned",
+                petPath,
+                petName: name,
+                personality,
+            });
             // Open in browser
             await openInBrowser(petPath);
             return {

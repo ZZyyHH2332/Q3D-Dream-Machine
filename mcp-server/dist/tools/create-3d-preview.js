@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs";
 import { config } from "../config.js";
 import { getSessionPath, openInBrowser, findLatestAvatar, } from "../utils/file.js";
+import { addOrUpdateWork } from "../utils/works-index.js";
 export function registerCreate3DPreview(server) {
     server.registerTool("q3d_create_3d_preview", "基于生成的 Q 版形象创建 Three.js 3D 预览页面", {
         avatarPath: {
@@ -64,6 +65,11 @@ export function registerCreate3DPreview(server) {
             const outputDir = getSessionPath(config.outputDir, sessionId);
             const previewPath = path.join(outputDir, "preview-3d.html");
             fs.writeFileSync(previewPath, template, "utf-8");
+            // Update works index
+            addOrUpdateWork(sessionId, {
+                status: "preview_created",
+                previewPath,
+            });
             // Open in browser
             await openInBrowser(previewPath);
             return {

@@ -481,6 +481,83 @@
   .back-to-top.visible { opacity: 1; pointer-events: auto; }
   .back-to-top:hover { transform: translateY(-3px) scale(1.08); }
 
+  /* ===== 作品展示区 ===== */
+  .works-section { padding: 0; max-width: 1200px; margin: 0 auto; }
+  .works-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 32px; flex-wrap: wrap; gap: 16px;
+  }
+  .works-title {
+    font-family: var(--font-display); font-size: 1.8rem;
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .works-count { color: var(--text-sub); font-size: 0.9rem; margin-left: 8px; }
+  .works-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 24px;
+  }
+
+  /* 作品卡片 */
+  .work-card { overflow: hidden; padding: 0 !important; }
+  .work-thumb {
+    aspect-ratio: 1 / 1;
+    background: linear-gradient(135deg, var(--primary-light), var(--sky));
+    position: relative; overflow: hidden;
+  }
+  .work-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s var(--bounce); }
+  .work-card:hover .work-thumb img { transform: scale(1.08); }
+  .work-thumb.no-image::after {
+    content: '\1F3A8'; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); font-size: 3rem; opacity: 0.5;
+  }
+  .work-info { padding: 16px; display: flex; justify-content: space-between; align-items: center; }
+  .work-style {
+    font-size: 0.78rem; font-weight: 600; padding: 4px 12px;
+    border-radius: 999px;
+  }
+  .work-time { font-size: 0.8rem; color: var(--text-sub); }
+  .work-actions {
+    padding: 0 16px 16px; display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .work-btn {
+    flex: 1; min-width: 60px; padding: 8px 12px; border-radius: 12px; border: none;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff; font-size: 0.82rem; font-weight: 600; text-decoration: none;
+    text-align: center; cursor: pointer; transition: transform 0.2s var(--bounce);
+  }
+  .work-btn:hover { transform: translateY(-2px); }
+  .work-btn.secondary { background: linear-gradient(135deg, var(--sky), #81D4FA); }
+  .work-btn.danger { background: #FF6B6B; flex: 0; min-width: auto; padding: 8px 14px; }
+
+  /* 空状态 */
+  .works-empty {
+    display: none; flex-direction: column; align-items: center;
+    justify-content: center; padding: 80px 20px; text-align: center;
+  }
+  .works-empty-icon {
+    width: 140px; height: 140px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-light), var(--sky));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3.5rem; margin-bottom: 24px;
+  }
+  .works-empty h3 { font-family: var(--font-display); font-size: 1.4rem; color: var(--text-main); margin-bottom: 10px; }
+  .works-empty p { color: var(--text-sub); font-size: 0.95rem; margin-bottom: 24px; }
+  .works-empty .hero-cta { margin-top: 0; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 80px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--text-main); color: #fff;
+    padding: 12px 24px; border-radius: 12px;
+    font-size: 0.88rem; opacity: 0;
+    transition: all 0.4s var(--bounce);
+    z-index: 1000; pointer-events: none; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
   /* ===== 响应式 ===== */
   @media (max-width: 900px) {
     .cards-grid { grid-template-columns: 1fr; }
@@ -537,7 +614,7 @@
     <a href="#users">目标用户</a>
     <a href="#value">价值意义</a>
     <a href="#flow">核心流程</a>
-    <a href="#demo">在线体验</a>
+    <a href="#works">我的作品</a>
   </div>
 </nav>
 
@@ -545,8 +622,8 @@
 <section class="hero" id="hero">
   <h1 class="hero-title" id="heroTitle">Q3D 形象造梦机</h1>
   <p class="hero-subtitle">上传一张照片，AI 自动提取五官与穿搭特征，数十秒生成你的专属 Q 版 3D 虚拟角色。无需专业技能，无需高昂预算。</p>
-  <a class="hero-cta" href="#demo">
-    <span>✨</span> 立即体验
+  <a class="hero-cta" href="#works">
+    <span>✨</span> 查看我的作品
   </a>
   <div class="hero-scroll-hint">
     <span>向下滚动探索</span>
@@ -646,79 +723,26 @@ flowchart LR
   </div>
 </section>
 
-<!-- ===== Demo 交互区 ===== -->
-<section id="demo" class="reveal">
-  <h2 class="section-title">在线体验</h2>
-  <p class="section-subtitle">上传照片，选择风格，即刻预览你的 Q 版 3D 角色。</p>
-  <div class="demo-workspace">
-    <div class="demo-left">
-      <!-- 上传区 -->
-      <div class="upload-zone" id="uploadZone">
-        <input type="file" id="fileInput" accept="image/*">
-        <div class="upload-icon">📸</div>
-        <div class="upload-text">点击或拖拽上传照片</div>
-        <div class="upload-hint">支持 JPG、PNG 格式</div>
-        <div class="upload-preview" id="uploadPreview"><img id="previewImg" src="" alt="preview"></div>
-      </div>
-      <!-- 快捷素材 -->
+<!-- ===== 我的作品 ===== -->
+<section id="works" class="reveal">
+  <h2 class="section-title">我的作品</h2>
+  <p class="section-subtitle">所有通过 TRAE 生成的 Q 版形象都会收录在这里，随时查看和互动。</p>
+  <div class="works-section">
+    <div class="works-header">
       <div>
-        <div style="font-size:0.85rem;color:var(--text-sub);margin-bottom:8px;">快捷素材</div>
-        <div class="quick-materials">
-          <button class="chip-btn" data-type="selfie">🤳 自拍</button>
-          <button class="chip-btn" data-type="draw">🎨 手绘</button>
-          <button class="chip-btn" data-type="pet">🐱 宠物</button>
-        </div>
+        <span class="works-title">作品列表</span>
+        <span class="works-count">共 <span id="worksCount">0</span> 个</span>
       </div>
-      <!-- 风格切换 -->
-      <div>
-        <div style="font-size:0.85rem;color:var(--text-sub);margin-bottom:10px;">选择风格</div>
-        <div class="style-panel" id="stylePanel">
-          <div class="style-option style-kawaii selected" data-style="kawaii">
-            <div class="check-mark">✓</div>
-            <div class="style-thumb">🌸</div>
-            <div class="style-name">软萌大头</div>
-          </div>
-          <div class="style-option style-guofeng" data-style="guofeng">
-            <div class="check-mark">✓</div>
-            <div class="style-thumb">🎋</div>
-            <div class="style-name">国风 Q 版</div>
-          </div>
-          <div class="style-option style-trendy" data-style="trendy">
-            <div class="check-mark">✓</div>
-            <div class="style-thumb">🕶️</div>
-            <div class="style-name">潮玩</div>
-          </div>
-          <div class="style-option style-simple" data-style="simple">
-            <div class="check-mark">✓</div>
-            <div class="style-thumb">🌀</div>
-            <div class="style-name">简约卡通</div>
-          </div>
-        </div>
-      </div>
-      <!-- 生成按钮 -->
-      <button class="generate-btn" id="generateBtn">
-        <span>🪄</span> 生成 Q 版角色
+      <button id="refreshWorks" style="padding:8px 18px;border-radius:999px;border:1px solid var(--card-border);background:rgba(255,255,255,0.6);color:var(--text-sub);font-size:0.85rem;cursor:pointer;font-family:var(--font-body);transition:all 0.3s;">
+        🔄 刷新
       </button>
-      <!-- 进度 -->
-      <div class="gen-progress" id="genProgress">
-        <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
-        <div class="progress-text" id="progressText">正在分析特征...</div>
-      </div>
     </div>
-
-    <!-- 3D 预览 -->
-    <div class="demo-right">
-      <div class="preview-3d" id="preview3d">
-        <div class="cube" id="cube">
-          <div class="face face-front">正面</div>
-          <div class="face face-back">背面</div>
-          <div class="face face-left">左侧</div>
-          <div class="face face-right">右侧</div>
-          <div class="face face-top">顶部</div>
-          <div class="face face-bottom">底部</div>
-        </div>
-      </div>
-      <div class="preview-hint">🖱️ 拖拽旋转查看不同角度</div>
+    <div class="works-grid" id="worksGrid"></div>
+    <div class="works-empty" id="worksEmpty">
+      <div class="works-empty-icon">🎨</div>
+      <h3>还没有作品哦</h3>
+      <p>在 TRAE 中输入"生成我的 Q 版形象"，上传照片后即可创建你的第一个作品~</p>
+      <a class="hero-cta" href="#hero">⭐ 前往体验</a>
     </div>
   </div>
 </section>
@@ -801,6 +825,9 @@ flowchart LR
 
 <!-- 返回顶部 -->
 <button class="back-to-top" id="backToTop" title="返回顶部">↑</button>
+
+<!-- Toast -->
+<div class="toast" id="worksToast"></div>
 
 <script>
 // ===== 初始化 Mermaid =====
@@ -1323,6 +1350,103 @@ cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
 window.addEventListener('resize', () => {
   if (chatPanel.classList.contains('show')) positionChatPanel();
 });
+
+// ===== 作品展示核心逻辑 =====
+const WORKS_INDEX_URL = './works-index.json';
+const STORAGE_HIDDEN = 'q3d_hidden_works';
+const STYLE_MAP = {
+  kawaii:  { bg: '#FFE4E9', text: '#E86A8A', label: '软萌大头' },
+  guofeng: { bg: '#E0F2F1', text: '#2E7D32', label: '国风Q版' },
+  trendy:  { bg: '#FFF8E1', text: '#F9A825', label: '潮玩手办' },
+  simple:  { bg: '#E3F2FD', text: '#1565C0', label: '简约卡通' },
+};
+
+async function loadWorks() {
+  try {
+    const res = await fetch(WORKS_INDEX_URL + '?' + Date.now());
+    if (!res.ok) throw new Error('not found');
+    const data = await res.json();
+    return Array.isArray(data.works) ? data.works : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function getHidden() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_HIDDEN) || '[]'); }
+  catch { return []; }
+}
+
+function hideWork(sessionId) {
+  if (!confirm('确定要从展示页移除这个作品吗？')) return;
+  const hidden = getHidden();
+  if (!hidden.includes(sessionId)) hidden.push(sessionId);
+  localStorage.setItem(STORAGE_HIDDEN, JSON.stringify(hidden));
+  renderWorks();
+  showToast('已隐藏作品。如需彻底删除文件，请在 TRAE 中发送"删除作品 ' + sessionId + '"');
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('worksToast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+function formatTime(iso) {
+  const d = new Date(iso), now = new Date();
+  const diff = now - d, mins = Math.floor(diff / 60000);
+  if (mins < 1) return '刚刚';
+  if (mins < 60) return mins + '分钟前';
+  const hours = Math.floor(diff / 3600000);
+  if (hours < 24) return hours + '小时前';
+  const days = Math.floor(diff / 86400000);
+  if (days === 1) return '昨天';
+  if (days < 7) return days + '天前';
+  return (d.getMonth() + 1) + '月' + d.getDate() + '日';
+}
+
+async function renderWorks() {
+  const grid = document.getElementById('worksGrid');
+  const empty = document.getElementById('worksEmpty');
+  const count = document.getElementById('worksCount');
+  const works = await loadWorks();
+  const hidden = getHidden();
+  const visible = works.filter(w => !hidden.includes(w.sessionId));
+
+  count.textContent = visible.length;
+
+  if (visible.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'flex';
+    return;
+  }
+  empty.style.display = 'none';
+
+  grid.innerHTML = visible.map(w => {
+    const s = STYLE_MAP[w.style] || STYLE_MAP.kawaii;
+    const thumb = w.avatarPath ? './' + w.avatarPath : '';
+    return `
+      <div class="work-card glass-card">
+        <div class="work-thumb ${!thumb ? 'no-image' : ''}">
+          ${thumb ? '<img src="' + thumb + '" alt="avatar" loading="lazy" onerror="this.style.display=\'none\';this.parentElement.classList.add(\'no-image\');">' : ''}
+        </div>
+        <div class="work-info">
+          <span class="work-style" style="background:' + s.bg + ';color:' + s.text + '">' + s.label + '</span>
+          <span class="work-time">' + formatTime(w.createdAt) + '</span>
+        </div>
+        <div class="work-actions">
+          ${w.previewPath ? '<a href="./' + w.previewPath + '" target="_blank" class="work-btn">3D预览</a>' : ''}
+          ${w.petPath ? '<a href="./' + w.petPath + '" target="_blank" class="work-btn secondary">宠物</a>' : ''}
+          <button class="work-btn danger" onclick="hideWork(\'' + w.sessionId + '\')">删除</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// 初始化
+renderWorks();
+document.getElementById('refreshWorks')?.addEventListener('click', renderWorks);
 </script>
 
 </body>

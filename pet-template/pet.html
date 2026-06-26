@@ -286,7 +286,7 @@
   <script>
     // Config from URL params
     const params = new URLSearchParams(location.search);
-    const avatarPath = params.get('avatar') || '';
+    const avatarPath = params.get('avatar') || './avatar.png';
     const personality = params.get('personality') || '活泼可爱';
     const apiKey = params.get('apiKey') || '';
     const apiBase = params.get('apiBase') || 'https://api.openai.com/v1';

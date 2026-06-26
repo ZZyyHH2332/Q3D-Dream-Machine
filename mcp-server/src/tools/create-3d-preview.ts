@@ -7,6 +7,7 @@ import {
   openInBrowser,
   findLatestAvatar,
 } from "../utils/file.js";
+import { addOrUpdateWork } from "../utils/works-index.js";
 
 export function registerCreate3DPreview(server: any): void {
   server.registerTool(
@@ -90,6 +91,12 @@ export function registerCreate3DPreview(server: any): void {
         const outputDir = getSessionPath(config.outputDir, sessionId);
         const previewPath = path.join(outputDir, "preview-3d.html");
         fs.writeFileSync(previewPath, template, "utf-8");
+
+        // Update works index
+        addOrUpdateWork(sessionId, {
+          status: "preview_created",
+          previewPath,
+        });
 
         // Open in browser
         await openInBrowser(previewPath);

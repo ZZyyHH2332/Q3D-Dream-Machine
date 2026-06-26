@@ -3,6 +3,7 @@ import fs from "fs";
 import { config, isApiConfigured } from "../config.js";
 import { generateAvatar as generateAvatarImage, downloadImage, } from "../utils/api.js";
 import { readFileAsBase64, getSessionPath, writeJsonFile, } from "../utils/file.js";
+import { addOrUpdateWork } from "../utils/works-index.js";
 export function registerGenerateAvatar(server) {
     server.registerTool("q3d_generate_avatar", "根据上传的照片生成 Q 版 2D 形象", {
         uploadId: {
@@ -121,6 +122,19 @@ export function registerGenerateAvatar(server) {
             };
             const metadataPath = path.join(outputDir, "metadata.json");
             writeJsonFile(metadataPath, metadata);
+            // Update works index
+            addOrUpdateWork(uploadId, {
+                status: "avatar_generated",
+                style: style,
+                styleName: style === "kawaii"
+                    ? "软萌大头"
+                    : style === "guofeng"
+                        ? "国风Q版"
+                        : style === "trendy"
+                            ? "潮玩手办"
+                            : "简约卡通",
+                avatarPath,
+            });
             return {
                 content: [
                     {

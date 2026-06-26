@@ -1,6 +1,7 @@
 import path from "path";
 import { config } from "../config.js";
 import { copyFile, generateSessionId, getSessionPath, } from "../utils/file.js";
+import { addOrUpdateWork } from "../utils/works-index.js";
 export function registerUploadPhoto(server) {
     server.registerTool("q3d_upload_photo", "保存用户上传的照片到项目目录，为后续生成做准备", {
         imagePath: {
@@ -57,6 +58,19 @@ export function registerUploadPhoto(server) {
             const sessionDir = getSessionPath(config.uploadsDir, sessionId);
             const destPath = path.join(sessionDir, `original${ext}`);
             copyFile(imagePath, destPath);
+            // Update works index
+            addOrUpdateWork(sessionId, {
+                status: "uploaded",
+                style: style,
+                styleName: style === "kawaii"
+                    ? "软萌大头"
+                    : style === "guofeng"
+                        ? "国风Q版"
+                        : style === "trendy"
+                            ? "潮玩手办"
+                            : "简约卡通",
+                originalPath: destPath,
+            });
             return {
                 content: [
                     {

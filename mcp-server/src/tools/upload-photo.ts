@@ -5,6 +5,7 @@ import {
   generateSessionId,
   getSessionPath,
 } from "../utils/file.js";
+import { addOrUpdateWork } from "../utils/works-index.js";
 
 export function registerUploadPhoto(server: any): void {
   server.registerTool(
@@ -70,6 +71,21 @@ export function registerUploadPhoto(server: any): void {
         const destPath = path.join(sessionDir, `original${ext}`);
 
         copyFile(imagePath, destPath);
+
+        // Update works index
+        addOrUpdateWork(sessionId, {
+          status: "uploaded",
+          style: style as "kawaii" | "guofeng" | "trendy" | "simple",
+          styleName:
+            style === "kawaii"
+              ? "软萌大头"
+              : style === "guofeng"
+                ? "国风Q版"
+                : style === "trendy"
+                  ? "潮玩手办"
+                  : "简约卡通",
+          originalPath: destPath,
+        });
 
         return {
           content: [

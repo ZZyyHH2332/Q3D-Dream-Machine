@@ -10,6 +10,7 @@ import {
   getSessionPath,
   writeJsonFile,
 } from "../utils/file.js";
+import { addOrUpdateWork } from "../utils/works-index.js";
 
 export function registerGenerateAvatar(server: any): void {
   server.registerTool(
@@ -150,6 +151,21 @@ export function registerGenerateAvatar(server: any): void {
         };
         const metadataPath = path.join(outputDir, "metadata.json");
         writeJsonFile(metadataPath, metadata);
+
+        // Update works index
+        addOrUpdateWork(uploadId, {
+          status: "avatar_generated",
+          style: style as "kawaii" | "guofeng" | "trendy" | "simple",
+          styleName:
+            style === "kawaii"
+              ? "软萌大头"
+              : style === "guofeng"
+                ? "国风Q版"
+                : style === "trendy"
+                  ? "潮玩手办"
+                  : "简约卡通",
+          avatarPath,
+        });
 
         return {
           content: [
