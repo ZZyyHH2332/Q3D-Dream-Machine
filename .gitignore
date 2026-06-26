@@ -20,6 +20,8 @@ dist/
 build/
 *.min.js
 *.min.css
+# 保留 MCP Server 编译输出（TRAE 直接运行）
+!mcp-server/dist/
 
 # === 环境与密钥 ===
 .env

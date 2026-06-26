@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q3D 3D 预览</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      overflow: hidden;
+      background: linear-gradient(135deg, #FFF5F7, #F0F9FF);
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    #canvas-container {
+      width: 100vw;
+      height: 100vh;
+    }
+    .overlay {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      padding: 12px 24px;
+      border-radius: 9999px;
+      box-shadow: 0 8px 32px rgba(255,143,171,0.15);
+      color: #4A4A6A;
+      font-size: 14px;
+      pointer-events: none;
+      user-select: none;
+    }
+    .loading {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #FF8FAB;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .loading::after {
+      content: '';
+      width: 20px;
+      height: 20px;
+      border: 2px solid #FF8FAB;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="loading" class="loading">加载 3D 场景中...</div>
+  <div id="canvas-container"></div>
+  <div class="overlay">🖱️ 拖拽旋转查看不同角度</div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    const params = new URLSearchParams(location.search);
+    const avatarPath = params.get('avatar') || '';
+
+    // Scene setup
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xFFF5F7);
+    scene.fog = new THREE.Fog(0xFFF5F7, 8, 20);
+
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(3, 2, 4);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.SoftShadowMap;
+    document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+    // Controls
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.minDistance = 2;
+    controls.maxDistance = 10;
+    controls.target.set(0, 0.5, 0);
+
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight.position.set(5, 8, 5);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 1024;
+    dirLight.shadow.mapSize.height = 1024;
+    scene.add(dirLight);
+
+    const fillLight = new THREE.DirectionalLight(0xFFB7C5, 0.3);
+    fillLight.position.set(-3, 2, -3);
+    scene.add(fillLight);
+
+    // Character group
+    const character = new THREE.Group();
+    scene.add(character);
+
+    // Load avatar texture
+    let headMaterial;
+    if (avatarPath) {
+      const textureLoader = new THREE.TextureLoader();
+      const texture = textureLoader.load(avatarPath, () => {
+        document.getElementById('loading').style.display = 'none';
+      }, undefined, () => {
+        document.getElementById('loading').style.display = 'none';
+      });
+      texture.colorSpace = THREE.SRGBColorSpace;
+      headMaterial = new THREE.MeshStandardMaterial({
+        map: texture,
+        roughness: 0.4,
+        metalness: 0.1,
+      });
+    } else {
+      headMaterial = new THREE.MeshStandardMaterial({
+        color: 0xFF8FAB,
+        roughness: 0.4,
+        metalness: 0.1,
+      });
+      document.getElementById('loading').style.display = 'none';
+    }
+
+    // Head (sphere)
+    const headGeo = new THREE.SphereGeometry(1.0, 32, 32);
+    const head = new THREE.Mesh(headGeo, headMaterial);
+    head.position.y = 1.6;
+    head.castShadow = true;
+    character.add(head);
+
+    // Body (cylinder)
+    const bodyGeo = new THREE.CylinderGeometry(0.6, 0.7, 1.2, 32);
+    const bodyMat = new THREE.MeshStandardMaterial({
+      color: 0xA8E6CF,
+      roughness: 0.5,
+      metalness: 0.05,
+    });
+    const body = new THREE.Mesh(bodyGeo, bodyMat);
+    body.position.y = 0.4;
+    body.castShadow = true;
+    character.add(body);
+
+    // Arms (spheres)
+    const armGeo = new THREE.SphereGeometry(0.25, 16, 16);
+    const armMat = new THREE.MeshStandardMaterial({ color: 0xFFD93D, roughness: 0.5 });
+    const leftArm = new THREE.Mesh(armGeo, armMat);
+    leftArm.position.set(-0.9, 0.7, 0);
+    leftArm.castShadow = true;
+    character.add(leftArm);
+    const rightArm = new THREE.Mesh(armGeo, armMat);
+    rightArm.position.set(0.9, 0.7, 0);
+    rightArm.castShadow = true;
+    character.add(rightArm);
+
+    // Legs (cylinders)
+    const legGeo = new THREE.CylinderGeometry(0.2, 0.22, 0.5, 16);
+    const legMat = new THREE.MeshStandardMaterial({ color: 0xB4D7F0, roughness: 0.5 });
+    const leftLeg = new THREE.Mesh(legGeo, legMat);
+    leftLeg.position.set(-0.3, -0.45, 0);
+    leftLeg.castShadow = true;
+    character.add(leftLeg);
+    const rightLeg = new THREE.Mesh(legGeo, legMat);
+    rightLeg.position.set(0.3, -0.45, 0);
+    rightLeg.castShadow = true;
+    character.add(rightLeg);
+
+    // Ground shadow
+    const groundGeo = new THREE.CircleGeometry(2, 64);
+    const groundMat = new THREE.MeshStandardMaterial({
+      color: 0xFFFFFF,
+      roughness: 0.9,
+      metalness: 0,
+    });
+    const ground = new THREE.Mesh(groundGeo, groundMat);
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -0.7;
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    // Floating particles
+    const particlesGeo = new THREE.BufferGeometry();
+    const particleCount = 30;
+    const posArray = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount * 3; i++) {
+      posArray[i] = (Math.random() - 0.5) * 8;
+    }
+    particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    const particlesMat = new THREE.PointsMaterial({
+      size: 0.05,
+      color: 0xFF8FAB,
+      transparent: true,
+      opacity: 0.6,
+    });
+    const particles = new THREE.Points(particlesGeo, particlesMat);
+    scene.add(particles);
+
+    // Animation
+    function animate() {
+      requestAnimationFrame(animate);
+
+      character.rotation.y += 0.005;
+
+      // Bobbing animation
+      character.position.y = Math.sin(Date.now() * 0.002) * 0.05;
+
+      // Particle float
+      particles.rotation.y += 0.001;
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Resize
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>

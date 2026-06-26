@@ -1,0 +1,31 @@
+{
+  "name": "q3d-mcp-server",
+  "version": "1.0.0",
+  "description": "Q3D 形象造梦机 MCP Server - 提供 Q 版形象生成、3D 预览、桌面宠物等工具",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "inspector": "npx @modelcontextprotocol/inspector node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "openai": "^4.85.0",
+    "zod": "^3.24.0",
+    "dotenv": "^16.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  },
+  "keywords": [
+    "mcp",
+    "q3d",
+    "avatar",
+    "trae"
+  ],
+  "author": "ZZyyHH2332",
+  "license": "MIT"
+}
