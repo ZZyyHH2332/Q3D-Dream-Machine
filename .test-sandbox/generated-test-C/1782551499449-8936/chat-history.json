@@ -1,0 +1,26 @@
+[
+  {
+    "role": "user",
+    "content": "快1"
+  },
+  {
+    "role": "assistant",
+    "content": "这个话题好有趣！可以多跟我说说吗~ ✨"
+  },
+  {
+    "role": "user",
+    "content": "快2"
+  },
+  {
+    "role": "assistant",
+    "content": "你好呀！我是小Q，你的专属 Q 版宠物~ 🎉"
+  },
+  {
+    "role": "user",
+    "content": "快3"
+  },
+  {
+    "role": "assistant",
+    "content": "你好呀！我是小Q，你的专属 Q 版宠物~ 🎉"
+  }
+]

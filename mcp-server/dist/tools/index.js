@@ -4,6 +4,7 @@ import { registerGenerateAvatar } from "./generate-avatar.js";
 import { registerCreate3DPreview } from "./create-3d-preview.js";
 import { registerSpawnPet } from "./spawn-pet.js";
 import { registerChatWithPet } from "./chat-with-pet.js";
+import { registerGenerate3DModel } from "./generate-3d-model.js";
 export function registerAllTools(server) {
     registerHealthCheck(server);
     registerUploadPhoto(server);
@@ -11,5 +12,6 @@ export function registerAllTools(server) {
     registerCreate3DPreview(server);
     registerSpawnPet(server);
     registerChatWithPet(server);
+    registerGenerate3DModel(server);
 }
 //# sourceMappingURL=index.js.map

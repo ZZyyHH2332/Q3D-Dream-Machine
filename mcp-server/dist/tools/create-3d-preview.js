@@ -1,5 +1,6 @@
 import path from "path";
 import fs from "fs";
+import { fileURLToPath } from "url";
 import { config } from "../config.js";
 import { getSessionPath, openInBrowser, findLatestAvatar, } from "../utils/file.js";
 import { addOrUpdateWork } from "../utils/works-index.js";
@@ -38,7 +39,8 @@ export function registerCreate3DPreview(server) {
             const avatarDir = path.dirname(avatarPath);
             const sessionId = path.basename(avatarDir);
             // Read template
-            const templatePath = path.join(path.dirname(new URL(import.meta.url).pathname), "..", "..", "..", "preview-template", "preview-3d.html");
+            const __dirname = path.dirname(fileURLToPath(import.meta.url));
+            const templatePath = path.join(__dirname, "..", "..", "..", "preview-template", "preview-3d.html");
             if (!fs.existsSync(templatePath)) {
                 return {
                     content: [
@@ -61,8 +63,18 @@ export function registerCreate3DPreview(server) {
             // Replace placeholder with absolute path (file protocol)
             const fileUrl = "file://" + avatarPath.replace(/\\/g, "/");
             template = template.replace(/\{\{AVATAR_PATH\}\}/g, fileUrl);
-            // Write output
+            // Prepare output directory (needed for GLB check)
             const outputDir = getSessionPath(config.outputDir, sessionId);
+            // Replace GLB model placeholder if model.glb exists
+            const glbPath = path.join(outputDir, "model.glb");
+            if (fs.existsSync(glbPath)) {
+                const glbFileUrl = "file://" + glbPath.replace(/\\/g, "/");
+                template = template.replace(/\{\{GLB_PATH\}\}/g, glbFileUrl);
+            }
+            else {
+                template = template.replace(/\{\{GLB_PATH\}\}/g, "");
+            }
+            // Write output
             const previewPath = path.join(outputDir, "preview-3d.html");
             fs.writeFileSync(previewPath, template, "utf-8");
             // Update works index

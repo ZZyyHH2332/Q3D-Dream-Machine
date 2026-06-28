@@ -1,5 +1,6 @@
 import path from "path";
 import fs from "fs";
+import { fileURLToPath } from "url";
 import { config } from "../config.js";
 import {
   copyFile,
@@ -56,8 +57,9 @@ export function registerSpawnPet(server: any): void {
         }
 
         // Read template
+        const __dirname = path.dirname(fileURLToPath(import.meta.url));
         const templatePath = path.join(
-          path.dirname(new URL(import.meta.url).pathname),
+          __dirname,
           "..",
           "..",
           "..",

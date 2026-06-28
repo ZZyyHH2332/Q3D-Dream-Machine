@@ -1,0 +1,10 @@
+[
+  {
+    "role": "user",
+    "content": "Hi"
+  },
+  {
+    "role": "assistant",
+    "content": "我在听呢，继续说呀~ 👂"
+  }
+]

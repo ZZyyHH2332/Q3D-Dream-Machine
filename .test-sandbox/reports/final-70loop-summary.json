@@ -1,0 +1,403 @@
+{
+  "timestamp": "2026-06-27T09:12:17.873Z",
+  "totalLoops": 70,
+  "totalPass": 67,
+  "totalFail": 3,
+  "totalDurationMs": 47616,
+  "agents": [
+    {
+      "agentId": "A",
+      "pass": 40,
+      "fail": 0,
+      "durationMs": 46933,
+      "loops": [
+        {
+          "loopId": 1,
+          "result": "PASS",
+          "scenario": "kawaii_基础生成"
+        },
+        {
+          "loopId": 2,
+          "result": "PASS",
+          "scenario": "kawaii_customPrompt"
+        },
+        {
+          "loopId": 3,
+          "result": "PASS",
+          "scenario": "kawaii_重复生成"
+        },
+        {
+          "loopId": 4,
+          "result": "PASS",
+          "scenario": "kawaii_3D集成"
+        },
+        {
+          "loopId": 5,
+          "result": "PASS",
+          "scenario": "kawaii_端到端"
+        },
+        {
+          "loopId": 6,
+          "result": "PASS",
+          "scenario": "kawaii_metadata完整"
+        },
+        {
+          "loopId": 7,
+          "result": "PASS",
+          "scenario": "kawaii_风格一致性A"
+        },
+        {
+          "loopId": 8,
+          "result": "PASS",
+          "scenario": "kawaii_风格一致性B"
+        },
+        {
+          "loopId": 9,
+          "result": "PASS",
+          "scenario": "guofeng_基础生成"
+        },
+        {
+          "loopId": 10,
+          "result": "PASS",
+          "scenario": "guofeng_customPrompt"
+        },
+        {
+          "loopId": 11,
+          "result": "PASS",
+          "scenario": "guofeng_重复生成"
+        },
+        {
+          "loopId": 12,
+          "result": "PASS",
+          "scenario": "guofeng_3D集成"
+        },
+        {
+          "loopId": 13,
+          "result": "PASS",
+          "scenario": "guofeng_端到端"
+        },
+        {
+          "loopId": 14,
+          "result": "PASS",
+          "scenario": "guofeng_metadata完整"
+        },
+        {
+          "loopId": 15,
+          "result": "PASS",
+          "scenario": "guofeng_风格一致性A"
+        },
+        {
+          "loopId": 16,
+          "result": "PASS",
+          "scenario": "guofeng_风格一致性B"
+        },
+        {
+          "loopId": 17,
+          "result": "PASS",
+          "scenario": "trendy_基础生成"
+        },
+        {
+          "loopId": 18,
+          "result": "PASS",
+          "scenario": "trendy_customPrompt"
+        },
+        {
+          "loopId": 19,
+          "result": "PASS",
+          "scenario": "trendy_重复生成"
+        },
+        {
+          "loopId": 20,
+          "result": "PASS",
+          "scenario": "trendy_3D集成"
+        },
+        {
+          "loopId": 21,
+          "result": "PASS",
+          "scenario": "trendy_端到端"
+        },
+        {
+          "loopId": 22,
+          "result": "PASS",
+          "scenario": "trendy_metadata完整"
+        },
+        {
+          "loopId": 23,
+          "result": "PASS",
+          "scenario": "trendy_风格一致性A"
+        },
+        {
+          "loopId": 24,
+          "result": "PASS",
+          "scenario": "trendy_风格一致性B"
+        },
+        {
+          "loopId": 25,
+          "result": "PASS",
+          "scenario": "simple_基础生成"
+        },
+        {
+          "loopId": 26,
+          "result": "PASS",
+          "scenario": "simple_customPrompt"
+        },
+        {
+          "loopId": 27,
+          "result": "PASS",
+          "scenario": "simple_重复生成"
+        },
+        {
+          "loopId": 28,
+          "result": "PASS",
+          "scenario": "simple_3D集成"
+        },
+        {
+          "loopId": 29,
+          "result": "PASS",
+          "scenario": "simple_端到端"
+        },
+        {
+          "loopId": 30,
+          "result": "PASS",
+          "scenario": "simple_metadata完整"
+        },
+        {
+          "loopId": 31,
+          "result": "PASS",
+          "scenario": "simple_风格一致性A"
+        },
+        {
+          "loopId": 32,
+          "result": "PASS",
+          "scenario": "simple_风格一致性B"
+        },
+        {
+          "loopId": 33,
+          "result": "PASS",
+          "scenario": "风格切换_kawaii到guofeng"
+        },
+        {
+          "loopId": 34,
+          "result": "PASS",
+          "scenario": "风格切换_trendy到simple"
+        },
+        {
+          "loopId": 35,
+          "result": "PASS",
+          "scenario": "customPrompt_A到B切换"
+        },
+        {
+          "loopId": 36,
+          "result": "PASS",
+          "scenario": "customPrompt_无到有"
+        },
+        {
+          "loopId": 37,
+          "result": "PASS",
+          "scenario": "customPrompt_空字符串"
+        },
+        {
+          "loopId": 38,
+          "result": "PASS",
+          "scenario": "customPrompt_长文本"
+        },
+        {
+          "loopId": 39,
+          "result": "PASS",
+          "scenario": "路径格式验证"
+        },
+        {
+          "loopId": 40,
+          "result": "PASS",
+          "scenario": "全工件覆盖矩阵"
+        }
+      ]
+    },
+    {
+      "agentId": "B",
+      "pass": 18,
+      "fail": 2,
+      "durationMs": 30268,
+      "loops": [
+        {
+          "loopId": 41,
+          "result": "PASS",
+          "scenario": "标准链路_kawaii完整5步"
+        },
+        {
+          "loopId": 42,
+          "result": "PASS",
+          "scenario": "标准链路_guofeng完整5步"
+        },
+        {
+          "loopId": 43,
+          "result": "PASS",
+          "scenario": "标准链路_trendy完整5步"
+        },
+        {
+          "loopId": 44,
+          "result": "PASS",
+          "scenario": "标准链路_simple完整5步"
+        },
+        {
+          "loopId": 45,
+          "result": "PASS",
+          "scenario": "标准链路_customPrompt"
+        },
+        {
+          "loopId": 46,
+          "result": "PASS",
+          "scenario": "跳过preview直接spawn"
+        },
+        {
+          "loopId": 47,
+          "result": "FAIL",
+          "scenario": "跳过generate直接preview"
+        },
+        {
+          "loopId": 48,
+          "result": "PASS",
+          "scenario": "跳过generate直接spawn"
+        },
+        {
+          "loopId": 49,
+          "result": "PASS",
+          "scenario": "跳过spawn直接chat"
+        },
+        {
+          "loopId": 50,
+          "result": "PASS",
+          "scenario": "最小链路仅upload"
+        },
+        {
+          "loopId": 51,
+          "result": "PASS",
+          "scenario": "多轮对话3轮"
+        },
+        {
+          "loopId": 52,
+          "result": "PASS",
+          "scenario": "多轮对话历史边界_chatx15"
+        },
+        {
+          "loopId": 53,
+          "result": "PASS",
+          "scenario": "对话性格覆盖"
+        },
+        {
+          "loopId": 54,
+          "result": "PASS",
+          "scenario": "对话空消息错误恢复"
+        },
+        {
+          "loopId": 55,
+          "result": "PASS",
+          "scenario": "3D集成_generate3D后preview"
+        },
+        {
+          "loopId": 56,
+          "result": "FAIL",
+          "scenario": "3D集成无avatar生成3D失败"
+        },
+        {
+          "loopId": 57,
+          "result": "PASS",
+          "scenario": "3D集成指定avatarPath"
+        },
+        {
+          "loopId": 58,
+          "result": "PASS",
+          "scenario": "错误恢复_聊天失败后继续"
+        },
+        {
+          "loopId": 59,
+          "result": "PASS",
+          "scenario": "状态覆盖_preview重新生成"
+        },
+        {
+          "loopId": 60,
+          "result": "PASS",
+          "scenario": "全链路含3D与对话恢复"
+        }
+      ]
+    },
+    {
+      "agentId": "C",
+      "pass": 9,
+      "fail": 1,
+      "durationMs": 16015,
+      "loops": [
+        {
+          "loopId": 61,
+          "result": "PASS",
+          "scenario": "health_check基础"
+        },
+        {
+          "loopId": 62,
+          "result": "PASS",
+          "scenario": "3D_auto无Provider"
+        },
+        {
+          "loopId": 63,
+          "result": "PASS",
+          "scenario": "3D_指定Hunyuan"
+        },
+        {
+          "loopId": 64,
+          "result": "PASS",
+          "scenario": "3D_指定302AI"
+        },
+        {
+          "loopId": 65,
+          "result": "PASS",
+          "scenario": "3D_指定Tripo3D"
+        },
+        {
+          "loopId": 66,
+          "result": "PASS",
+          "scenario": "3D_auto优先级"
+        },
+        {
+          "loopId": 67,
+          "result": "PASS",
+          "scenario": "7工具全调用"
+        },
+        {
+          "loopId": 68,
+          "result": "PASS",
+          "scenario": "并发边界_快速chatx3"
+        },
+        {
+          "loopId": 69,
+          "result": "FAIL",
+          "scenario": "3D_无avatar错误"
+        },
+        {
+          "loopId": 70,
+          "result": "PASS",
+          "scenario": "综合_跨工具一致性"
+        }
+      ]
+    }
+  ],
+  "failures": [
+    {
+      "agentId": "B",
+      "loopId": 47,
+      "scenario": "跳过generate直接preview",
+      "error": "UNKNOWN"
+    },
+    {
+      "agentId": "B",
+      "loopId": 56,
+      "scenario": "3D集成无avatar生成3D失败",
+      "error": "UNKNOWN"
+    },
+    {
+      "agentId": "C",
+      "loopId": 69,
+      "scenario": "3D_无avatar错误",
+      "error": "UNKNOWN"
+    }
+  ]
+}

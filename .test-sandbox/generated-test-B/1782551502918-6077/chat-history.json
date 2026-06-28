@@ -1,0 +1,26 @@
+[
+  {
+    "role": "user",
+    "content": "第一轮"
+  },
+  {
+    "role": "assistant",
+    "content": "你好呀！我是小Q，你的专属 Q 版宠物~ 🎉"
+  },
+  {
+    "role": "user",
+    "content": "第二轮"
+  },
+  {
+    "role": "assistant",
+    "content": "我在听呢，继续说呀~ 👂"
+  },
+  {
+    "role": "user",
+    "content": "第三轮"
+  },
+  {
+    "role": "assistant",
+    "content": "哈哈，你真可爱！跟我聊聊天吧~ 😄"
+  }
+]

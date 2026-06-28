@@ -1,0 +1,62 @@
+{
+  "version": "1.0",
+  "updatedAt": "2026-06-27T06:35:31.944Z",
+  "works": [
+    {
+      "sessionId": "1782542131686-8064",
+      "status": "preview_created",
+      "style": "kawaii",
+      "styleName": "软萌大头",
+      "createdAt": "2026-06-27T06:35:31.688Z",
+      "updatedAt": "2026-06-27T06:35:31.944Z",
+      "avatarPath": ".test-sandbox/generated-test/1782542131686-8064/avatar.png",
+      "previewPath": ".test-sandbox/generated-test/1782542131686-8064/preview-3d.html",
+      "petPath": null,
+      "petName": null,
+      "personality": null,
+      "originalPath": ".test-sandbox/uploads-test/1782542131686-8064/original.jpg"
+    },
+    {
+      "sessionId": "1782542130944-6251",
+      "status": "pet_spawned",
+      "style": "kawaii",
+      "styleName": "软萌大头",
+      "createdAt": "2026-06-27T06:35:30.948Z",
+      "updatedAt": "2026-06-27T06:35:31.379Z",
+      "avatarPath": ".test-sandbox/generated-test/1782542130944-6251/avatar.png",
+      "previewPath": null,
+      "petPath": ".test-sandbox/generated-test/1782542130944-6251/pet.html",
+      "petName": "小快",
+      "personality": "开朗",
+      "originalPath": ".test-sandbox/uploads-test/1782542130944-6251/original.jpg"
+    },
+    {
+      "sessionId": "1782542130545-4645",
+      "status": "pet_spawned",
+      "style": "kawaii",
+      "styleName": "软萌大头",
+      "createdAt": "2026-06-27T06:35:30.754Z",
+      "updatedAt": "2026-06-27T06:35:30.817Z",
+      "avatarPath": ".test-sandbox/generated-test/1782542130545-4645/avatar.png",
+      "previewPath": null,
+      "petPath": ".test-sandbox/generated-test/1782542130545-4645/pet.html",
+      "petName": "小多",
+      "personality": "话痨",
+      "originalPath": null
+    },
+    {
+      "sessionId": "1782542129580-1442",
+      "status": "pet_spawned",
+      "style": "kawaii",
+      "styleName": "软萌大头",
+      "createdAt": "2026-06-27T06:35:30.207Z",
+      "updatedAt": "2026-06-27T06:35:30.554Z",
+      "avatarPath": null,
+      "previewPath": null,
+      "petPath": ".test-sandbox/generated-test/1782542129580-1442/pet.html",
+      "petName": "小快速",
+      "personality": "活泼可爱",
+      "originalPath": null
+    }
+  ]
+}

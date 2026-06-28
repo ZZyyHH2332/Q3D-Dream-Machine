@@ -1,0 +1,9 @@
+{
+  "uploadId": "1782551532403-9685",
+  "originalPath": "D:\\Trae CN\\Q3D_Dream_Machine\\.test-sandbox\\uploads-test-A\\1782551532403-9685\\original.jpg",
+  "avatarPath": "D:\\Trae CN\\Q3D_Dream_Machine\\.test-sandbox\\generated-test-A\\1782551532403-9685\\avatar.png",
+  "style": "kawaii",
+  "customPrompt": "这是一段非常长的描述文本，用来测试系统在处理超长 customPrompt 时的行为表现和稳定性，确保不会因为字符串过长而导致截断或异常。",
+  "revisedPrompt": "Mock: 这是一段非常长的描述文本，用来测试系统在处理超长 customPrompt 时的行为表现和稳定性，确保不会因为字符串过长而导致截断或异常。 chibi avatar",
+  "generatedAt": "2026-06-27T09:12:12.965Z"
+}

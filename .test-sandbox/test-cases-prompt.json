@@ -1,0 +1,72 @@
+[
+  {
+    "id": "case-001",
+    "type": "normal",
+    "style": "kawaii",
+    "customPrompt": "",
+    "expect": "生成结果包含典型 kawaii 特征：大头比例、圆润眼睛、粉色系"
+  },
+  {
+    "id": "case-002",
+    "type": "normal",
+    "style": "guofeng",
+    "customPrompt": "手持折扇的书生",
+    "expect": "customPrompt 元素（折扇、书生）被保留，同时保持 guofeng 水墨风格"
+  },
+  {
+    "id": "case-003",
+    "type": "extreme",
+    "style": "kawaii",
+    "customPrompt": "极简线条头像，只用黑白两色，不要任何粉色",
+    "expect": "customPrompt 配色指令覆盖 kawaii 默认粉色，最终为黑白极简"
+  },
+  {
+    "id": "case-004",
+    "type": "extreme",
+    "style": "trendy",
+    "customPrompt": "这是一段非常长的描述文本，用来测试系统在处理超长 customPrompt 时的行为表现和稳定性，确保不会因为字符串过长而导致截断或异常。角色设定为来自未来的赛博朋克战士，身穿发光铠甲，手持等离子长剑，背景是霓虹闪烁的都市夜景。",
+    "expect": "prompt 被合理截断至 1000 字符以内，核心元素（赛博朋克、发光铠甲、等离子长剑）保留"
+  },
+  {
+    "id": "case-005",
+    "type": "abnormal",
+    "style": "simple",
+    "customPrompt": "不要背景，不要颜色，不要阴影",
+    "expect": "revisedPrompt 中否定指令被转换为正面描述：纯白背景、黑白配色、无阴影"
+  },
+  {
+    "id": "case-006",
+    "type": "abnormal",
+    "style": "kawaii",
+    "customPrompt": "!!!@#$%^&*()_+-=[]{}|;':\",./<>?",
+    "expect": "无效字符被过滤或转义，不导致 API 错误，生成正常 kawaii 形象"
+  },
+  {
+    "id": "case-007",
+    "type": "normal",
+    "style": "guofeng",
+    "customPrompt": "青衣剑客",
+    "expect": "生成结果同时体现 guofeng 水墨感 + 青衣 + 剑客元素"
+  },
+  {
+    "id": "case-008",
+    "type": "extreme",
+    "style": "simple",
+    "customPrompt": "",
+    "expect": "simple 风格不生成复杂背景，线条极简，色块平涂"
+  },
+  {
+    "id": "case-009",
+    "type": "abnormal",
+    "style": "trendy",
+    "customPrompt": "可爱软萌，粉色腮红，圆圆眼睛",
+    "expect": "trendy 风格不被 kawaii 化，保持潮玩手办质感，高饱和度、锐利轮廓"
+  },
+  {
+    "id": "case-010",
+    "type": "normal",
+    "style": "kawaii",
+    "customPrompt": "戴眼镜的程序员，穿格子衬衫",
+    "expect": "五官特征（眼镜、格子衬衫）被保留，同时整体 kawaii 化"
+  }
+]

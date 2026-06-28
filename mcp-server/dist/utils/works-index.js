@@ -3,7 +3,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.join(__dirname, "..", "..", "..");
-const indexPath = path.join(projectRoot, "works-index.json");
+const indexPath = process.env.Q3D_WORKS_INDEX
+    ? path.resolve(process.env.Q3D_WORKS_INDEX)
+    : path.join(projectRoot, "works-index.json");
 const STATUS_ORDER = [
     "uploaded",
     "avatar_generated",
@@ -55,6 +57,7 @@ export function addOrUpdateWork(sessionId, updates) {
             avatarPath: updates.avatarPath ? toRelativePath(updates.avatarPath) : null,
             previewPath: updates.previewPath ? toRelativePath(updates.previewPath) : null,
             petPath: updates.petPath ? toRelativePath(updates.petPath) : null,
+            glbPath: updates.glbPath ? toRelativePath(updates.glbPath) : null,
             petName: updates.petName || null,
             personality: updates.personality || null,
             originalPath: updates.originalPath ? toRelativePath(updates.originalPath) : null,

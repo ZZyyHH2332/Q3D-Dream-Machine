@@ -4,6 +4,13 @@ import { config, isApiConfigured } from "../config.js";
 import { generateAvatar as generateAvatarImage, downloadImage, } from "../utils/api.js";
 import { readFileAsBase64, getSessionPath, writeJsonFile, } from "../utils/file.js";
 import { addOrUpdateWork } from "../utils/works-index.js";
+// Style configuration for avatar generation
+const STYLE_CONFIG = {
+    kawaii: { name: "kawaii", label: "软萌大头" },
+    guofeng: { name: "guofeng", label: "国风Q版" },
+    trendy: { name: "trendy", label: "潮玩手办" },
+    simple: { name: "simple", label: "简约卡通" },
+};
 export function registerGenerateAvatar(server) {
     server.registerTool("q3d_generate_avatar", "根据上传的照片生成 Q 版 2D 形象", {
         uploadId: {
@@ -22,8 +29,8 @@ export function registerGenerateAvatar(server) {
     }, async (args) => {
         try {
             const { uploadId, style = "kawaii", customPrompt } = args;
-            // Check API configuration
-            if (!isApiConfigured()) {
+            // Check API configuration (skip in test mode)
+            if (!config.testMode && !isApiConfigured()) {
                 return {
                     content: [
                         {
@@ -126,13 +133,7 @@ export function registerGenerateAvatar(server) {
             addOrUpdateWork(uploadId, {
                 status: "avatar_generated",
                 style: style,
-                styleName: style === "kawaii"
-                    ? "软萌大头"
-                    : style === "guofeng"
-                        ? "国风Q版"
-                        : style === "trendy"
-                            ? "潮玩手办"
-                            : "简约卡通",
+                styleName: STYLE_CONFIG[style]?.label || "未知风格",
                 avatarPath,
             });
             return {
@@ -172,6 +173,14 @@ export function registerGenerateAvatar(server) {
             else if (error.message?.includes("API key")) {
                 errorCode = "GENERATE_AVATAR_API_KEY_INVALID";
                 suggestion = "API Key 无效，请检查 .env 配置";
+            }
+            else if (error.message?.includes("GENERATE_AVATAR_PROMPT_TOO_LONG")) {
+                errorCode = "GENERATE_AVATAR_PROMPT_TOO_LONG";
+                suggestion = "自定义提示词过长，请缩短至 200 字符以内";
+            }
+            else if (error.message?.includes("GENERATE_AVATAR_PROMPT_INVALID")) {
+                errorCode = "GENERATE_AVATAR_PROMPT_INVALID";
+                suggestion = "自定义提示词包含无效字符，请使用中文、英文或常见标点";
             }
             return {
                 content: [

@@ -1,0 +1,48 @@
+{
+  "version": "1.0",
+  "updatedAt": "2026-06-27T07:00:11.138Z",
+  "works": [
+    {
+      "sessionId": "1782543610898-4351",
+      "status": "preview_created",
+      "style": "kawaii",
+      "styleName": "软萌大头",
+      "createdAt": "2026-06-27T07:00:10.901Z",
+      "updatedAt": "2026-06-27T07:00:11.138Z",
+      "avatarPath": ".test-sandbox/generated-test-D/1782543610898-4351/avatar.png",
+      "previewPath": ".test-sandbox/generated-test-D/1782543610898-4351/preview-3d.html",
+      "petPath": null,
+      "petName": null,
+      "personality": null,
+      "originalPath": ".test-sandbox/uploads-test-D/1782543610898-4351/original.jpg"
+    },
+    {
+      "sessionId": "1782543610142-6387",
+      "status": "pet_spawned",
+      "style": "kawaii",
+      "styleName": "软萌大头",
+      "createdAt": "2026-06-27T07:00:10.146Z",
+      "updatedAt": "2026-06-27T07:00:10.604Z",
+      "avatarPath": ".test-sandbox/generated-test-D/1782543610142-6387/avatar.png",
+      "previewPath": null,
+      "petPath": ".test-sandbox/generated-test-D/1782543610142-6387/pet.html",
+      "petName": "小快",
+      "personality": "开朗",
+      "originalPath": ".test-sandbox/uploads-test-D/1782543610142-6387/original.jpg"
+    },
+    {
+      "sessionId": "1782543609785-3587",
+      "status": "pet_spawned",
+      "style": "kawaii",
+      "styleName": "软萌大头",
+      "createdAt": "2026-06-27T07:00:09.790Z",
+      "updatedAt": "2026-06-27T07:00:09.790Z",
+      "avatarPath": null,
+      "previewPath": null,
+      "petPath": ".test-sandbox/generated-test-D/1782543609785-3587/pet.html",
+      "petName": "小快速",
+      "personality": "活泼可爱",
+      "originalPath": null
+    }
+  ]
+}

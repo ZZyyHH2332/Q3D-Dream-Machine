@@ -1,5 +1,6 @@
 import path from "path";
 import fs from "fs";
+import { fileURLToPath } from "url";
 import { config } from "../config.js";
 import {
   copyFile,
@@ -53,8 +54,9 @@ export function registerCreate3DPreview(server: any): void {
         const sessionId = path.basename(avatarDir);
 
         // Read template
+        const __dirname = path.dirname(fileURLToPath(import.meta.url));
         const templatePath = path.join(
-          path.dirname(new URL(import.meta.url).pathname),
+          __dirname,
           "..",
           "..",
           "..",
@@ -87,8 +89,19 @@ export function registerCreate3DPreview(server: any): void {
         const fileUrl = "file://" + avatarPath.replace(/\\/g, "/");
         template = template.replace(/\{\{AVATAR_PATH\}\}/g, fileUrl);
 
-        // Write output
+        // Prepare output directory (needed for GLB check)
         const outputDir = getSessionPath(config.outputDir, sessionId);
+
+        // Replace GLB model placeholder if model.glb exists
+        const glbPath = path.join(outputDir, "model.glb");
+        if (fs.existsSync(glbPath)) {
+          const glbFileUrl = "file://" + glbPath.replace(/\\/g, "/");
+          template = template.replace(/\{\{GLB_PATH\}\}/g, glbFileUrl);
+        } else {
+          template = template.replace(/\{\{GLB_PATH\}\}/g, "");
+        }
+
+        // Write output
         const previewPath = path.join(outputDir, "preview-3d.html");
         fs.writeFileSync(previewPath, template, "utf-8");
 

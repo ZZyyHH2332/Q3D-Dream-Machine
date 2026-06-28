@@ -1,4 +1,5 @@
 import path from "path";
+import fs from "fs";
 import { config } from "../config.js";
 import {
   copyFile,
@@ -58,6 +59,28 @@ export function registerUploadPhoto(server: any): void {
                     code: "UPLOAD_INVALID_FORMAT",
                     message: `不支持的图片格式: ${ext}`,
                     suggestion: `请上传以下格式之一: ${allowedExts.join(", ")}`,
+                  },
+                }),
+              },
+            ],
+            isError: true,
+          };
+        }
+
+        // File size check (4MB limit)
+        const stats = fs.statSync(imagePath);
+        const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
+        if (stats.size > MAX_FILE_SIZE) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify({
+                  success: false,
+                  error: {
+                    code: "UPLOAD_FILE_TOO_LARGE",
+                    message: `图片文件过大 (${(stats.size / 1024 / 1024).toFixed(1)}MB)，超过 4MB 限制`,
+                    suggestion: "请压缩图片后重新上传，或使用更小尺寸的照片",
                   },
                 }),
               },

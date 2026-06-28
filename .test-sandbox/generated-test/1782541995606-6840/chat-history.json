@@ -1,0 +1,42 @@
+[
+  {
+    "role": "user",
+    "content": "消息1"
+  },
+  {
+    "role": "assistant",
+    "content": "你好呀！我是小Q，你的专属 Q 版宠物~ 🎉"
+  },
+  {
+    "role": "user",
+    "content": "消息2"
+  },
+  {
+    "role": "assistant",
+    "content": "这个话题好有趣！可以多跟我说说吗~ ✨"
+  },
+  {
+    "role": "user",
+    "content": "消息3"
+  },
+  {
+    "role": "assistant",
+    "content": "我也觉得呢！你很有眼光哦~ 💕"
+  },
+  {
+    "role": "user",
+    "content": "消息4"
+  },
+  {
+    "role": "assistant",
+    "content": "我也觉得呢！你很有眼光哦~ 💕"
+  },
+  {
+    "role": "user",
+    "content": "消息5"
+  },
+  {
+    "role": "assistant",
+    "content": "这个话题好有趣！可以多跟我说说吗~ ✨"
+  }
+]

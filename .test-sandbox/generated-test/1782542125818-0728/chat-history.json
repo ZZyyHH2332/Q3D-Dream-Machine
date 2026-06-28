@@ -1,0 +1,18 @@
+[
+  {
+    "role": "user",
+    "content": "Hi"
+  },
+  {
+    "role": "assistant",
+    "content": "我在听呢，继续说呀~ 👂"
+  },
+  {
+    "role": "user",
+    "content": "测试"
+  },
+  {
+    "role": "assistant",
+    "content": "我在听呢，继续说呀~ 👂"
+  }
+]

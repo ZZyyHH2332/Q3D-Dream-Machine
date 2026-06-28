@@ -1,5 +1,6 @@
 import path from "path";
 import fs from "fs";
+import { fileURLToPath } from "url";
 import { config } from "../config.js";
 import { getSessionPath, openInBrowser, findLatestAvatar, } from "../utils/file.js";
 import { addOrUpdateWork } from "../utils/works-index.js";
@@ -38,7 +39,8 @@ export function registerSpawnPet(server) {
                 getSessionPath(config.outputDir, sessionId);
             }
             // Read template
-            const templatePath = path.join(path.dirname(new URL(import.meta.url).pathname), "..", "..", "..", "pet-template", "pet.html");
+            const __dirname = path.dirname(fileURLToPath(import.meta.url));
+            const templatePath = path.join(__dirname, "..", "..", "..", "pet-template", "pet.html");
             if (!fs.existsSync(templatePath)) {
                 return {
                     content: [

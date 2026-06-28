@@ -7,11 +7,19 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Load .env from mcp-server directory
 dotenv.config({ path: path.join(__dirname, "..", ".env") });
 
+export type Provider3D = "hunyuan" | "tripo" | "302ai" | "auto";
+
 export interface Q3DConfig {
   apiKey: string | undefined;
   apiBase: string;
   outputDir: string;
   uploadsDir: string;
+  worksIndexPath: string;
+  testMode: boolean;
+  provider3D: Provider3D;
+  hunyuanApiUrl: string;
+  api302Key: string | undefined;
+  tripoApiKey: string | undefined;
 }
 
 function getConfig(): Q3DConfig {
@@ -26,10 +34,33 @@ function getConfig(): Q3DConfig {
     uploadsDir: process.env.Q3D_UPLOADS_DIR
       ? path.resolve(process.env.Q3D_UPLOADS_DIR)
       : path.join(projectRoot, "assets", "uploads"),
+    worksIndexPath: process.env.Q3D_WORKS_INDEX
+      ? path.resolve(process.env.Q3D_WORKS_INDEX)
+      : path.join(projectRoot, "works-index.json"),
+    testMode: process.env.Q3D_TEST_MODE === "mock",
+    provider3D: (process.env.Q3D_3D_PROVIDER as Provider3D) || "auto",
+    hunyuanApiUrl: process.env.Q3D_HUNYUAN_API_URL || "http://localhost:8080",
+    api302Key: process.env.Q3D_302AI_API_KEY || undefined,
+    tripoApiKey: process.env.Q3D_TRIPO_API_KEY || undefined,
   };
 }
 
-export const config = getConfig();
+// Dynamic config: re-reads process.env on every property access
+// This allows runtime changes (e.g., Q3D_TEST_MODE) to take effect immediately
+function createConfigProxy(): Q3DConfig {
+  return new Proxy({} as Q3DConfig, {
+    get(_target, prop: string | symbol) {
+      return getConfig()[prop as keyof Q3DConfig];
+    },
+    set(_target, prop: string | symbol, value: any) {
+      // Allow setting properties on the underlying config for flexibility
+      (getConfig() as any)[prop] = value;
+      return true;
+    },
+  });
+}
+
+export const config = createConfigProxy();
 
 export function isApiConfigured(): boolean {
   return !!config.apiKey;

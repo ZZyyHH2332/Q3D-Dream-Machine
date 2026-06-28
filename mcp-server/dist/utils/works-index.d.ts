@@ -1,6 +1,6 @@
 export interface WorkEntry {
     sessionId: string;
-    status: "uploaded" | "avatar_generated" | "preview_created" | "pet_spawned";
+    status: "uploaded" | "avatar_generated" | "preview_created" | "pet_spawned" | "model_generated";
     style: "kawaii" | "guofeng" | "trendy" | "simple";
     styleName: string;
     createdAt: string;
@@ -8,6 +8,7 @@ export interface WorkEntry {
     avatarPath: string | null;
     previewPath: string | null;
     petPath: string | null;
+    glbPath: string | null;
     petName: string | null;
     personality: string | null;
     originalPath: string | null;

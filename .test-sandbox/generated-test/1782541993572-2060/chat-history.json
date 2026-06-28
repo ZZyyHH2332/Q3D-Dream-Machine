@@ -1,0 +1,10 @@
+[
+  {
+    "role": "user",
+    "content": "测试"
+  },
+  {
+    "role": "assistant",
+    "content": "哈哈，你真可爱！跟我聊聊天吧~ 😄"
+  }
+]

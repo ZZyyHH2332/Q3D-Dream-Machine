@@ -1,0 +1,26 @@
+{
+  "skill": "q3d-avatar-prompt-optimizer",
+  "currentIteration": 0,
+  "maxIterations": 15,
+  "status": "idle",
+  "history": [],
+  "binaryTermination": {
+    "testPassRate": 1.0,
+    "newDefects": 0,
+    "satisfied": false
+  },
+  "meta": {
+    "createdAt": "2026-06-28T16:44:00+08:00",
+    "lastUpdatedAt": "2026-06-28T16:44:00+08:00",
+    "targetFilePatterns": [
+      "mcp-server/src/tools/generate-avatar.ts",
+      "mcp-server/src/utils/api.ts"
+    ],
+    "outOfScopePatterns": [
+      "mcp-server/src/tools/generate-3d-model.ts",
+      "mcp-server/src/tools/chat-with-pet.ts",
+      "bridge/**",
+      "q3d-dream-machine-app.html"
+    ]
+  }
+}
