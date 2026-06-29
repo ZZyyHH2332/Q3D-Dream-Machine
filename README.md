@@ -32,17 +32,17 @@ MCP Server: q3d-tools (stdio)
 |---|---|
 | **TRAE Skill 触发** | 在 TRAE 中输入"生成Q版形象"即可触发完整工作流 |
 | **图片上传** | TRAE 对话中上传照片，自动保存到本地 |
-| **AI 形象生成** | GPT-4o vision 分析 + DALL-E 3 生成 Q 版图（支持 4 种风格） |
+| **AI 形象生成** | AI 分析 + Q 版图生成（支持 4 种风格；Demo 以程序化生成呈现，配置 API Key 后接入真实 GPT-4o vision + DALL-E 3） |
 | **3D 预览** | Three.js 真 3D 场景，球体头部贴 AI 生成图，支持拖拽旋转 |
 | **桌面宠物** | 生成独立本地 HTML 页面，浮动宠物 + 对话面板 + PiP 置顶 |
-| **AI 对话** | 接入真实 LLM（GPT-4o-mini），支持历史记忆，API 未配置时友好降级 |
+| **AI 对话** | 智能对话（Demo 内置语境问答库，接入 API 后切换为真实 LLM 对话，支持历史记忆） |
 | **TRAE 唤起** | 宠物页面内置 `solo-cn://` 深度链接一键唤起 TRAE IDE |
 
 ## 技术栈
 
 - **TRAE Skill**：`SKILL.md` 定义意图识别与对话流
 - **MCP Server**：TypeScript + MCP SDK，stdio transport
-- **AI 生成**：OpenAI 兼容 API（GPT-4o vision + DALL-E 3）
+- **AI 生成**：OpenAI 兼容 API（GPT-4o vision + DALL-E 3），Demo 阶段以程序化生成呈现
 - **3D 渲染**：Three.js（CDN）+ OrbitControls
 - **桌面宠物**：原生 HTML5/CSS3/JS，Document PiP API
 - **语音**：Web Speech API（概念演示）
@@ -146,7 +146,7 @@ Q3D_Dream_Machine/
 - AI 模拟对话（15+ 组问答 + 打字机效果）
 - `solo-cn://` TRAE 深度链接
 
-此版本所有 AI 功能为模拟，仅用于产品概念验证。当前版本已全面升级为真实 AI 驱动。
+此版本所有 AI 功能为模拟，仅用于产品概念验证。当前版本为概念演示版（Concept Demo），以程序化生成呈现完整交互流程；MCP Server 架构已支持真实 AI（配置 API Key 即可启用 GPT-4o vision + DALL-E 3），详见 `.trae/loop_logs/` 的 Prompt 优化迭代记录。
 
 ## 开发记录
 
@@ -154,7 +154,7 @@ Q3D_Dream_Machine/
 |---|---|
 | 2026-06-26 | 完成交互式 HTML Demo v1.0（概念演示） |
 | 2026-06-26 | 转型 TRAE Native 架构，完成 Skill + MCP Server 骨架 |
-| 2026-06-26 | 实现真实 AI 形象生成（GPT-4o + DALL-E 3） |
+| 2026-06-26 | 完成 AI 工作流架构与 Prompt 优化迭代（架构已支持 GPT-4o + DALL-E 3） |
 | 2026-06-26 | 完成 Three.js 3D 预览 + 桌面宠物 + AI 对话 |
 
 ## 后续规划

@@ -2,45 +2,45 @@
   "agentId": "X",
   "loopStart": 1,
   "loopEnd": 10,
-  "timestamp": "2026-06-28T08:53:15.760Z",
+  "timestamp": "2026-06-28T09:07:30.964Z",
   "passCount": 10,
   "failCount": 0,
-  "totalDurationMs": 7993,
+  "totalDurationMs": 9252,
   "loopResults": [
     {
       "loopId": 1,
       "scenario": "kawaii_基础生成",
       "overallResult": "PASS",
-      "totalDurationMs": 387,
+      "totalDurationMs": 252,
       "stepResults": [
         {
           "stepOrder": 1,
           "toolName": "q3d_upload_photo",
           "success": true,
-          "durationMs": 8,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782636795762-9570\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782636795762-9570\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
+          "durationMs": 6,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782637650966-7113\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782637650966-7113\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
           "errorCode": null
         },
         {
           "stepOrder": 2,
           "toolName": "q3d_generate_avatar",
           "success": true,
-          "durationMs": 360,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782636795762-9570\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "durationMs": 232,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782637650966-7113\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
           "errorCode": null
         }
       ],
       "artifactsVerified": {
-        "uploads/1782636795762-9570/original.jpg": {
+        "uploads/1782637650966-7113/original.jpg": {
           "exists": true,
           "sizeBytes": 1653
         },
-        "generated/1782636795762-9570/avatar.png": {
+        "generated/1782637650966-7113/avatar.png": {
           "exists": true,
           "sizeBytes": 69,
           "isPng": true
         },
-        "generated/1782636795762-9570/prompt-check": {
+        "generated/1782637650966-7113/prompt-check": {
           "hasStyleKeyword": true,
           "hasCustomPrompt": true,
           "lengthOk": false,
@@ -48,30 +48,30 @@
           "revisedPromptLength": 25,
           "style": "kawaii"
         },
-        "generated/1782636795762-9570/preview-3d.html": {
+        "generated/1782637650966-7113/preview-3d.html": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636795762-9570/pet.html": {
+        "generated/1782637650966-7113/pet.html": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636795762-9570/chat-history.json": {
+        "generated/1782637650966-7113/chat-history.json": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636795762-9570/metadata.json": {
+        "generated/1782637650966-7113/metadata.json": {
           "exists": true,
           "sizeBytes": 408
         },
-        "generated/1782636795762-9570/model.glb": {
+        "generated/1782637650966-7113/model.glb": {
           "exists": false,
           "sizeBytes": 0,
           "isGlb": false
         }
       },
       "worksIndexEntry": {
-        "sessionId": "1782636795762-9570",
+        "sessionId": "1782637650966-7113",
         "status": "avatar_generated",
         "style": "kawaii",
         "hasAvatarPath": true,
@@ -79,42 +79,42 @@
         "hasPetPath": false,
         "hasGlbPath": false
       },
-      "lastSessionId": "1782636795762-9570"
+      "lastSessionId": "1782637650966-7113"
     },
     {
       "loopId": 2,
       "scenario": "kawaii_customPrompt",
       "overallResult": "PASS",
-      "totalDurationMs": 343,
+      "totalDurationMs": 334,
       "stepResults": [
         {
           "stepOrder": 1,
           "toolName": "q3d_upload_photo",
           "success": true,
           "durationMs": 54,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782636796149-5979\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782636796149-5979\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782637651218-3482\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782637651218-3482\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
           "errorCode": null
         },
         {
           "stepOrder": 2,
           "toolName": "q3d_generate_avatar",
           "success": true,
-          "durationMs": 279,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782636796149-5979\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "durationMs": 265,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782637651218-3482\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
           "errorCode": null
         }
       ],
       "artifactsVerified": {
-        "uploads/1782636796149-5979/original.jpg": {
+        "uploads/1782637651218-3482/original.jpg": {
           "exists": true,
           "sizeBytes": 1653
         },
-        "generated/1782636796149-5979/avatar.png": {
+        "generated/1782637651218-3482/avatar.png": {
           "exists": true,
           "sizeBytes": 69,
           "isPng": true
         },
-        "generated/1782636796149-5979/prompt-check": {
+        "generated/1782637651218-3482/prompt-check": {
           "hasStyleKeyword": true,
           "hasCustomPrompt": true,
           "lengthOk": false,
@@ -122,30 +122,30 @@
           "revisedPromptLength": 26,
           "style": "kawaii"
         },
-        "generated/1782636796149-5979/preview-3d.html": {
+        "generated/1782637651218-3482/preview-3d.html": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636796149-5979/pet.html": {
+        "generated/1782637651218-3482/pet.html": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636796149-5979/chat-history.json": {
+        "generated/1782637651218-3482/chat-history.json": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636796149-5979/metadata.json": {
+        "generated/1782637651218-3482/metadata.json": {
           "exists": true,
           "sizeBytes": 442
         },
-        "generated/1782636796149-5979/model.glb": {
+        "generated/1782637651218-3482/model.glb": {
           "exists": false,
           "sizeBytes": 0,
           "isGlb": false
         }
       },
       "worksIndexEntry": {
-        "sessionId": "1782636796149-5979",
+        "sessionId": "1782637651218-3482",
         "status": "avatar_generated",
         "style": "kawaii",
         "hasAvatarPath": true,
@@ -153,50 +153,50 @@
         "hasPetPath": false,
         "hasGlbPath": false
       },
-      "lastSessionId": "1782636796149-5979"
+      "lastSessionId": "1782637651218-3482"
     },
     {
       "loopId": 3,
       "scenario": "kawaii_重复生成",
       "overallResult": "PASS",
-      "totalDurationMs": 451,
+      "totalDurationMs": 388,
       "stepResults": [
         {
           "stepOrder": 1,
           "toolName": "q3d_upload_photo",
           "success": true,
-          "durationMs": 49,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782636796492-6387\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782636796492-6387\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
+          "durationMs": 51,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782637651551-7491\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782637651551-7491\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
           "errorCode": null
         },
         {
           "stepOrder": 2,
           "toolName": "q3d_generate_avatar",
           "success": true,
-          "durationMs": 221,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782636796492-6387\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "durationMs": 170,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782637651551-7491\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
           "errorCode": null
         },
         {
           "stepOrder": 3,
           "toolName": "q3d_generate_avatar",
           "success": true,
-          "durationMs": 171,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782636796492-6387\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "durationMs": 156,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782637651551-7491\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
           "errorCode": null
         }
       ],
       "artifactsVerified": {
-        "uploads/1782636796492-6387/original.jpg": {
+        "uploads/1782637651551-7491/original.jpg": {
           "exists": true,
           "sizeBytes": 1653
         },
-        "generated/1782636796492-6387/avatar.png": {
+        "generated/1782637651551-7491/avatar.png": {
           "exists": true,
           "sizeBytes": 69,
           "isPng": true
         },
-        "generated/1782636796492-6387/prompt-check": {
+        "generated/1782637651551-7491/prompt-check": {
           "hasStyleKeyword": true,
           "hasCustomPrompt": true,
           "lengthOk": false,
@@ -204,30 +204,30 @@
           "revisedPromptLength": 25,
           "style": "kawaii"
         },
-        "generated/1782636796492-6387/preview-3d.html": {
+        "generated/1782637651551-7491/preview-3d.html": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636796492-6387/pet.html": {
+        "generated/1782637651551-7491/pet.html": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636796492-6387/chat-history.json": {
+        "generated/1782637651551-7491/chat-history.json": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636796492-6387/metadata.json": {
+        "generated/1782637651551-7491/metadata.json": {
           "exists": true,
           "sizeBytes": 408
         },
-        "generated/1782636796492-6387/model.glb": {
+        "generated/1782637651551-7491/model.glb": {
           "exists": false,
           "sizeBytes": 0,
           "isGlb": false
         }
       },
       "worksIndexEntry": {
-        "sessionId": "1782636796492-6387",
+        "sessionId": "1782637651551-7491",
         "status": "avatar_generated",
         "style": "kawaii",
         "hasAvatarPath": true,
@@ -235,50 +235,50 @@
         "hasPetPath": false,
         "hasGlbPath": false
       },
-      "lastSessionId": "1782636796492-6387"
+      "lastSessionId": "1782637651551-7491"
     },
     {
       "loopId": 4,
       "scenario": "kawaii_3D集成",
       "overallResult": "PASS",
-      "totalDurationMs": 2143,
+      "totalDurationMs": 2160,
       "stepResults": [
         {
           "stepOrder": 1,
           "toolName": "q3d_upload_photo",
           "success": true,
-          "durationMs": 48,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782636796943-0216\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782636796943-0216\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
+          "durationMs": 53,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782637651940-1193\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782637651940-1193\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
           "errorCode": null
         },
         {
           "stepOrder": 2,
           "toolName": "q3d_generate_avatar",
           "success": true,
-          "durationMs": 221,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782636796943-0216\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "durationMs": 337,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782637651940-1193\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
           "errorCode": null
         },
         {
           "stepOrder": 3,
           "toolName": "q3d_generate_3d_model",
           "success": true,
-          "durationMs": 1867,
+          "durationMs": 1762,
           "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
           "errorCode": null
         }
       ],
       "artifactsVerified": {
-        "uploads/1782636796943-0216/original.jpg": {
+        "uploads/1782637651940-1193/original.jpg": {
           "exists": true,
           "sizeBytes": 1653
         },
-        "generated/1782636796943-0216/avatar.png": {
+        "generated/1782637651940-1193/avatar.png": {
           "exists": true,
           "sizeBytes": 69,
           "isPng": true
         },
-        "generated/1782636796943-0216/prompt-check": {
+        "generated/1782637651940-1193/prompt-check": {
           "hasStyleKeyword": true,
           "hasCustomPrompt": true,
           "lengthOk": false,
@@ -286,30 +286,30 @@
           "revisedPromptLength": 25,
           "style": "kawaii"
         },
-        "generated/1782636796943-0216/preview-3d.html": {
+        "generated/1782637651940-1193/preview-3d.html": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636796943-0216/pet.html": {
+        "generated/1782637651940-1193/pet.html": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636796943-0216/chat-history.json": {
+        "generated/1782637651940-1193/chat-history.json": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636796943-0216/metadata.json": {
+        "generated/1782637651940-1193/metadata.json": {
           "exists": true,
           "sizeBytes": 408
         },
-        "generated/1782636796943-0216/model.glb": {
+        "generated/1782637651940-1193/model.glb": {
           "exists": false,
           "sizeBytes": 0,
           "isGlb": false
         }
       },
       "worksIndexEntry": {
-        "sessionId": "1782636796943-0216",
+        "sessionId": "1782637651940-1193",
         "status": "avatar_generated",
         "style": "kawaii",
         "hasAvatarPath": true,
@@ -317,66 +317,66 @@
         "hasPetPath": false,
         "hasGlbPath": false
       },
-      "lastSessionId": "1782636796943-0216"
+      "lastSessionId": "1782637651940-1193"
     },
     {
       "loopId": 5,
       "scenario": "kawaii_端到端",
       "overallResult": "PASS",
-      "totalDurationMs": 1034,
+      "totalDurationMs": 1242,
       "stepResults": [
         {
           "stepOrder": 1,
           "toolName": "q3d_upload_photo",
           "success": true,
-          "durationMs": 39,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782636799087-2557\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782636799087-2557\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
+          "durationMs": 45,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782637654100-7967\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782637654100-7967\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
           "errorCode": null
         },
         {
           "stepOrder": 2,
           "toolName": "q3d_generate_avatar",
           "success": true,
-          "durationMs": 148,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782636799087-2557\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "durationMs": 254,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782637654100-7967\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
           "errorCode": null
         },
         {
           "stepOrder": 3,
           "toolName": "q3d_create_3d_preview",
           "success": true,
-          "durationMs": 379,
-          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782636799087-2557\\\\preview-3d.html\",\n  \"sessionId\": \"1782636799087-2557\",\n  \"message\": \"3D 预览页面",
+          "durationMs": 392,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782637654100-7967\\\\preview-3d.html\",\n  \"sessionId\": \"1782637654100-7967\",\n  \"message\": \"3D 预览页面",
           "errorCode": null
         },
         {
           "stepOrder": 4,
           "toolName": "q3d_spawn_pet",
           "success": true,
-          "durationMs": 420,
-          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782636799087-2557\\\\pet.html\",\n  \"sessionId\": \"1782636799087-2557\",\n  \"name\": \"小Q\",\n  \"personality\": ",
+          "durationMs": 451,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782637654100-7967\\\\pet.html\",\n  \"sessionId\": \"1782637654100-7967\",\n  \"name\": \"小Q\",\n  \"personality\": ",
           "errorCode": null
         },
         {
           "stepOrder": 5,
           "toolName": "q3d_chat_with_pet",
           "success": true,
-          "durationMs": 8,
-          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"哈哈，你真可爱！跟我聊聊天吧~ 😄\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782636799087-2557\",\n  \"historyLength\": 2,\n  \"message\": \"哈哈，你真可爱！跟我聊聊天吧~ 😄\"\n}",
+          "durationMs": 22,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"我在听呢，继续说呀~ 👂\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782637654100-7967\",\n  \"historyLength\": 2,\n  \"message\": \"我在听呢，继续说呀~ 👂\"\n}",
           "errorCode": null
         }
       ],
       "artifactsVerified": {
-        "uploads/1782636799087-2557/original.jpg": {
+        "uploads/1782637654100-7967/original.jpg": {
           "exists": true,
           "sizeBytes": 1653
         },
-        "generated/1782636799087-2557/avatar.png": {
+        "generated/1782637654100-7967/avatar.png": {
           "exists": true,
           "sizeBytes": 69,
           "isPng": true
         },
-        "generated/1782636799087-2557/prompt-check": {
+        "generated/1782637654100-7967/prompt-check": {
           "hasStyleKeyword": true,
           "hasCustomPrompt": true,
           "lengthOk": false,
@@ -384,30 +384,30 @@
           "revisedPromptLength": 25,
           "style": "kawaii"
         },
-        "generated/1782636799087-2557/preview-3d.html": {
+        "generated/1782637654100-7967/preview-3d.html": {
           "exists": true,
           "sizeBytes": 11233
         },
-        "generated/1782636799087-2557/pet.html": {
+        "generated/1782637654100-7967/pet.html": {
           "exists": true,
           "sizeBytes": 16694
         },
-        "generated/1782636799087-2557/chat-history.json": {
+        "generated/1782637654100-7967/chat-history.json": {
           "exists": true,
-          "sizeBytes": 158
+          "sizeBytes": 143
         },
-        "generated/1782636799087-2557/metadata.json": {
+        "generated/1782637654100-7967/metadata.json": {
           "exists": true,
           "sizeBytes": 408
         },
-        "generated/1782636799087-2557/model.glb": {
+        "generated/1782637654100-7967/model.glb": {
           "exists": false,
           "sizeBytes": 0,
           "isGlb": false
         }
       },
       "worksIndexEntry": {
-        "sessionId": "1782636799087-2557",
+        "sessionId": "1782637654100-7967",
         "status": "pet_spawned",
         "style": "kawaii",
         "hasAvatarPath": true,
@@ -415,50 +415,50 @@
         "hasPetPath": true,
         "hasGlbPath": false
       },
-      "lastSessionId": "1782636799087-2557"
+      "lastSessionId": "1782637654100-7967"
     },
     {
       "loopId": 6,
       "scenario": "kawaii_metadata完整",
       "overallResult": "PASS",
-      "totalDurationMs": 1089,
+      "totalDurationMs": 1391,
       "stepResults": [
         {
           "stepOrder": 1,
           "toolName": "q3d_upload_photo",
           "success": true,
-          "durationMs": 156,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782636800122-7066\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782636800122-7066\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
+          "durationMs": 378,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782637655346-7762\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782637655346-7762\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
           "errorCode": null
         },
         {
           "stepOrder": 2,
           "toolName": "q3d_generate_avatar",
           "success": true,
-          "durationMs": 485,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782636800122-7066\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "durationMs": 472,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782637655346-7762\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
           "errorCode": null
         },
         {
           "stepOrder": 3,
           "toolName": "q3d_create_3d_preview",
           "success": true,
-          "durationMs": 418,
-          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782636800122-7066\\\\preview-3d.html\",\n  \"sessionId\": \"1782636800122-7066\",\n  \"message\": \"3D 预览页面",
+          "durationMs": 497,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782637655346-7762\\\\preview-3d.html\",\n  \"sessionId\": \"1782637655346-7762\",\n  \"message\": \"3D 预览页面",
           "errorCode": null
         }
       ],
       "artifactsVerified": {
-        "uploads/1782636800122-7066/original.jpg": {
+        "uploads/1782637655346-7762/original.jpg": {
           "exists": true,
           "sizeBytes": 1653
         },
-        "generated/1782636800122-7066/avatar.png": {
+        "generated/1782637655346-7762/avatar.png": {
           "exists": true,
           "sizeBytes": 69,
           "isPng": true
         },
-        "generated/1782636800122-7066/prompt-check": {
+        "generated/1782637655346-7762/prompt-check": {
           "hasStyleKeyword": true,
           "hasCustomPrompt": true,
           "lengthOk": false,
@@ -466,30 +466,30 @@
           "revisedPromptLength": 25,
           "style": "kawaii"
         },
-        "generated/1782636800122-7066/preview-3d.html": {
+        "generated/1782637655346-7762/preview-3d.html": {
           "exists": true,
           "sizeBytes": 11233
         },
-        "generated/1782636800122-7066/pet.html": {
+        "generated/1782637655346-7762/pet.html": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636800122-7066/chat-history.json": {
+        "generated/1782637655346-7762/chat-history.json": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636800122-7066/metadata.json": {
+        "generated/1782637655346-7762/metadata.json": {
           "exists": true,
           "sizeBytes": 408
         },
-        "generated/1782636800122-7066/model.glb": {
+        "generated/1782637655346-7762/model.glb": {
           "exists": false,
           "sizeBytes": 0,
           "isGlb": false
         }
       },
       "worksIndexEntry": {
-        "sessionId": "1782636800122-7066",
+        "sessionId": "1782637655346-7762",
         "status": "preview_created",
         "style": "kawaii",
         "hasAvatarPath": true,
@@ -497,50 +497,50 @@
         "hasPetPath": false,
         "hasGlbPath": false
       },
-      "lastSessionId": "1782636800122-7066"
+      "lastSessionId": "1782637655346-7762"
     },
     {
       "loopId": 7,
       "scenario": "kawaii_风格一致性A",
       "overallResult": "PASS",
-      "totalDurationMs": 676,
+      "totalDurationMs": 1041,
       "stepResults": [
         {
           "stepOrder": 1,
           "toolName": "q3d_upload_photo",
           "success": true,
-          "durationMs": 106,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782636801212-7601\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782636801212-7601\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
+          "durationMs": 129,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782637656737-1843\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782637656737-1843\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
           "errorCode": null
         },
         {
           "stepOrder": 2,
           "toolName": "q3d_generate_avatar",
           "success": true,
-          "durationMs": 311,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782636801212-7601\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "durationMs": 395,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782637656737-1843\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
           "errorCode": null
         },
         {
           "stepOrder": 3,
           "toolName": "q3d_generate_avatar",
           "success": true,
-          "durationMs": 233,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782636801212-7601\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "durationMs": 465,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782637656737-1843\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
           "errorCode": null
         }
       ],
       "artifactsVerified": {
-        "uploads/1782636801212-7601/original.jpg": {
+        "uploads/1782637656737-1843/original.jpg": {
           "exists": true,
           "sizeBytes": 1653
         },
-        "generated/1782636801212-7601/avatar.png": {
+        "generated/1782637656737-1843/avatar.png": {
           "exists": true,
           "sizeBytes": 69,
           "isPng": true
         },
-        "generated/1782636801212-7601/prompt-check": {
+        "generated/1782637656737-1843/prompt-check": {
           "hasStyleKeyword": true,
           "hasCustomPrompt": true,
           "lengthOk": false,
@@ -548,30 +548,30 @@
           "revisedPromptLength": 25,
           "style": "kawaii"
         },
-        "generated/1782636801212-7601/preview-3d.html": {
+        "generated/1782637656737-1843/preview-3d.html": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636801212-7601/pet.html": {
+        "generated/1782637656737-1843/pet.html": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636801212-7601/chat-history.json": {
+        "generated/1782637656737-1843/chat-history.json": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636801212-7601/metadata.json": {
+        "generated/1782637656737-1843/metadata.json": {
           "exists": true,
           "sizeBytes": 408
         },
-        "generated/1782636801212-7601/model.glb": {
+        "generated/1782637656737-1843/model.glb": {
           "exists": false,
           "sizeBytes": 0,
           "isGlb": false
         }
       },
       "worksIndexEntry": {
-        "sessionId": "1782636801212-7601",
+        "sessionId": "1782637656737-1843",
         "status": "avatar_generated",
         "style": "kawaii",
         "hasAvatarPath": true,
@@ -579,50 +579,50 @@
         "hasPetPath": false,
         "hasGlbPath": false
       },
-      "lastSessionId": "1782636801212-7601"
+      "lastSessionId": "1782637656737-1843"
     },
     {
       "loopId": 8,
       "scenario": "kawaii_风格一致性B",
       "overallResult": "PASS",
-      "totalDurationMs": 704,
+      "totalDurationMs": 1184,
       "stepResults": [
         {
           "stepOrder": 1,
           "toolName": "q3d_upload_photo",
           "success": true,
-          "durationMs": 117,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782636801889-8273\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782636801889-8273\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
+          "durationMs": 296,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782637657784-8789\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782637657784-8789\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
           "errorCode": null
         },
         {
           "stepOrder": 2,
           "toolName": "q3d_generate_avatar",
           "success": true,
-          "durationMs": 223,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782636801889-8273\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "durationMs": 405,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782637657784-8789\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
           "errorCode": null
         },
         {
           "stepOrder": 3,
           "toolName": "q3d_generate_avatar",
           "success": true,
-          "durationMs": 341,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782636801889-8273\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "durationMs": 367,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782637657784-8789\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
           "errorCode": null
         }
       ],
       "artifactsVerified": {
-        "uploads/1782636801889-8273/original.jpg": {
+        "uploads/1782637657784-8789/original.jpg": {
           "exists": true,
           "sizeBytes": 1653
         },
-        "generated/1782636801889-8273/avatar.png": {
+        "generated/1782637657784-8789/avatar.png": {
           "exists": true,
           "sizeBytes": 69,
           "isPng": true
         },
-        "generated/1782636801889-8273/prompt-check": {
+        "generated/1782637657784-8789/prompt-check": {
           "hasStyleKeyword": true,
           "hasCustomPrompt": true,
           "lengthOk": false,
@@ -630,30 +630,30 @@
           "revisedPromptLength": 23,
           "style": "kawaii"
         },
-        "generated/1782636801889-8273/preview-3d.html": {
+        "generated/1782637657784-8789/preview-3d.html": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636801889-8273/pet.html": {
+        "generated/1782637657784-8789/pet.html": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636801889-8273/chat-history.json": {
+        "generated/1782637657784-8789/chat-history.json": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636801889-8273/metadata.json": {
+        "generated/1782637657784-8789/metadata.json": {
           "exists": true,
           "sizeBytes": 424
         },
-        "generated/1782636801889-8273/model.glb": {
+        "generated/1782637657784-8789/model.glb": {
           "exists": false,
           "sizeBytes": 0,
           "isGlb": false
         }
       },
       "worksIndexEntry": {
-        "sessionId": "1782636801889-8273",
+        "sessionId": "1782637657784-8789",
         "status": "avatar_generated",
         "style": "kawaii",
         "hasAvatarPath": true,
@@ -661,42 +661,42 @@
         "hasPetPath": false,
         "hasGlbPath": false
       },
-      "lastSessionId": "1782636801889-8273"
+      "lastSessionId": "1782637657784-8789"
     },
     {
       "loopId": 9,
       "scenario": "guofeng_基础生成",
       "overallResult": "PASS",
-      "totalDurationMs": 565,
+      "totalDurationMs": 743,
       "stepResults": [
         {
           "stepOrder": 1,
           "toolName": "q3d_upload_photo",
           "success": true,
-          "durationMs": 129,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782636802593-7788\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782636802593-7788\\\\original.jpg\",\n  \"style\": \"guofeng\",\n  \"mess",
+          "durationMs": 313,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782637658971-8139\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782637658971-8139\\\\original.jpg\",\n  \"style\": \"guofeng\",\n  \"mess",
           "errorCode": null
         },
         {
           "stepOrder": 2,
           "toolName": "q3d_generate_avatar",
           "success": true,
-          "durationMs": 411,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782636802593-7788\\\\avatar.png\",\n  \"style\": \"guofeng\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_",
+          "durationMs": 360,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782637658971-8139\\\\avatar.png\",\n  \"style\": \"guofeng\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_",
           "errorCode": null
         }
       ],
       "artifactsVerified": {
-        "uploads/1782636802593-7788/original.jpg": {
+        "uploads/1782637658971-8139/original.jpg": {
           "exists": true,
           "sizeBytes": 1653
         },
-        "generated/1782636802593-7788/avatar.png": {
+        "generated/1782637658971-8139/avatar.png": {
           "exists": true,
           "sizeBytes": 69,
           "isPng": true
         },
-        "generated/1782636802593-7788/prompt-check": {
+        "generated/1782637658971-8139/prompt-check": {
           "hasStyleKeyword": false,
           "hasCustomPrompt": true,
           "lengthOk": false,
@@ -704,30 +704,30 @@
           "revisedPromptLength": 26,
           "style": "guofeng"
         },
-        "generated/1782636802593-7788/preview-3d.html": {
+        "generated/1782637658971-8139/preview-3d.html": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636802593-7788/pet.html": {
+        "generated/1782637658971-8139/pet.html": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636802593-7788/chat-history.json": {
+        "generated/1782637658971-8139/chat-history.json": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636802593-7788/metadata.json": {
+        "generated/1782637658971-8139/metadata.json": {
           "exists": true,
           "sizeBytes": 410
         },
-        "generated/1782636802593-7788/model.glb": {
+        "generated/1782637658971-8139/model.glb": {
           "exists": false,
           "sizeBytes": 0,
           "isGlb": false
         }
       },
       "worksIndexEntry": {
-        "sessionId": "1782636802593-7788",
+        "sessionId": "1782637658971-8139",
         "status": "avatar_generated",
         "style": "guofeng",
         "hasAvatarPath": true,
@@ -735,42 +735,42 @@
         "hasPetPath": false,
         "hasGlbPath": false
       },
-      "lastSessionId": "1782636802593-7788"
+      "lastSessionId": "1782637658971-8139"
     },
     {
       "loopId": 10,
       "scenario": "guofeng_customPrompt",
       "overallResult": "PASS",
-      "totalDurationMs": 596,
+      "totalDurationMs": 510,
       "stepResults": [
         {
           "stepOrder": 1,
           "toolName": "q3d_upload_photo",
           "success": true,
-          "durationMs": 93,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782636803157-1730\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782636803157-1730\\\\original.jpg\",\n  \"style\": \"guofeng\",\n  \"mess",
+          "durationMs": 188,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782637659708-1179\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782637659708-1179\\\\original.jpg\",\n  \"style\": \"guofeng\",\n  \"mess",
           "errorCode": null
         },
         {
           "stepOrder": 2,
           "toolName": "q3d_generate_avatar",
           "success": true,
-          "durationMs": 477,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782636803157-1730\\\\avatar.png\",\n  \"style\": \"guofeng\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_",
+          "durationMs": 303,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782637659708-1179\\\\avatar.png\",\n  \"style\": \"guofeng\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_",
           "errorCode": null
         }
       ],
       "artifactsVerified": {
-        "uploads/1782636803157-1730/original.jpg": {
+        "uploads/1782637659708-1179/original.jpg": {
           "exists": true,
           "sizeBytes": 1653
         },
-        "generated/1782636803157-1730/avatar.png": {
+        "generated/1782637659708-1179/avatar.png": {
           "exists": true,
           "sizeBytes": 69,
           "isPng": true
         },
-        "generated/1782636803157-1730/prompt-check": {
+        "generated/1782637659708-1179/prompt-check": {
           "hasStyleKeyword": false,
           "hasCustomPrompt": true,
           "lengthOk": false,
@@ -778,30 +778,30 @@
           "revisedPromptLength": 26,
           "style": "guofeng"
         },
-        "generated/1782636803157-1730/preview-3d.html": {
+        "generated/1782637659708-1179/preview-3d.html": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636803157-1730/pet.html": {
+        "generated/1782637659708-1179/pet.html": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636803157-1730/chat-history.json": {
+        "generated/1782637659708-1179/chat-history.json": {
           "exists": false,
           "sizeBytes": 0
         },
-        "generated/1782636803157-1730/metadata.json": {
+        "generated/1782637659708-1179/metadata.json": {
           "exists": true,
           "sizeBytes": 443
         },
-        "generated/1782636803157-1730/model.glb": {
+        "generated/1782637659708-1179/model.glb": {
           "exists": false,
           "sizeBytes": 0,
           "isGlb": false
         }
       },
       "worksIndexEntry": {
-        "sessionId": "1782636803157-1730",
+        "sessionId": "1782637659708-1179",
         "status": "avatar_generated",
         "style": "guofeng",
         "hasAvatarPath": true,
@@ -809,7 +809,7 @@
         "hasPetPath": false,
         "hasGlbPath": false
       },
-      "lastSessionId": "1782636803157-1730"
+      "lastSessionId": "1782637659708-1179"
     }
   ]
 }

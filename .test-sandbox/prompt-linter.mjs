@@ -40,7 +40,8 @@ const PLACEHOLDER_PATTERNS = [
 ];
 
 // Invalid characters (beyond normal multilingual + punctuation)
-const INVALID_CHAR_PATTERN = /[^\u4e00-\u9fa5a-zA-Z0-9\s,，.。!！?？:：;；""''（）()【】\-—/|+=%&@#*~^]/g;
+// Whitelist includes: CJK chars, ASCII alnum, whitespace, common CN/EN punctuation
+const INVALID_CHAR_PATTERN = /[^\u4e00-\u9fa5a-zA-Z0-9\s,，.。!！?？:：;；""''（）()【】\u3001\u300A-\u300F\u00B7\u2014—–\-–/|+=%&@#*~^]/g;
 
 // DALL-E 3 recommended max prompt length
 const MAX_PROMPT_LENGTH = 1000;
@@ -112,11 +113,12 @@ function lintPrompt(promptText, source = "unknown") {
 
   // Check 4: Invalid characters
   const invalidChars = promptText.match(INVALID_CHAR_PATTERN);
-  if (invalidChars && invalidChars.length > 3) {
+  if (invalidChars && invalidChars.length > 10) {
+    const unique = [...new Set(invalidChars)].slice(0, 5);
     issues.push({
       severity: "warning",
       rule: "invalid-characters",
-      message: `Found ${invalidChars.length} potentially invalid characters`,
+      message: `Found ${invalidChars.length} potentially invalid characters (samples: ${JSON.stringify(unique)})`,
       source,
     });
   }

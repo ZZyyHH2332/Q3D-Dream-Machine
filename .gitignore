@@ -13,7 +13,7 @@ desktop.ini
 # === 依赖目录 ===
 node_modules/
 bower_components/
-vendor/
+vendor/*
 
 # === 构建产物 ===
 dist/
@@ -47,3 +47,10 @@ works-index.json
 .test-sandbox/uploads-test*/
 .test-sandbox/reports/
 .test-sandbox/works-index-test*.json
+
+# === Q3D Demo 离线依赖强制跟踪（覆盖 vendor/* 和 *.min.js）===
+!vendor/p5.min.js
+!vendor/three.min.js
+!vendor/mermaid.min.js
+!vendor/OrbitControls.js
+!vendor/GLTFLoader.js

@@ -4,11 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Q3D 形象造梦机</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>(function(){try{var t=localStorage.getItem('q3d-theme');if(!t)t='light';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();</script>
+<script src="vendor/p5.min.js"></script>
+<script src="vendor/three.min.js"></script>
+<script src="vendor/OrbitControls.js"></script>
+<script src="vendor/GLTFLoader.js"></script>
+<script src="vendor/mermaid.min.js"></script>
 <style>
   :root {
     --bg-gradient-start: #0a0e1a;
@@ -36,6 +37,44 @@
     --surface-glass-border: rgba(255,255,255,0.1);
     --glow-blue: rgba(0,122,255,0.15);
     --glow-purple: rgba(94,92,230,0.12);
+    --nav-bg: rgba(10,14,26,0.75);
+    --nav-bg-scrolled: rgba(10,14,26,0.92);
+    --body-bg: linear-gradient(160deg, #0a0e1a 0%, #111827 40%, #0f172a 100%);
+    --tooltip-bg: rgba(17,24,39,0.9);
+    --tooltip-border: rgba(255,255,255,0.1);
+    --context-menu-bg: rgba(17,24,39,0.95);
+    --chat-panel-bg: rgba(17,24,39,0.95);
+    --scene-bg-color: #0a0e1a;
+    --algo-bg-base: 230, 40, 8;
+    --grid-line: rgba(255,255,255,0.015);
+  }
+
+  [data-theme="light"] {
+    --bg-gradient-start: #FFF5F7;
+    --bg-gradient-end: #F0F9FF;
+    --card-bg: rgba(255,255,255,0.7);
+    --card-border: rgba(255,143,171,0.15);
+    --primary: #FF6B9D;
+    --primary-light: #FF8FAB;
+    --primary-dark: #E75480;
+    --text-main: #4A4A6A;
+    --text-sub: #8A8AA0;
+    --shadow-soft: 0 8px 32px rgba(255,143,171,0.12), inset 0 1px 0 rgba(255,255,255,0.6);
+    --shadow-hover: 0 8px 32px rgba(255,143,171,0.18), 0 0 60px rgba(255,107,157,0.08), inset 0 1px 0 rgba(255,255,255,0.8);
+    --surface-glass: rgba(255,255,255,0.6);
+    --surface-glass-border: rgba(255,143,171,0.2);
+    --glow-blue: rgba(255,107,157,0.12);
+    --glow-purple: rgba(94,92,230,0.1);
+    --nav-bg: rgba(255,250,252,0.8);
+    --nav-bg-scrolled: rgba(255,250,252,0.95);
+    --body-bg: linear-gradient(160deg, #FFF5F7 0%, #F0F9FF 40%, #FAF0F5 100%);
+    --tooltip-bg: rgba(255,255,255,0.92);
+    --tooltip-border: rgba(255,143,171,0.2);
+    --context-menu-bg: rgba(255,255,255,0.95);
+    --chat-panel-bg: rgba(255,255,255,0.92);
+    --scene-bg-color: #FFF5F7;
+    --algo-bg-base: 330, 30, 100;
+    --grid-line: rgba(255,143,171,0.04);
   }
 
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -43,7 +82,7 @@
   body {
     font-family: var(--font-body);
     color: var(--text-main);
-    background: linear-gradient(160deg, #0a0e1a 0%, #111827 40%, #0f172a 100%);
+    background: var(--body-bg);
     min-height: 100vh;
     overflow-x: hidden;
     line-height: 1.7;
@@ -51,8 +90,8 @@
   body::before {
     content: ''; position: fixed; inset: 0;
     background-image:
-      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
     background-size: 80px 80px;
     z-index: 0; pointer-events: none;
   }
@@ -75,13 +114,13 @@
   .top-nav {
     position: fixed; top:0; left:0; width:100%; z-index:100;
     padding: 16px 40px; display:flex; justify-content:space-between; align-items:center;
-    background: rgba(10,14,26,0.75); backdrop-filter: blur(24px) saturate(200%);
+    background: var(--nav-bg); backdrop-filter: blur(24px) saturate(200%);
     -webkit-backdrop-filter: blur(24px) saturate(200%);
     border-bottom: 1px solid rgba(255,255,255,0.06);
     transition: background 0.3s, box-shadow 0.3s;
   }
   .top-nav.scrolled {
-    background: rgba(10,14,26,0.92);
+    background: var(--nav-bg-scrolled);
     box-shadow: 0 4px 30px rgba(0,0,0,0.3);
   }
   .nav-brand {
@@ -101,6 +140,31 @@
     transition: width 0.3s ease;
   }
   .nav-links a:hover::after, .nav-links a.active::after { width:100%; }
+
+  .demo-badge {
+    padding: 3px 10px; border-radius: 20px;
+    background: rgba(255, 204, 0, 0.15);
+    border: 1px solid rgba(255, 204, 0, 0.3);
+    color: rgba(255, 204, 0, 0.9);
+    font-size: 0.72rem; font-weight: 600;
+    cursor: help; white-space: nowrap;
+    transition: background 0.3s;
+  }
+  .demo-badge:hover {
+    background: rgba(255, 204, 0, 0.25);
+  }
+
+  .theme-toggle {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    cursor: pointer; display:flex; align-items:center; justify-content:center;
+    font-size: 1.05rem; transition: transform 0.3s var(--bounce), background 0.3s;
+    margin-left: 8px; flex-shrink: 0;
+  }
+  .theme-toggle:hover { transform: rotate(20deg) scale(1.08); }
+  .theme-icon { pointer-events: none; }
+  .mermaid { text-align: center; background: transparent !important; font-family: inherit; }
+  .flow-card .mermaid svg { max-width: 100%; height: auto; }
 
   /* ===== Section 通用 ===== */
   section { position:relative; z-index:1; padding: 80px 24px; max-width: 1100px; margin: 0 auto; }
@@ -387,6 +451,14 @@
     display:flex; align-items:center; justify-content:center; font-size:1.6rem;
     border: 2px solid rgba(255,255,255,0.1);
     box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    overflow: hidden;
+  }
+  .work-card-avatar-inner {
+    width: 100%; height: 100%; border-radius: 50%;
+    display:flex; align-items:center; justify-content:center; font-size:1.6rem;
+  }
+  .work-card-img {
+    width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
   }
   .work-card-name { font-size:0.88rem; font-weight:600; color:rgba(255,255,255,0.85); margin-bottom:4px; }
   .work-card-date { font-size:0.75rem; color:rgba(255,255,255,0.35); }
@@ -517,18 +589,18 @@
   /* 宠物气泡 */
   .pet-bubble {
     position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%);
-    background:rgba(17,24,39,0.9); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:10px 16px; white-space:nowrap; font-size:0.82rem; color:rgba(255,255,255,0.8); box-shadow:0 8px 32px rgba(0,0,0,0.3);
+    background:var(--tooltip-bg); backdrop-filter:blur(16px); border:1px solid var(--tooltip-border); border-radius:16px; padding:10px 16px; white-space:nowrap; font-size:0.82rem; color:var(--text-main); box-shadow:0 8px 32px rgba(0,0,0,0.3);
     pointer-events: none; opacity:0; transition: opacity 0.3s, transform 0.3s var(--bounce);
   }
   .pet-bubble.show { opacity:1; transform: translateX(-50%) translateY(-6px); }
   .pet-bubble::after {
     content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
-    border: 8px solid transparent; border-top-color:rgba(17,24,39,0.9);
+    border: 8px solid transparent; border-top-color:var(--tooltip-bg);
   }
 
   /* 宠物右键菜单 */
   .pet-context {
-    position: absolute; background:rgba(17,24,39,0.95); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.1); border-radius:var(--radius-md); box-shadow:0 12px 40px rgba(0,0,0,0.4); padding: 8px 0; min-width: 140px;
+    position: absolute; background:var(--context-menu-bg); backdrop-filter:blur(20px); border:1px solid var(--tooltip-border); border-radius:var(--radius-md); box-shadow:0 12px 40px rgba(0,0,0,0.4); padding: 8px 0; min-width: 140px;
     display:none; z-index: 100000;
   }
   .pet-context.show { display:block; }
@@ -541,7 +613,7 @@
   /* 宠物对话面板 */
   .pet-chat-panel {
     position: fixed; z-index: 100001; width: 340px; max-height: 460px;
-    background:rgba(17,24,39,0.95); backdrop-filter:blur(40px); border:1px solid rgba(255,255,255,0.08); box-shadow:0 16px 48px rgba(0,0,0,0.4);
+    background:var(--chat-panel-bg); backdrop-filter:blur(40px); border:1px solid var(--tooltip-border); box-shadow:0 16px 48px rgba(0,0,0,0.4);
     display:none; flex-direction:column; overflow:hidden;
   }
   .pet-chat-panel.show { display:flex; }
@@ -633,6 +705,146 @@
     .nav-links a { font-size: 0.85rem; }
     .pet-chat-panel { width: calc(100vw - 40px); left: 20px !important; right: 20px; }
   }
+  /* ===== 材质编辑器折叠面板 ===== */
+  .material-editor-toggle {
+    display:flex; align-items:center; gap:8px;
+    padding: 8px 14px; margin-top:10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    cursor: pointer;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.8rem;
+    font-family: var(--font-body);
+    transition: all 0.3s var(--bounce);
+  }
+  .material-editor-toggle:hover {
+    background: rgba(0,122,255,0.08);
+    border-color: rgba(0,122,255,0.2);
+    color: rgba(255,255,255,0.8);
+  }
+  .material-editor-toggle .toggle-chevron {
+    transition: transform 0.3s var(--bounce);
+    font-size: 0.7rem;
+  }
+  .material-editor-toggle.open .toggle-chevron {
+    transform: rotate(180deg);
+  }
+  .material-editor-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s var(--bounce), padding 0.3s, opacity 0.3s;
+    opacity: 0;
+    padding: 0 14px;
+  }
+  .material-editor-panel.open {
+    max-height: 400px;
+    padding: 12px 14px 14px;
+    opacity: 1;
+  }
+  .mat-control-group {
+    margin-bottom: 12px;
+  }
+  .mat-control-group:last-child { margin-bottom: 0; }
+  .mat-control-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 6px;
+  }
+  .mat-control-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.4);
+    min-width: 36px;
+    text-align: right;
+  }
+  .mat-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+    outline: none;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .mat-slider:hover {
+    background: rgba(255,255,255,0.12);
+  }
+  .mat-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #007aff, #5e5ce6);
+    box-shadow: 0 2px 8px rgba(0,122,255,0.3);
+    cursor: pointer;
+    transition: transform 0.2s var(--bounce), box-shadow 0.2s;
+  }
+  .mat-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    box-shadow: 0 2px 12px rgba(0,122,255,0.4);
+  }
+  .mat-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #007aff, #5e5ce6);
+    box-shadow: 0 2px 8px rgba(0,122,255,0.3);
+    cursor: pointer;
+  }
+  .mat-color-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .mat-color-picker {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 32px;
+    height: 32px;
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    background: transparent;
+    padding: 0;
+    overflow: hidden;
+  }
+  .mat-color-picker::-webkit-color-swatch-wrapper { padding: 0; }
+  .mat-color-picker::-webkit-color-swatch { border: none; border-radius: 6px; }
+  .mat-color-hex {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.45);
+  }
+  .mat-reset-btn {
+    width: 100%;
+    padding: 7px 0;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    color: rgba(255,255,255,0.45);
+    font-size: 0.76rem;
+    font-family: var(--font-body);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 4px;
+  }
+  .mat-reset-btn:hover {
+    background: rgba(0,122,255,0.08);
+    border-color: rgba(0,122,255,0.2);
+    color: rgba(255,255,255,0.75);
+  }
+  @media (max-width: 900px) {
+    .material-editor-panel.open { max-height: 350px; }
+  }
+
   @media (max-width: 600px) {
     .style-panel { justify-content: center; }
     .style-option { min-width: calc(50% - 8px); }
@@ -655,8 +867,11 @@
     <a href="#workspace">生成</a>
     <a href="#works">我的作品</a>
     <a href="#pet-settings">桌面宠物</a>
+    <a href="#flow">流程</a>
     <a href="#help">帮助</a>
   </div>
+  <span class="demo-badge" title="本演示以程序化生成呈现完整交互流程；配置 OpenAI 兼容 API Key 后将接入真实 GPT-4o vision + DALL-E 3">演示模式</span>
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="切换深色/浅色主题" aria-label="切换主题"><span class="theme-icon">🌙</span></button>
 </nav>
 
 <!-- ===== 工作台首屏 ===== -->
@@ -686,6 +901,44 @@
         <span>🎬</span> 在 Blender 中打开
       </button>
       <span id="bridgeStatus" style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-left:4px;"></span>
+    </div>
+    <!-- 材质编辑器 -->
+    <button class="material-editor-toggle" id="matEditorToggle">
+      <span>🎨 材质编辑</span>
+      <span class="toggle-chevron">▼</span>
+    </button>
+    <div class="material-editor-panel" id="matEditorPanel">
+      <div class="mat-control-group">
+        <div class="mat-control-label">
+          <span>基础颜色</span>
+        </div>
+        <div class="mat-color-row">
+          <input type="color" class="mat-color-picker" id="matColor" value="#007aff">
+          <span class="mat-color-hex" id="matColorHex">#007aff</span>
+        </div>
+      </div>
+      <div class="mat-control-group">
+        <div class="mat-control-label">
+          <span>粗糙度</span>
+          <span class="mat-control-value" id="matRoughVal">0.40</span>
+        </div>
+        <input type="range" class="mat-slider" id="matRoughness" min="0" max="1" step="0.01" value="0.4">
+      </div>
+      <div class="mat-control-group">
+        <div class="mat-control-label">
+          <span>金属度</span>
+          <span class="mat-control-value" id="matMetalVal">0.30</span>
+        </div>
+        <input type="range" class="mat-slider" id="matMetalness" min="0" max="1" step="0.01" value="0.3">
+      </div>
+      <div class="mat-control-group">
+        <div class="mat-control-label">
+          <span>自发光强度</span>
+          <span class="mat-control-value" id="matEmitVal">0.00</span>
+        </div>
+        <input type="range" class="mat-slider" id="matEmissive" min="0" max="2" step="0.01" value="0">
+      </div>
+      <button class="mat-reset-btn" id="matResetBtn">↺ 重置为默认</button>
     </div>
   </div>
   <!-- 右侧操作区 -->
@@ -765,6 +1018,31 @@
     <div class="pet-controls-hint">
       生成角色后，桌面宠物会自动出现陪你聊天。你也可以通过右键菜单控制宠物，或者在这里操作。双击宠物可以触发惊喜动画~
     </div>
+  </div>
+</section>
+
+<!-- ===== 生成流程图 ===== -->
+<section id="flow" class="reveal">
+  <h2 class="section-title">生成流程</h2>
+  <p class="section-subtitle">从上传素材到输出成品的完整生成逻辑</p>
+  <div class="flow-card" style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow-soft);overflow-x:auto">
+    <pre class="mermaid" data-mermaid-src="flowchart LR
+  A[上传照片] --> B[AI 分析特征]
+  B --> C[风格选择]
+  C --> D[Q版角色生成]
+  D --> E[3D 实时预览]
+  E --> F[桌面宠物]
+  E --> G[AI 对话]
+  F --> H[GLB 下载]
+  G --> H">flowchart LR
+  A[上传照片] --> B[AI 分析特征]
+  B --> C[风格选择]
+  C --> D[Q版角色生成]
+  D --> E[3D 实时预览]
+  E --> F[桌面宠物]
+  E --> G[AI 对话]
+  F --> H[GLB 下载]
+  G --> H</pre>
   </div>
 </section>
 
@@ -1119,11 +1397,23 @@ const CONFIG = {
   maxUploadSize: 4 * 1024 * 1024,
 };
 
+// ===== 预设头像（程序化 SVG，非 AI 生成）=====
+const PRESET_AVATAR_SVGS = {
+  kawaii: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><radialGradient id="kg"><stop offset="0%" stop-color="#FFF0F5"/><stop offset="100%" stop-color="#FFB6C1"/></radialGradient></defs><circle cx="50" cy="50" r="48" fill="url(#kg)"/><circle cx="50" cy="44" r="34" fill="#FFD9E6"/><circle cx="36" cy="40" r="7" fill="#4A3328"/><circle cx="64" cy="40" r="7" fill="#4A3328"/><circle cx="38" cy="38" r="2.5" fill="#fff"/><circle cx="66" cy="38" r="2.5" fill="#fff"/><path d="M38,52 Q50,62 62,52" stroke="#E75480" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="28" cy="50" r="5" fill="#FF9999" opacity="0.4"/><circle cx="72" cy="50" r="5" fill="#FF9999" opacity="0.4"/><path d="M20,30 Q50,12 80,30 Q75,22 50,18 Q25,22 20,30Z" fill="#FF6B9D"/><circle cx="50" cy="16" r="4" fill="#FF6B9D"/></svg>',
+  guofeng: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><radialGradient id="gg"><stop offset="0%" stop-color="#E8F5E9"/><stop offset="100%" stop-color="#A5D6A7"/></radialGradient></defs><circle cx="50" cy="50" r="48" fill="url(#gg)"/><circle cx="50" cy="44" r="34" fill="#C8E6C9"/><path d="M37,40 Q40,37 43,40" stroke="#1B5E20" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M57,40 Q60,37 63,40" stroke="#1B5E20" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M40,53 Q50,58 60,53" stroke="#1B5E20" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M18,28 Q30,15 50,14 Q70,15 82,28 Q80,20 50,16 Q20,20 18,28Z" fill="#2E7D32" opacity="0.7"/><path d="M25,25 Q35,18 50,17 L48,22 Q35,23 28,28Z" fill="#1B5E20" opacity="0.5"/><circle cx="30" cy="50" r="3" fill="#81C784" opacity="0.5"/><circle cx="70" cy="50" r="3" fill="#81C784" opacity="0.5"/></svg>',
+  trendy: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><radialGradient id="tg"><stop offset="0%" stop-color="#F3E5F5"/><stop offset="100%" stop-color="#CE93D8"/></radialGradient></defs><circle cx="50" cy="50" r="48" fill="url(#tg)"/><circle cx="50" cy="44" r="34" fill="#E1BEE7"/><rect x="30" y="36" width="10" height="8" rx="3" fill="#333"/><rect x="60" y="36" width="10" height="8" rx="3" fill="#333"/><rect x="33" y="38" width="3" height="3" rx="1" fill="#FF9800"/><rect x="63" y="38" width="3" height="3" rx="1" fill="#FF9800"/><path d="M36,54 Q50,64 64,54" stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="26" cy="50" r="4" fill="#FF9800" opacity="0.5"/><circle cx="74" cy="50" r="4" fill="#FF9800" opacity="0.5"/><path d="M16,26 Q50,10 84,26 L80,30 Q50,16 20,30Z" fill="#7B1FA2"/><path d="M40,18 L50,8 L60,18 L55,16 L50,12 L45,16Z" fill="#FF6F00"/></svg>',
+  simple: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><radialGradient id="sg"><stop offset="0%" stop-color="#E3F2FD"/><stop offset="100%" stop-color="#90CAF9"/></radialGradient></defs><circle cx="50" cy="50" r="48" fill="url(#sg)"/><circle cx="50" cy="44" r="34" fill="#BBDEFB"/><circle cx="37" cy="40" r="5" fill="#333"/><circle cx="63" cy="40" r="5" fill="#333"/><line x1="42" y1="54" x2="58" y2="54" stroke="#333" stroke-width="3" stroke-linecap="round"/><path d="M22,24 Q50,14 78,24 Q76,20 50,16 Q24,20 22,24Z" fill="#5C6BC0" opacity="0.6"/></svg>'
+};
+const PRESET_AVATARS = {};
+for (const [k, svg] of Object.entries(PRESET_AVATAR_SVGS)) {
+  PRESET_AVATARS[k] = 'data:image/svg+xml,' + encodeURIComponent(svg);
+}
+
 // ===== 预设作品数据 =====
 const defaultWorks = [
-  { id: 'demo-1', style: 'kawaii', name: '软萌大头', date: '2026-06-26', avatar: null },
-  { id: 'demo-2', style: 'guofeng', name: '国风Q版', date: '2026-06-25', avatar: null },
-  { id: 'demo-3', style: 'trendy', name: '潮玩', date: '2026-06-24', avatar: null },
+  { id: 'demo-1', style: 'kawaii', name: '软萌大头', date: '2026-06-26', avatar: PRESET_AVATARS.kawaii },
+  { id: 'demo-2', style: 'guofeng', name: '国风Q版', date: '2026-06-25', avatar: PRESET_AVATARS.guofeng },
+  { id: 'demo-3', style: 'trendy', name: '潮玩', date: '2026-06-24', avatar: PRESET_AVATARS.trendy },
 ];
 
 // ===== 作品管理 =====
@@ -1169,9 +1459,12 @@ function renderWorks() {
   works.forEach(w => {
     const emoji = getStyleEmoji(w.style);
     const gradient = getStyleGradient(w.style);
+    const avatarHtml = w.avatar
+      ? `<img src="${w.avatar}" alt="${w.name}" class="work-card-img" onerror="this.style.display='none';this.parentElement.style.background='${gradient}';this.parentElement.innerHTML='${emoji}'">`
+      : `<div class="work-card-avatar-inner" style="background:${gradient}">${emoji}</div>`;
     html += `
       <div class="work-card" data-id="${w.id}">
-        <div class="work-card-avatar" style="background:${gradient}">${emoji}</div>
+        <div class="work-card-avatar">${avatarHtml}</div>
         <div class="work-card-name">${w.name}</div>
         <div class="work-card-date">${w.date}</div>
       </div>`;
@@ -1215,6 +1508,7 @@ backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 's
 const threeCanvas = document.getElementById('three-canvas');
 const threeLoading = document.getElementById('threeLoading');
 let threeScene, threeCamera, threeRenderer, threeControls, threeCurrentModel;
+let toonGradientMap = null;
 let threeAutoRotate = false;
 
 function initThreeJS() {
@@ -1225,7 +1519,8 @@ function initThreeJS() {
 
   // Scene
   threeScene = new THREE.Scene();
-  threeScene.background = new THREE.Color(0x0a0e1a);
+  function getSceneBgHex() { var c = getComputedStyle(document.documentElement).getPropertyValue('--scene-bg-color').trim(); return new THREE.Color(c || '#0a0e1a'); }
+  threeScene.background = getSceneBgHex();
 
   // Camera
   threeCamera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
@@ -1295,6 +1590,10 @@ function initThreeJS() {
     if (threeAutoRotate && threeCurrentModel) {
       threeCurrentModel.rotation.y += 0.005;
     }
+    // Character bobbing animation
+    if (threeCurrentModel && threeCurrentModel.type === 'Group') {
+      threeCurrentModel.position.y = Math.sin(Date.now() * 0.002) * 0.05;
+    }
     threeControls.update();
     threeRenderer.render(threeScene, threeCamera);
   }
@@ -1332,20 +1631,99 @@ function loadGLBModel(glbUrl) {
       if (threeLoading) threeLoading.style.display = 'none';
     }, undefined, (err) => {
       console.error('GLB load error:', err);
-      loadPlaceholderCube();
+      buildPlaceholderCharacter();
     });
   } else {
-    loadPlaceholderCube();
+    buildPlaceholderCharacter();
   }
 }
 
-function loadPlaceholderCube() {
-  const geo = new THREE.BoxGeometry(0.8, 0.8, 0.8);
-  const mat = new THREE.MeshStandardMaterial({ color: 0x007aff, roughness: 0.4, metalness: 0.3 });
-  threeCurrentModel = new THREE.Mesh(geo, mat);
-  threeCurrentModel.position.y = 0.4;
-  threeCurrentModel.castShadow = true;
-  threeCurrentModel.receiveShadow = true;
+// Toon gradient map helper
+function createToonGradientMap(levels) {
+  const data = new Uint8Array(levels);
+  for (let i = 0; i < levels; i++) {
+    data[i] = Math.round((i / (levels - 1)) * 255);
+  }
+  const texture = new THREE.DataTexture(data, levels, 1, THREE.RedFormat);
+  texture.minFilter = THREE.NearestFilter;
+  texture.magFilter = THREE.NearestFilter;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+// Character color scheme per style
+const characterColors = {
+  kawaii: { head: 0xFF8FAB, body: 0xA8E6CF, arms: 0xFFD93D, legs: 0xB4D7F0 },
+  guofeng: { head: 0x34C759, body: 0xE9F9EE, arms: 0xFFD93D, legs: 0x66ABFF },
+  trendy: { head: 0xBF5AF2, body: 0xFF9F0A, arms: 0xFFD93D, legs: 0xAF52DE },
+  simple: { head: 0x5E5CE6, body: 0x8E8E93, arms: 0xAEAEB2, legs: 0x5856D6 }
+};
+
+function buildPlaceholderCharacter() {
+  if (!threeScene) return;
+  if (!toonGradientMap) {
+    toonGradientMap = createToonGradientMap(3);
+  }
+  if (threeCurrentModel) {
+    threeScene.remove(threeCurrentModel);
+  }
+  const character = new THREE.Group();
+  const colors = characterColors[currentStyle] || characterColors.kawaii;
+
+  // Head (sphere) - with uploaded image texture if available
+  let headMaterial;
+  if (uploadedImage) {
+    const texture = new THREE.TextureLoader().load(uploadedImage);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    headMaterial = new THREE.MeshToonMaterial({ map: texture, gradientMap: toonGradientMap });
+  } else {
+    headMaterial = new THREE.MeshToonMaterial({ color: colors.head, gradientMap: toonGradientMap });
+  }
+  const headGeo = new THREE.SphereGeometry(0.5, 32, 32);
+  const head = new THREE.Mesh(headGeo, headMaterial);
+  head.position.y = 1.1;
+  head.castShadow = true;
+  head.name = 'head';
+  character.add(head);
+
+  // Body (cylinder)
+  const bodyGeo = new THREE.CylinderGeometry(0.35, 0.4, 0.7, 32);
+  const bodyMat = new THREE.MeshToonMaterial({ color: colors.body, gradientMap: toonGradientMap });
+  const body = new THREE.Mesh(bodyGeo, bodyMat);
+  body.position.y = 0.3;
+  body.castShadow = true;
+  body.name = 'body';
+  character.add(body);
+
+  // Arms (spheres)
+  const armGeo = new THREE.SphereGeometry(0.15, 16, 16);
+  const armMat = new THREE.MeshToonMaterial({ color: colors.arms, gradientMap: toonGradientMap });
+  const leftArm = new THREE.Mesh(armGeo, armMat);
+  leftArm.position.set(-0.55, 0.5, 0);
+  leftArm.castShadow = true;
+  leftArm.name = 'leftArm';
+  character.add(leftArm);
+  const rightArm = new THREE.Mesh(armGeo, armMat);
+  rightArm.position.set(0.55, 0.5, 0);
+  rightArm.castShadow = true;
+  rightArm.name = 'rightArm';
+  character.add(rightArm);
+
+  // Legs (cylinders)
+  const legGeo = new THREE.CylinderGeometry(0.12, 0.14, 0.3, 16);
+  const legMat = new THREE.MeshToonMaterial({ color: colors.legs, gradientMap: toonGradientMap });
+  const leftLeg = new THREE.Mesh(legGeo, legMat);
+  leftLeg.position.set(-0.18, -0.2, 0);
+  leftLeg.castShadow = true;
+  leftLeg.name = 'leftLeg';
+  character.add(leftLeg);
+  const rightLeg = new THREE.Mesh(legGeo, legMat);
+  rightLeg.position.set(0.18, -0.2, 0);
+  rightLeg.castShadow = true;
+  rightLeg.name = 'rightLeg';
+  character.add(rightLeg);
+
+  threeCurrentModel = character;
   threeScene.add(threeCurrentModel);
   if (threeLoading) threeLoading.style.display = 'none';
 }
@@ -1388,6 +1766,98 @@ document.getElementById('threeScreenshot')?.addEventListener('click', () => {
   }
 });
 
+// ===== 材质编辑器 =====
+const matEditorToggle = document.getElementById('matEditorToggle');
+const matEditorPanel = document.getElementById('matEditorPanel');
+const matColor = document.getElementById('matColor');
+const matColorHex = document.getElementById('matColorHex');
+const matRoughness = document.getElementById('matRoughness');
+const matRoughVal = document.getElementById('matRoughVal');
+const matMetalness = document.getElementById('matMetalness');
+const matMetalVal = document.getElementById('matMetalVal');
+const matEmissive = document.getElementById('matEmissive');
+const matEmitVal = document.getElementById('matEmitVal');
+const matResetBtn = document.getElementById('matResetBtn');
+
+// 默认材质参数
+const MAT_DEFAULTS = { color: '#007aff', roughness: 0.4, metalness: 0.3, emissiveIntensity: 0.0 };
+
+// 折叠/展开面板
+matEditorToggle?.addEventListener('click', () => {
+  matEditorToggle.classList.toggle('open');
+  matEditorPanel.classList.toggle('open');
+});
+
+// 应用材质到当前模型的函数
+function applyMaterialToModel(prop, value) {
+  if (!threeCurrentModel) return;
+  threeCurrentModel.traverse((child) => {
+    if (child.isMesh && child.material) {
+      if (child.material.isMeshStandardMaterial) {
+        switch (prop) {
+          case 'color':
+            child.material.color.set(value);
+            break;
+          case 'roughness':
+            child.material.roughness = parseFloat(value);
+            break;
+          case 'metalness':
+            child.material.metalness = parseFloat(value);
+            break;
+          case 'emissiveIntensity':
+            child.material.emissiveIntensity = parseFloat(value);
+            if (parseFloat(value) > 0 && child.material.emissive.getHex() === 0x000000) {
+              child.material.emissive.set(0x333333);
+            }
+            break;
+        }
+        child.material.needsUpdate = true;
+      }
+    }
+  });
+}
+
+// 颜色选择器
+matColor?.addEventListener('input', (e) => {
+  matColorHex.textContent = e.target.value;
+  applyMaterialToModel('color', e.target.value);
+});
+
+// 粗糙度滑块
+matRoughness?.addEventListener('input', (e) => {
+  matRoughVal.textContent = parseFloat(e.target.value).toFixed(2);
+  applyMaterialToModel('roughness', e.target.value);
+});
+
+// 金属度滑块
+matMetalness?.addEventListener('input', (e) => {
+  matMetalVal.textContent = parseFloat(e.target.value).toFixed(2);
+  applyMaterialToModel('metalness', e.target.value);
+});
+
+// 自发光强度滑块
+matEmissive?.addEventListener('input', (e) => {
+  matEmitVal.textContent = parseFloat(e.target.value).toFixed(2);
+  applyMaterialToModel('emissiveIntensity', e.target.value);
+});
+
+// 重置按钮
+matResetBtn?.addEventListener('click', () => {
+  matColor.value = MAT_DEFAULTS.color;
+  matColorHex.textContent = MAT_DEFAULTS.color;
+  matRoughness.value = MAT_DEFAULTS.roughness;
+  matRoughVal.textContent = MAT_DEFAULTS.roughness.toFixed(2);
+  matMetalness.value = MAT_DEFAULTS.metalness;
+  matMetalVal.textContent = MAT_DEFAULTS.metalness.toFixed(2);
+  matEmissive.value = MAT_DEFAULTS.emissiveIntensity;
+  matEmitVal.textContent = MAT_DEFAULTS.emissiveIntensity.toFixed(2);
+  // 重置模型材质
+  applyMaterialToModel('color', MAT_DEFAULTS.color);
+  applyMaterialToModel('roughness', MAT_DEFAULTS.roughness);
+  applyMaterialToModel('metalness', MAT_DEFAULTS.metalness);
+  applyMaterialToModel('emissiveIntensity', MAT_DEFAULTS.emissiveIntensity);
+});
+
 // Initialize on DOM ready
 initThreeJS();
 
@@ -1396,7 +1866,7 @@ const fileInput = document.getElementById('fileInput');
 const uploadZone = document.getElementById('uploadZone');
 const uploadPreview = document.getElementById('uploadPreview');
 const previewImg = document.getElementById('previewImg');
-let uploadedImage = null;
+var uploadedImage = null;
 
 function handleFile(file) {
   if (!file) return;
@@ -1447,7 +1917,7 @@ document.querySelectorAll('.chip-btn').forEach(btn => {
 
 // ===== 风格切换 =====
 const styleOptions = document.querySelectorAll('.style-option');
-let currentStyle = 'kawaii';
+var currentStyle = 'kawaii';
 
 const styleColors = {
   kawaii: { front: 'linear-gradient(135deg, #66abff, #007aff)', back: 'linear-gradient(135deg, #e8f2ff, #9fcbff)', left: 'linear-gradient(135deg, #9fcbff, #bf5af2)', right: 'linear-gradient(135deg, #bf5af2, #66abff)', top: 'linear-gradient(135deg, #e8f2ff, #f0e6ff)', bottom: 'linear-gradient(135deg, #004fad, #007aff)', hair: '#007aff' },
@@ -1459,12 +1929,22 @@ const styleColors = {
 function applyStyle(style) {
   const c = styleColors[style];
   if (!c) return;
-  // 更新 Three.js 预览占位立方体颜色
-  if (threeCurrentModel && threeCurrentModel.material) {
-    const colorMap = {
-      kawaii: 0x007aff, guofeng: 0x34c759, trendy: 0xbf5af2, simple: 0x5e5ce6
+  // 更新 Toon 角色配色
+  if (threeCurrentModel && threeCurrentModel.type === 'Group') {
+    const colors = characterColors[style] || characterColors.kawaii;
+    const partColorMap = {
+      head: colors.head, body: colors.body,
+      leftArm: colors.arms, rightArm: colors.arms,
+      leftLeg: colors.legs, rightLeg: colors.legs
     };
-    threeCurrentModel.material.color.setHex(colorMap[style] || 0x007aff);
+    threeCurrentModel.traverse((child) => {
+      if (child.isMesh && child.material && partColorMap[child.name] !== undefined) {
+        // Don't override head texture when user uploaded an image
+        if (!(child.name === 'head' && uploadedImage)) {
+          child.material.color.setHex(partColorMap[child.name]);
+        }
+      }
+    });
   }
 }
 
@@ -1510,7 +1990,7 @@ generateBtn.addEventListener('click', () => {
           style: currentStyle,
           name: styleNames[currentStyle] || currentStyle,
           date: new Date().toISOString().slice(0, 10),
-          avatar: null
+          avatar: PRESET_AVATARS[currentStyle] || null
         };
         works.unshift(newWork);
         saveWorks();
@@ -1871,6 +2351,71 @@ document.querySelectorAll('.faq-question').forEach(q => {
   });
 });
 
+// ===== 主题切换 + Mermaid 初始化 =====
+function update3DTheme() {
+  if (threeScene) {
+    var c = getComputedStyle(document.documentElement).getPropertyValue('--scene-bg-color').trim();
+    threeScene.background = new THREE.Color(c || '#0a0e1a');
+    if (threeRenderer) threeRenderer.render(threeScene, threeCamera);
+  }
+}
+function getMermaidTheme() {
+  return document.documentElement.getAttribute('data-theme') === 'light' ? 'default' : 'dark';
+}
+var mermaidReady = false;
+function initMermaid() {
+  if (typeof mermaid === 'undefined' || mermaidReady) return;
+  var isLight = getMermaidTheme() === 'default';
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: getMermaidTheme(),
+    flowchart: { curve: 'basis', padding: 20 },
+    themeVariables: isLight ? {
+      primaryColor: '#FFE0EC', primaryTextColor: '#4A4A6A', primaryBorderColor: '#FF8FAB',
+      lineColor: '#FF8FAB', secondaryColor: '#F0F9FF', tertiaryColor: '#FFF5F7'
+    } : {}
+  });
+  mermaidReady = true;
+  mermaid.run({ querySelector: '.mermaid' });
+}
+function rerenderMermaid() {
+  if (!mermaidReady) return;
+  document.querySelectorAll('.mermaid').forEach(function(el) {
+    el.removeAttribute('data-processed');
+    el.innerHTML = el.getAttribute('data-mermaid-src');
+  });
+  var isLight = getMermaidTheme() === 'default';
+  mermaid.initialize({
+    theme: getMermaidTheme(),
+    themeVariables: isLight ? {
+      primaryColor: '#FFE0EC', primaryTextColor: '#4A4A6A', primaryBorderColor: '#FF8FAB',
+      lineColor: '#FF8FAB', secondaryColor: '#F0F9FF', tertiaryColor: '#FFF5F7'
+    } : {}
+  });
+  mermaid.run({ querySelector: '.mermaid' });
+}
+var themeToggle = document.getElementById('themeToggle');
+var themeIcon = themeToggle ? themeToggle.querySelector('.theme-icon') : null;
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  try { localStorage.setItem('q3d-theme', t); } catch(e){}
+  if (themeIcon) themeIcon.textContent = t === 'light' ? '☀️' : '🌙';
+  update3DTheme();
+  rerenderMermaid();
+}
+if (themeToggle) {
+  themeToggle.addEventListener('click', function() {
+    var cur = document.documentElement.getAttribute('data-theme');
+    applyTheme(cur === 'light' ? 'dark' : 'light');
+  });
+}
+window.toggleTheme = function() {
+  var cur = document.documentElement.getAttribute('data-theme');
+  applyTheme(cur === 'light' ? 'dark' : 'light');
+};
+applyTheme(document.documentElement.getAttribute('data-theme') || 'light');
+initMermaid();
+
 // ===== 导航高亮 =====
 const sections = document.querySelectorAll('section[id], .workspace-header[id]');
 const navLinks = document.querySelectorAll('.nav-links a');
@@ -1890,37 +2435,96 @@ window.addEventListener('scroll', () => {
   });
 });
 
-// ===== 初始化立方体旋转 =====
-cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-
 // ===== GLB 下载与 Blender 脚本 =====
 function generateMinimalGLB() {
-  // 构造一个极简的有效 GLB 2.0 文件（单个三角形）
+  // 构造一个 Q 版角色形状的 GLB 2.0 文件（头+身体+四肢，共6个盒子）
+  function boxVerts(cx, cy, cz, sx, sy, sz) {
+    const h = [sx/2, sy/2, sz/2];
+    return [
+      cx-h[0],cy-h[1],cz+h[2], cx+h[0],cy-h[1],cz+h[2], cx+h[0],cy+h[1],cz+h[2], cx-h[0],cy+h[1],cz+h[2],
+      cx-h[0],cy-h[1],cz-h[2], cx-h[0],cy+h[1],cz-h[2], cx+h[0],cy+h[1],cz-h[2], cx+h[0],cy-h[1],cz-h[2],
+      cx-h[0],cy+h[1],cz-h[2], cx-h[0],cy+h[1],cz+h[2], cx+h[0],cy+h[1],cz+h[2], cx+h[0],cy+h[1],cz-h[2],
+      cx-h[0],cy-h[1],cz-h[2], cx+h[0],cy-h[1],cz-h[2], cx+h[0],cy-h[1],cz+h[2], cx-h[0],cy-h[1],cz+h[2],
+      cx+h[0],cy-h[1],cz-h[2], cx+h[0],cy+h[1],cz-h[2], cx+h[0],cy+h[1],cz+h[2], cx+h[0],cy-h[1],cz+h[2],
+      cx-h[0],cy-h[1],cz-h[2], cx-h[0],cy-h[1],cz+h[2], cx-h[0],cy+h[1],cz+h[2], cx-h[0],cy+h[1],cz-h[2],
+    ];
+  }
+  function boxIdx(off) {
+    const r = [];
+    for (let i = 0; i < 6; i++) { const b = off+i*4; r.push(b,b+1,b+2, b,b+2,b+3); }
+    return r;
+  }
+  const colors = characterColors[currentStyle] || characterColors.kawaii;
+  const hex2rgb = h => [((h>>16)&255)/255, ((h>>8)&255)/255, (h&255)/255, 1.0];
+  const parts = [
+    { c: colors.head, v: boxVerts(0,1.1,0, 0.6,0.6,0.6) },
+    { c: colors.body, v: boxVerts(0,0.3,0, 0.7,0.7,0.4) },
+    { c: colors.arms, v: boxVerts(-0.55,0.5,0, 0.2,0.4,0.2) },
+    { c: colors.arms, v: boxVerts(0.55,0.5,0, 0.2,0.4,0.2) },
+    { c: colors.legs, v: boxVerts(-0.18,-0.2,0, 0.2,0.3,0.2) },
+    { c: colors.legs, v: boxVerts(0.18,-0.2,0, 0.2,0.3,0.2) },
+  ];
+  const meshes = parts.map((p, i) => ({ primitives: [{ attributes: { POSITION: i*3, COLOR_0: i*3+1 }, indices: i*3+2, mode: 4, material: i }] }));
+  const accessors = [];
+  const bufferViews = [];
+  const nodes = parts.map((_, i) => ({ mesh: i }));
+  let totalBinSize = 0;
+  const partOffsets = [];
+  parts.forEach(() => {
+    const posBytes = 24 * 3 * 4;
+    const colBytes = 24 * 4 * 4;
+    const idxBytes = 36 * 2;
+    partOffsets.push({ pos: totalBinSize, col: totalBinSize + posBytes, idx: totalBinSize + posBytes + colBytes });
+    totalBinSize += posBytes + colBytes + idxBytes;
+  });
+  const binBuffer = new ArrayBuffer(totalBinSize);
+  const binDv = new DataView(binBuffer);
+  parts.forEach((p, i) => {
+    const offsets = partOffsets[i];
+    const posBytes = 24 * 3 * 4;
+    const colBytes = 24 * 4 * 4;
+    const idxBytes = 36 * 2;
+    accessors.push({ bufferView: bufferViews.length, componentType: 5126, count: 24, type: 'VEC3', max: [1,1.5,0.5], min: [-1,-0.5,-0.5] });
+    bufferViews.push({ buffer: 0, byteOffset: offsets.pos, byteLength: posBytes, target: 34962 });
+    let bo = offsets.pos;
+    for (let j = 0; j < p.v.length; j++) { binDv.setFloat32(bo, p.v[j], true); bo += 4; }
+    accessors.push({ bufferView: bufferViews.length, componentType: 5126, count: 24, type: 'VEC4' });
+    bufferViews.push({ buffer: 0, byteOffset: offsets.col, byteLength: colBytes, target: 34962 });
+    bo = offsets.col;
+    const rgb = hex2rgb(p.c);
+    for (let j = 0; j < 24; j++) { binDv.setFloat32(bo, rgb[0], true); bo += 4; binDv.setFloat32(bo, rgb[1], true); bo += 4; binDv.setFloat32(bo, rgb[2], true); bo += 4; binDv.setFloat32(bo, rgb[3], true); bo += 4; }
+    accessors.push({ bufferView: bufferViews.length, componentType: 5123, count: 36, type: 'SCALAR' });
+    bufferViews.push({ buffer: 0, byteOffset: offsets.idx, byteLength: idxBytes, target: 34963 });
+    bo = offsets.idx;
+    const idx = boxIdx(i * 24);
+    for (let j = 0; j < idx.length; j++) { binDv.setUint16(bo, idx[j], true); bo += 2; }
+  });
+  const binBytes = new Uint8Array(binBuffer);
   const jsonStr = JSON.stringify({
     asset: { version: '2.0', generator: 'Q3D-Dream-Machine' },
     scene: 0,
-    scenes: [{ nodes: [0] }],
-    nodes: [{ mesh: 0 }],
-    meshes: [{ primitives: [{ attributes: { POSITION: 0 }, mode: 4 }] }],
-    accessors: [{ bufferView: 0, componentType: 5126, count: 3, type: 'VEC3', max: [1,1,0], min: [0,0,0] }],
-    bufferViews: [{ buffer: 0, byteOffset: 0, byteLength: 36 }],
-    buffers: [{ byteLength: 36 }]
+    scenes: [{ nodes: nodes.map((_, i) => i) }],
+    nodes: nodes,
+    meshes: meshes,
+    accessors: accessors,
+    bufferViews: bufferViews,
+    buffers: [{ byteLength: binBytes.length }],
+    materials: parts.map((p) => { const rgb = hex2rgb(p.c); return { pbrMetallicRoughness: { baseColorFactor: [rgb[0], rgb[1], rgb[2], 1.0], metallicFactor: 0.1, roughnessFactor: 0.8 } }; })
   });
   const jsonPad = (4 - (jsonStr.length % 4)) % 4;
   const jsonBytes = new TextEncoder().encode(jsonStr + ' '.repeat(jsonPad));
-  const binBytes = new Uint8Array([0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,128,63, 0,0,0,0, 0,0,128,63, 0,0,0,0, 0,0,0,0, 0,0,0,0]);
   const totalLen = 12 + 8 + jsonBytes.length + 8 + binBytes.length;
   const glb = new Uint8Array(totalLen);
   const dv = new DataView(glb.buffer);
   let off = 0;
-  dv.setUint32(off, 0x46546C67, true); off += 4; // magic "glTF"
-  dv.setUint32(off, 2, true); off += 4; // version
-  dv.setUint32(off, totalLen, true); off += 4; // length
-  dv.setUint32(off, jsonBytes.length, true); off += 4; // json chunk length
-  dv.setUint32(off, 0x4E4F534A, true); off += 4; // json chunk type
+  dv.setUint32(off, 0x46546C67, true); off += 4;
+  dv.setUint32(off, 2, true); off += 4;
+  dv.setUint32(off, totalLen, true); off += 4;
+  dv.setUint32(off, jsonBytes.length, true); off += 4;
+  dv.setUint32(off, 0x4E4F534A, true); off += 4;
   glb.set(jsonBytes, off); off += jsonBytes.length;
-  dv.setUint32(off, binBytes.length, true); off += 4; // bin chunk length
-  dv.setUint32(off, 0x004E4942, true); off += 4; // bin chunk type
+  dv.setUint32(off, binBytes.length, true); off += 4;
+  dv.setUint32(off, 0x004E4942, true); off += 4;
   glb.set(binBytes, off);
   return new Blob([glb], { type: 'model/gltf-binary' });
 }
@@ -2094,7 +2698,8 @@ window.addEventListener('resize', () => {
       p.noiseSeed(seed);
 
       p.colorMode(p.HSB, 360, 100, 100, 100);
-      p.background(230, 40, 8, 100);
+      var bgBase = (getComputedStyle(document.documentElement).getPropertyValue('--algo-bg-base').trim() || '230,40,8').split(',').map(Number);
+      p.background(bgBase[0], bgBase[1], bgBase[2], 100);
 
       cols = p.floor(w / scl);
       rows = p.floor(h / scl);
@@ -2106,7 +2711,8 @@ window.addEventListener('resize', () => {
     };
 
     p.draw = function() {
-      p.background(230, 40, 8, 5);
+      var bgBase2 = (getComputedStyle(document.documentElement).getPropertyValue('--algo-bg-base').trim() || '230,40,8').split(',').map(Number);
+      p.background(bgBase2[0], bgBase2[1], bgBase2[2], 5);
 
       let yoff = 0;
       for (let y = 0; y < rows; y++) {
