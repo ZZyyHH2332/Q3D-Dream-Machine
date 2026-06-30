@@ -180,6 +180,7 @@ Q3D_Dream_Machine/
 | 2026-06-29 | GitHub Pages 部署完成，公开仓库上线 |
 | 2026-06-30 | openInBrowser Mock 模式修复，测试耗时从 >16min 降至 36s |
 | 2026-06-30 | Dream Lattice 算法艺术展示页（p5.js 粒子升腾 + 4 风格色板） |
+| 2026-06-30 | Phase 1-3 完成：AI 对话（LLM Bridge）+ 物理交互（拖拽/漫游）+ 角色养成（200 级好感度）|
 
 ## 测试状态
 
@@ -190,15 +191,20 @@ Q3D_Dream_Machine/
 | Prompt Linter | PASS | Unicode 白名单，中文标点不再误报 |
 | Mock revisedPrompt | PASS | 4 风格描述 ~577 字符，ENV-001/002 通过 |
 | 桌宠心情系统 | 7/7 验证 | happy/excited/sleeping/curious/sad/love/idle |
+| 桌宠养成系统 | PASS | 饱食度/精力/好感度/离线衰减/徽章等级 |
+| LLM Bridge 三级降级 | PASS | Ollama 探测 → OpenAI SSE → Mock 降级 |
 
 ## 后续规划
 
+- [x] Phase 0-3：概念 Demo → TRAE Native → 3D 预览 + 桌宠基础 → 心情/养成/LLM 桥接
+- [ ] Phase 4：桌宠 SVG 骨骼动画 + Sprite Sheet（进行中）
+- [ ] Phase 5：真实 API 端到端联测（GPT-4o vision + DALL-E 3）
 - [ ] 接入更多 AI 图像生成供应商（百炼、通义万相、Replicate）
 - [x] 3D 模型导出（GLB / GLTF 格式）— 架构已支持，Mock 模式可用
 - [ ] 接入 OpenAvatarChat 实现本地语音对话
 - [ ] 增加更多 Q 版风格模板和自定义 LoRA
 - [ ] 支持视频/动图素材上传
-- [ ] GitHub Actions CI：自动化 80 Loop 回归测试
+- [ ] GitHub Actions CI：自动化 80 Loop 回归测试（已配置，待验证运行）
 
 ## 许可
 
