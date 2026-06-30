@@ -290,13 +290,19 @@
         // Q3D DREAM LATTICE — Generative Art Parameters
         // ========================================================================
 
+        // Parse style from URL parameter (e.g. ?style=guofeng)
+        const urlParams = new URLSearchParams(window.location.search);
+        const styleFromUrl = urlParams.get('style');
+        const validStyles = ['kawaii', 'guofeng', 'trendy', 'simple'];
+        const initialStyle = validStyles.includes(styleFromUrl) ? styleFromUrl : 'kawaii';
+
         let params = {
             seed: 42,
             particleCount: 800,
             riseSpeed: 1.5,
             noiseScale: 0.015,
             depthIntensity: 0.7,
-            stylePalette: 'kawaii'
+            stylePalette: initialStyle
         };
 
         const defaultParams = JSON.parse(JSON.stringify(params));

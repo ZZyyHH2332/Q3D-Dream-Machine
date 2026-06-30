@@ -424,6 +424,61 @@
   .progress-bar-fill { height:100%; width:0%; border-radius:999px; background:linear-gradient(90deg, #007aff, #5e5ce6, #bf5af2); transition: width 0.4s ease; box-shadow: 0 0 16px rgba(0,122,255,0.4); }
   .progress-text { margin-top:8px; font-size:0.84rem; color:rgba(255,255,255,0.5); text-align:center; }
 
+  /* ===== Dream Lattice CTA ===== */
+  .dream-lattice-cta {
+    display:none; margin-top:16px; padding:18px; border-radius:var(--radius-md);
+    background: linear-gradient(135deg, rgba(0,122,255,0.08), rgba(94,92,230,0.08));
+    border: 1px solid rgba(0,122,255,0.15); text-align:center;
+    animation: dlCtaIn 0.6s cubic-bezier(0.4,0,0.2,1) forwards;
+  }
+  .dream-lattice-cta.visible { display:block; }
+  @keyframes dlCtaIn {
+    from { opacity:0; transform: translateY(12px) scale(0.96); }
+    to { opacity:1; transform: translateY(0) scale(1); }
+  }
+  .dl-cta-icon { font-size:1.6rem; margin-bottom:6px; }
+  .dl-cta-text { font-size:0.95rem; font-weight:600; color:#fff; margin-bottom:10px; }
+  .dl-cta-btn {
+    display:inline-flex; align-items:center; gap:6px; padding:10px 20px;
+    border-radius:999px; border:none; cursor:pointer; font-size:0.85rem; font-weight:600;
+    background: linear-gradient(135deg, #007aff, #5e5ce6); color:#fff;
+    box-shadow: 0 4px 16px rgba(0,122,255,0.3); transition: all 0.3s ease;
+  }
+  .dl-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,122,255,0.45); }
+  .dl-cta-link { display:block; margin-top:10px; font-size:0.78rem; color:rgba(255,255,255,0.45); text-decoration:none; transition: color 0.2s; }
+  .dl-cta-link:hover { color:rgba(255,255,255,0.7); }
+
+  /* ===== Dream Lattice Modal ===== */
+  .dream-lattice-modal {
+    position:fixed; inset:0; z-index:50;
+    background: rgba(0,0,0,0.75); backdrop-filter: blur(12px);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none; transition: opacity 0.5s ease;
+  }
+  .dream-lattice-modal.active { opacity:1; pointer-events:auto; }
+  .dream-lattice-modal .dl-close {
+    position:absolute; top:20px; right:24px; width:40px; height:40px;
+    border-radius:50%; border:none; background:rgba(255,255,255,0.1);
+    color:#fff; font-size:1.4rem; cursor:pointer; z-index:51;
+    display:flex; align-items:center; justify-content:center;
+    transition: background 0.2s; backdrop-filter: blur(4px);
+  }
+  .dream-lattice-modal .dl-close:hover { background:rgba(255,255,255,0.2); }
+  #dl-canvas-container {
+    width: min(80vmin, 700px); height: min(80vmin, 700px);
+    border-radius: 20px; overflow:hidden;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+    background: #faf9f5;
+  }
+  .dream-lattice-modal .dl-caption {
+    margin-top:16px; font-size:0.85rem; color:rgba(255,255,255,0.6);
+    text-align:center; letter-spacing: 0.02em;
+  }
+  @media (max-width: 600px) {
+    #dl-canvas-container { width: 92vw; height: 92vw; }
+    .dream-lattice-modal .dl-close { top:12px; right:12px; width:36px; height:36px; }
+  }
+
   /* ===== 我的作品 ===== */
   .works-grid {
     display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory;
@@ -1030,6 +1085,13 @@
     <div class="gen-progress" id="genProgress">
       <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
       <div class="progress-text" id="progressText">正在分析特征...</div>
+    </div>
+    <!-- Dream Lattice 入口（生成完成后显示） -->
+    <div class="dream-lattice-cta" id="dreamLatticeCta">
+      <div class="dl-cta-icon">&#10024;</div>
+      <div class="dl-cta-text">形象已跃迁至三维！</div>
+      <button class="dl-cta-btn" onclick="openDreamLattice()">&#128640; 观看 Dream Lattice 粒子升腾</button>
+      <a href="q3d-dream-showcase.html" target="_blank" class="dl-cta-link" id="dlFullPageLink">在完整页面中体验 &rarr;</a>
     </div>
   </div>
 </div>
@@ -2284,6 +2346,13 @@ generateBtn.addEventListener('click', () => {
     if (step >= progressSteps.length) {
       setTimeout(() => {
         showDesktopPet();
+        // 延迟显示 Dream Lattice 入口
+        setTimeout(() => {
+          const cta = document.getElementById('dreamLatticeCta');
+          if (cta) cta.classList.add('visible');
+          const link = document.getElementById('dlFullPageLink');
+          if (link) link.href = 'q3d-dream-showcase.html?style=' + encodeURIComponent(currentStyle);
+        }, 1800);
         // 添加到作品列表
         const styleNames = { kawaii: '软萌大头', guofeng: '国风Q版', trendy: '潮玩', simple: '简约卡通' };
         const newWork = {
@@ -3054,6 +3123,166 @@ window.addEventListener('resize', () => {
   if (chatPanel.classList.contains('show')) positionChatPanel();
 });
 </script>
+
+<!-- ===== Dream Lattice 核心算法 ===== -->
+<script>
+let dlSketch = null;
+let isDreamLatticeOpen = false;
+
+function openDreamLattice() {
+  if (isDreamLatticeOpen) return;
+  isDreamLatticeOpen = true;
+  const modal = document.getElementById('dreamLatticeModal');
+  if (!modal) return;
+  modal.classList.add('active');
+
+  if (dlSketch) { dlSketch.remove(); dlSketch = null; }
+
+  dlSketch = new p5(function(p) {
+    const PALETTES = {
+      kawaii: [[255,183,197],[181,216,240],[230,213,245],[255,218,185],[200,230,255]],
+      guofeng: [[45,138,107],[196,69,54],[44,44,44],[139,90,43],[180,160,120]],
+      trendy: [[0,217,255],[255,0,110],[255,230,0],[255,100,0],[150,0,255]],
+      simple: [[255,255,255],[224,224,224],[255,68,68],[200,200,200],[245,245,245]]
+    };
+
+    let particles = [];
+    let params = {
+      seed: Date.now() % 999999,
+      particleCount: 600,
+      riseSpeed: 1.5,
+      noiseScale: 0.015,
+      depthIntensity: 0.7,
+      stylePalette: (typeof currentStyle !== 'undefined' ? currentStyle : 'kawaii')
+    };
+
+    class DLParticle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = p.random(p.width);
+        this.y = p.random(p.height * 0.85, p.height + 50);
+        this.vx = 0; this.vy = 0;
+        this.life = p.random(100, 255);
+        this.maxLife = this.life;
+        this.size = p.random(1.5, 4);
+        this.noiseOffset = p.random(1000);
+        this.paletteIndex = p.floor(p.random(5));
+      }
+      update() {
+        let n1 = p.noise(this.x * params.noiseScale, this.y * params.noiseScale * 0.5, p.frameCount * 0.002);
+        let n2 = p.noise(this.x * params.noiseScale * 2 + 1000, this.y * params.noiseScale * 2, p.frameCount * 0.003);
+        let angle = (n1 * p.TWO_PI * 2) - p.HALF_PI + (n2 - 0.5) * 0.8;
+        let depthFactor = p.map(this.y, 0, p.height, 1.5, 0.3);
+        let riseForce = params.riseSpeed * depthFactor;
+        let centerX = p.width / 2;
+        let returnForce = -(this.x - centerX) / (p.width / 2) * 0.15;
+        this.vx += p.cos(angle) * 0.3 + returnForce;
+        this.vy += p.sin(angle) * 0.3 - riseForce * 0.05;
+        this.vx *= 0.96; this.vy *= 0.96;
+        this.x += this.vx; this.y += this.vy;
+        this.life -= 0.8;
+        if (this.life <= 0 || this.y < -50 || this.x < -50 || this.x > p.width + 50) this.reset();
+      }
+      getColor() {
+        let palette = PALETTES[params.stylePalette] || PALETTES.kawaii;
+        let base = palette[this.paletteIndex % palette.length];
+        let depth = p.map(this.y, p.height, 0, 0, 1);
+        let bright = 1.0 + (depth - 0.5) * params.depthIntensity * 0.6;
+        let alpha = p.map(this.life, 0, this.maxLife, 0, 200);
+        let shift = p.noise(this.x * 0.01, this.y * 0.01, this.noiseOffset) * 20 - 10;
+        return p.color(
+          p.constrain(base[0] * bright + shift, 0, 255),
+          p.constrain(base[1] * bright + shift, 0, 255),
+          p.constrain(base[2] * bright + shift, 0, 255),
+          alpha
+        );
+      }
+      draw() {
+        let c = this.getColor();
+        p.noStroke(); p.fill(c);
+        p.ellipse(this.x, this.y, this.size * p.map(this.life, 0, this.maxLife, 0.3, 1));
+        if (this.life > this.maxLife * 0.7 && this.size > 2.5) {
+          p.fill(p.red(c), p.green(c), p.blue(c), 30);
+          p.ellipse(this.x, this.y, this.size * 3);
+        }
+      }
+    }
+
+    function drawLatticeNodes() {
+      let gridSize = 60;
+      let palette = PALETTES[params.stylePalette] || PALETTES.kawaii;
+      let c = palette[0];
+      for (let gx = 0; gx < p.width; gx += gridSize) {
+        for (let gy = 0; gy < p.height; gy += gridSize) {
+          let count = 0, cx = 0, cy = 0;
+          for (let pt of particles) {
+            if (pt.x > gx && pt.x < gx + gridSize && pt.y > gy && pt.y < gy + gridSize) {
+              count++; cx += pt.x; cy += pt.y;
+            }
+          }
+          if (count > params.particleCount * 0.008) {
+            cx /= count; cy /= count;
+            let pulse = p.sin(p.frameCount * 0.03 + gx * 0.01 + gy * 0.01) * 0.5 + 0.5;
+            p.noStroke();
+            p.fill(c[0], c[1], c[2], 40 * pulse);
+            p.ellipse(cx, cy, 20 + pulse * 15);
+            p.fill(255, 255, 255, 60 * pulse);
+            p.ellipse(cx, cy, 6);
+          }
+        }
+      }
+    }
+
+    p.setup = function() {
+      let container = document.getElementById('dl-canvas-container');
+      let size = Math.min(container.clientWidth, container.clientHeight, 900);
+      let canvas = p.createCanvas(size, size);
+      canvas.parent('dl-canvas-container');
+      p.randomSeed(params.seed);
+      p.noiseSeed(params.seed);
+      p.background(250, 249, 245);
+      for (let i = 0; i < params.particleCount; i++) {
+        let pt = new DLParticle();
+        pt.y = p.random(p.height * 0.3, p.height + 50);
+        pt.life = p.random(50, 255);
+        pt.maxLife = pt.life;
+        particles.push(pt);
+      }
+    };
+
+    p.draw = function() {
+      p.background(250, 249, 245, 15);
+      for (let pt of particles) { pt.update(); pt.draw(); }
+      drawLatticeNodes();
+    };
+
+    p.windowResized = function() {
+      let container = document.getElementById('dl-canvas-container');
+      let size = Math.min(container.clientWidth, container.clientHeight, 900);
+      p.resizeCanvas(size, size);
+    };
+  }, 'dl-canvas-container');
+
+  window.dlAutoCloseTimer = setTimeout(closeDreamLattice, 8000);
+}
+
+function closeDreamLattice() {
+  isDreamLatticeOpen = false;
+  if (window.dlAutoCloseTimer) { clearTimeout(window.dlAutoCloseTimer); window.dlAutoCloseTimer = null; }
+  const modal = document.getElementById('dreamLatticeModal');
+  if (modal) modal.classList.remove('active');
+  if (dlSketch) { dlSketch.noLoop(); }
+}
+</script>
+
+<!-- ===== Dream Lattice 全屏模态层 ===== -->
+<div class="dream-lattice-modal" id="dreamLatticeModal">
+  <button class="dl-close" onclick="closeDreamLattice()" title="关闭">&times;</button>
+  <div id="dl-canvas-container"></div>
+  <div class="dl-caption">
+    <strong>Dream Lattice</strong> &mdash; 从二维照片到三维化身的粒子跃迁
+  </div>
+</div>
 
 <!-- ===== Emergent Dreamscape 算法艺术背景 ===== -->
 <script>
