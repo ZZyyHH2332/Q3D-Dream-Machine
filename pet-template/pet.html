@@ -245,7 +245,19 @@
       50% { transform: rotate(180deg) scale(1.2); }
       100% { transform: rotate(360deg) scale(1); }
     }
+
+    /* Nurture Status */
+    .nurture-status { padding: 8px 14px; border-top: 1px solid rgba(0,0,0,0.05); }
+    .nurture-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .nurture-badge { font-size: 11px; font-weight: 700; color: #FF8FAB; background: rgba(255,143,171,0.12); padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+    .nurture-bar-label { font-size: 10px; color: #999; }
+    .nurture-bar { width: 50px; height: 6px; background: #eee; border-radius: 3px; overflow: hidden; }
+    .nurture-fill { height: 100%; background: linear-gradient(90deg, #FF8FAB, #FFB7C5); border-radius: 3px; transition: width 0.4s ease; }
+    .nurture-fill.nurture-energy { background: linear-gradient(90deg, #87CEEB, #B0E0E6); }
   </style>
+  <script src="../assets/js/pet-llm-bridge.js"></script>
+  <script src="../assets/js/pet-memory.js"></script>
+  <script src="../assets/js/pet-nurture.js"></script>
 </head>
 <body>
   <!-- Pet -->
@@ -266,9 +278,21 @@
       <span class="close-btn" id="chat-close">&times;</span>
     </div>
     <div class="chat-messages" id="chat-messages"></div>
+    <div class="nurture-status" id="nurture-status">
+      <div class="nurture-row">
+        <span class="nurture-badge" id="nurture-badge">⭐ Lv.1</span>
+        <span class="nurture-bar-label">饱食度</span>
+        <div class="nurture-bar"><div class="nurture-fill" id="bar-satiety" style="width:100%"></div></div>
+        <span class="nurture-bar-label">精力</span>
+        <div class="nurture-bar"><div class="nurture-fill nurture-energy" id="bar-energy" style="width:100%"></div></div>
+      </div>
+    </div>
     <div class="chat-actions">
-      <a class="chat-action-btn" href="solo-cn://open" target="_blank">🚀 TRAE 深度对话</a>
-      <button class="chat-action-btn" id="btn-pip">🔝 置顶桌面</button>
+      <a class="chat-action-btn" href="solo-cn://open" target="_blank">🚀 TRAE</a>
+      <button class="chat-action-btn" id="btn-feed">🍪 喂食</button>
+      <button class="chat-action-btn" id="btn-play">🎾 玩耍</button>
+      <button class="chat-action-btn" id="btn-rest">😴 休息</button>
+      <button class="chat-action-btn" id="btn-pip">🔝 置顶</button>
     </div>
     <div class="chat-input-area">
       <input type="text" class="chat-input" id="chat-input" placeholder="和宠物聊聊天...">
@@ -293,6 +317,16 @@
     const petName = params.get('name') || '小Q';
 
     document.getElementById('pet-name').textContent = petName;
+
+    // ===== 角色养成初始化 =====
+    let petStats = PetNurture.load();
+    function updateNurtureUI() {
+      const s = PetNurture.getSummary(petStats);
+      document.getElementById('nurture-badge').textContent = s.badge.icon + ' Lv.' + s.level;
+      document.getElementById('bar-satiety').style.width = (petStats.satiety || 0) + '%';
+      document.getElementById('bar-energy').style.width = (petStats.energy || 0) + '%';
+    }
+    updateNurtureUI();
 
     // Setup avatar
     const headEl = document.getElementById('pet-head');
@@ -322,6 +356,8 @@
       container.appendChild(msg);
       container.scrollTop = container.scrollHeight;
       messages.push({ role: sender === 'user' ? 'user' : 'assistant', content: text });
+      // 持久化到 PetMemory
+      PetMemory.add(sender === 'user' ? 'user' : 'assistant', text);
     }
 
     function showTyping() {
@@ -344,49 +380,58 @@
     async function sendChat(userText) {
       if (!userText.trim() || isTyping) return;
       addMessage(userText, 'user');
+      PetNurture.chat(petStats);
+      updateNurtureUI();
 
       const input = document.getElementById('chat-input');
       input.value = '';
       showTyping();
 
-      // Try API call if key is available
-      if (apiKey) {
-        try {
-          const systemPrompt = `你是 Q3D 形象造梦机的桌面宠物，一个${personality}的 Q 版虚拟角色。你的名字是${petName}。回答要简短活泼，带适当的 emoji，每次回复不超过 80 字。`;
-          const msgs = [{ role: 'system', content: systemPrompt }, ...messages.slice(-10)];
+      // 构建 LLM 上下文（注入心情、人格、历史对话）
+      const ctx = {
+        petName,
+        personality,
+        mood: (typeof currentMood !== 'undefined') ? currentMood : 'happy',
+        apiKey,
+        apiBase,
+        history: PetMemory.getRecent(10),
+        stats: null
+      };
 
-          const res = await fetch(`${apiBase}/chat/completions`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${apiKey}`
-            },
-            body: JSON.stringify({
-              model: 'gpt-4o-mini',
-              messages: msgs,
-              max_tokens: 150,
-              temperature: 0.8
-            })
-          });
+      let replyText = '';
+      const container = document.getElementById('chat-messages');
 
-          if (!res.ok) throw new Error('API error');
-          const data = await res.json();
-          const reply = data.choices?.[0]?.message?.content || '嗯...我想想~ 🤔';
-          hideTyping();
-          typewriterReply(reply);
-        } catch (e) {
-          hideTyping();
-          fallbackReply(userText);
+      try {
+        for await (const chunk of LLMBridge.chat(userText, ctx)) {
+          if (chunk.type === 'token') {
+            replyText += chunk.content;
+            // 复用或创建流式消息元素
+            let msgEl = container.querySelector('.chat-msg.pet.streaming');
+            if (!msgEl) {
+              hideTyping();
+              msgEl = document.createElement('div');
+              msgEl.className = 'chat-msg pet streaming';
+              container.appendChild(msgEl);
+            }
+            msgEl.textContent = replyText;
+            container.scrollTop = container.scrollHeight;
+          }
         }
-      } else {
-        setTimeout(() => {
-          hideTyping();
-          fallbackReply(userText);
-        }, 800);
+        // 结束流式，移除标记
+        const streamingEl = container.querySelector('.chat-msg.pet.streaming');
+        if (streamingEl) streamingEl.classList.remove('streaming');
+        // 保存到记忆
+        if (replyText) PetMemory.add('assistant', replyText);
+      } catch (e) {
+        hideTyping();
+        console.error('[sendChat] Error:', e);
+        fallbackReply(userText);
       }
     }
 
     function fallbackReply(userText) {
+      PetNurture.chat(petStats);
+      updateNurtureUI();
       const text = userText.toLowerCase();
       const replies = [
         { keywords: ['你好', 'hi', 'hello'], reply: '你好呀！我是你的专属宠物 ' + petName + '~ 🎉' },
@@ -419,6 +464,7 @@
         if (i >= text.length) {
           clearInterval(interval);
           messages.push({ role: 'assistant', content: text });
+          PetMemory.add('assistant', text);
         }
       }, 30);
     }
@@ -432,6 +478,27 @@
     });
     document.getElementById('chat-close').addEventListener('click', () => {
       document.getElementById('chat-panel').classList.remove('open');
+    });
+
+    // 养成互动按钮
+    document.getElementById('btn-feed').addEventListener('click', () => {
+      PetNurture.feed(petStats);
+      updateNurtureUI();
+      showBubble('好吃~ 谢谢主人！🍪');
+    });
+    document.getElementById('btn-play').addEventListener('click', () => {
+      const s = PetNurture.play(petStats);
+      updateNurtureUI();
+      if (s === petStats) {
+        showBubble('太累了，让我休息一下吧... 😫');
+      } else {
+        showBubble('好开心！再来一次~ 🎾');
+      }
+    });
+    document.getElementById('btn-rest').addEventListener('click', () => {
+      PetNurture.rest(petStats);
+      updateNurtureUI();
+      showBubble('zzz... 充能中... 🔋');
     });
 
     // Pet interactions
@@ -458,26 +525,129 @@
     // Show greeting bubble on load
     setTimeout(() => showBubble(`你好呀，我是${petName}~`), 500);
 
-    // Drag
+    // ===== 增强拖拽：物理惯性 + 边缘吸附 + 自动漫游 =====
     let isDragging = false, dragOffsetX = 0, dragOffsetY = 0;
+    let velocityX = 0, velocityY = 0;
+    let lastMouseX = 0, lastMouseY = 0, lastMouseTime = 0;
+    let roamTimer = null, isRoaming = false, roamRAF = null;
+
     petContainer.addEventListener('mousedown', (e) => {
       if (e.button !== 0) return;
       isDragging = true;
       dragOffsetX = e.clientX - petContainer.offsetLeft;
       dragOffsetY = e.clientY - petContainer.offsetTop;
       petContainer.classList.add('dragging');
+      stopRoaming();
+      lastMouseX = e.clientX; lastMouseY = e.clientY;
+      lastMouseTime = Date.now();
+      velocityX = 0; velocityY = 0;
     });
+
     document.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
-      petContainer.style.left = (e.clientX - dragOffsetX) + 'px';
-      petContainer.style.top = (e.clientY - dragOffsetY) + 'px';
+      const now = Date.now();
+      const dt = now - lastMouseTime;
+      if (dt > 0) {
+        velocityX = (e.clientX - lastMouseX) / dt * 16;
+        velocityY = (e.clientY - lastMouseY) / dt * 16;
+      }
+      lastMouseX = e.clientX; lastMouseY = e.clientY; lastMouseTime = now;
+
+      let nx = e.clientX - dragOffsetX;
+      let ny = e.clientY - dragOffsetY;
+      const maxX = window.innerWidth - petContainer.offsetWidth;
+      const maxY = window.innerHeight - petContainer.offsetHeight;
+      nx = Math.max(0, Math.min(nx, maxX));
+      ny = Math.max(0, Math.min(ny, maxY));
+      petContainer.style.left = nx + 'px';
+      petContainer.style.top = ny + 'px';
       petContainer.style.bottom = 'auto';
       petContainer.style.right = 'auto';
     });
+
     document.addEventListener('mouseup', () => {
+      if (!isDragging) return;
       isDragging = false;
       petContainer.classList.remove('dragging');
+      if (Math.abs(velocityX) > 2 || Math.abs(velocityY) > 2) {
+        applyInertia();
+      } else {
+        snapToEdge();
+        startRoamingTimer();
+      }
     });
+
+    function applyInertia() {
+      let x = petContainer.offsetLeft, y = petContainer.offsetTop;
+      const friction = 0.92, minVelocity = 0.5;
+      function step() {
+        if (isDragging || isRoaming) return;
+        x += velocityX; y += velocityY;
+        velocityX *= friction; velocityY *= friction;
+        const maxX = window.innerWidth - petContainer.offsetWidth;
+        const maxY = window.innerHeight - petContainer.offsetHeight;
+        if (x < 0) { x = 0; velocityX *= -0.5; }
+        if (x > maxX) { x = maxX; velocityX *= -0.5; }
+        if (y < 0) { y = 0; velocityY *= -0.5; }
+        if (y > maxY) { y = maxY; velocityY *= -0.5; }
+        petContainer.style.left = x + 'px'; petContainer.style.top = y + 'px';
+        petContainer.style.bottom = 'auto'; petContainer.style.right = 'auto';
+        if (Math.abs(velocityX) > minVelocity || Math.abs(velocityY) > minVelocity) {
+          requestAnimationFrame(step);
+        } else { snapToEdge(); startRoamingTimer(); }
+      }
+      requestAnimationFrame(step);
+    }
+
+    function snapToEdge() {
+      const rect = petContainer.getBoundingClientRect();
+      const snapDist = 80, pad = 10;
+      let nx = rect.left, ny = rect.top, shouldSnap = false;
+      if (nx < snapDist) { nx = pad; shouldSnap = true; }
+      else if (nx > window.innerWidth - rect.width - snapDist) { nx = window.innerWidth - rect.width - pad; shouldSnap = true; }
+      if (ny < snapDist) { ny = pad; shouldSnap = true; }
+      else if (ny > window.innerHeight - rect.height - snapDist) { ny = window.innerHeight - rect.height - pad; shouldSnap = true; }
+      if (shouldSnap) {
+        petContainer.style.transition = 'left 0.4s cubic-bezier(0.34,1.56,0.64,1), top 0.4s cubic-bezier(0.34,1.56,0.64,1)';
+        petContainer.style.left = nx + 'px'; petContainer.style.top = ny + 'px';
+        setTimeout(() => { petContainer.style.transition = 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)'; }, 400);
+      }
+    }
+
+    function startRoamingTimer() {
+      if (roamTimer) clearTimeout(roamTimer);
+      roamTimer = setTimeout(() => startRoaming(), 15000);
+    }
+    function stopRoaming() {
+      if (roamTimer) { clearTimeout(roamTimer); roamTimer = null; }
+      if (roamRAF) { cancelAnimationFrame(roamRAF); roamRAF = null; }
+      isRoaming = false;
+    }
+    function startRoaming() {
+      if (isDragging || document.getElementById('chat-panel').classList.contains('open')) {
+        startRoamingTimer(); return;
+      }
+      isRoaming = true;
+      const maxX = window.innerWidth - petContainer.offsetWidth - 20;
+      const maxY = window.innerHeight - petContainer.offsetHeight - 20;
+      const targetX = 20 + Math.random() * (maxX - 20);
+      const targetY = 20 + Math.random() * (maxY - 20);
+      const startX = petContainer.offsetLeft, startY = petContainer.offsetTop;
+      const duration = 3000 + Math.random() * 4000;
+      const startTime = performance.now();
+      function step(now) {
+        if (!isRoaming || isDragging) return;
+        const t = Math.min((now - startTime) / duration, 1);
+        const ease = t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2;
+        petContainer.style.left = (startX + (targetX - startX) * ease) + 'px';
+        petContainer.style.top = (startY + (targetY - startY) * ease) + 'px';
+        petContainer.style.bottom = 'auto'; petContainer.style.right = 'auto';
+        if (t < 1) { roamRAF = requestAnimationFrame(step); }
+        else { isRoaming = false; startRoamingTimer(); }
+      }
+      roamRAF = requestAnimationFrame(step);
+    }
+    startRoamingTimer();
 
     // Context menu
     const ctxMenu = document.getElementById('context-menu');

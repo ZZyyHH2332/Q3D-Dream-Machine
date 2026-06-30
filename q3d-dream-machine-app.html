@@ -10,6 +10,8 @@
 <script src="vendor/OrbitControls.js"></script>
 <script src="vendor/GLTFLoader.js"></script>
 <script src="vendor/mermaid.min.js"></script>
+<script src="assets/js/pet-llm-bridge.js"></script>
+<script src="assets/js/pet-memory.js"></script>
 <style>
   :root {
     --bg-gradient-start: #0a0e1a;
@@ -2416,8 +2418,10 @@ function spawnConfetti() {
   }
 }
 
-// ===== 桌面宠物拖拽 =====
+// ===== 桌面宠物拖拽（物理惯性 + 边缘吸附 + 自动漫游）=====
 let petDragging = false, petStartX, petStartY, petOrigLeft, petOrigTop;
+let petVelX = 0, petVelY = 0, petLastMX = 0, petLastMY = 0, petLastMT = 0;
+let petRoamTimer = null, petIsRoaming = false, petRoamRAF = null;
 const petSvg = document.getElementById('petSvg');
 
 desktopPet.addEventListener('mousedown', e => {
@@ -2426,30 +2430,75 @@ desktopPet.addEventListener('mousedown', e => {
   petStartX = e.clientX; petStartY = e.clientY;
   const rect = desktopPet.getBoundingClientRect();
   petOrigLeft = rect.left; petOrigTop = rect.top;
+  stopPetRoaming();
+  petLastMX = e.clientX; petLastMY = e.clientY; petLastMT = Date.now();
+  petVelX = 0; petVelY = 0;
 });
 document.addEventListener('mousemove', e => {
   if (!petDragging) return;
+  const now = Date.now(), dt = now - petLastMT;
+  if (dt > 0) { petVelX = (e.clientX - petLastMX) / dt * 16; petVelY = (e.clientY - petLastMY) / dt * 16; }
+  petLastMX = e.clientX; petLastMY = e.clientY; petLastMT = now;
   let nx = petOrigLeft + e.clientX - petStartX;
   let ny = petOrigTop + e.clientY - petStartY;
   const maxX = window.innerWidth - 130, maxY = window.innerHeight - 130;
-  nx = Math.max(0, Math.min(nx, maxX));
-  ny = Math.max(0, Math.min(ny, maxY));
+  nx = Math.max(0, Math.min(nx, maxX)); ny = Math.max(0, Math.min(ny, maxY));
   desktopPet.style.left = nx + 'px'; desktopPet.style.top = ny + 'px';
   desktopPet.style.right = 'auto'; desktopPet.style.bottom = 'auto';
 });
 document.addEventListener('mouseup', () => {
   if (!petDragging) return;
   petDragging = false; desktopPet.classList.remove('dragging');
-  // 边缘吸附
-  const rect = desktopPet.getBoundingClientRect();
-  const snapDist = 60;
-  let nx = rect.left, ny = rect.top;
-  if (nx < snapDist) nx = 10;
-  else if (nx > window.innerWidth - 130 - snapDist) nx = window.innerWidth - 140;
-  if (ny < snapDist) ny = 10;
-  else if (ny > window.innerHeight - 130 - snapDist) ny = window.innerHeight - 140;
-  desktopPet.style.left = nx + 'px'; desktopPet.style.top = ny + 'px';
+  if (Math.abs(petVelX) > 2 || Math.abs(petVelY) > 2) {
+    petApplyInertia();
+  } else { snapPetToEdge(); startPetRoamTimer(); }
 });
+
+function petApplyInertia() {
+  let x = desktopPet.offsetLeft, y = desktopPet.offsetTop;
+  const friction = 0.92, minV = 0.5;
+  function step() {
+    if (petDragging || petIsRoaming) return;
+    x += petVelX; y += petVelY; petVelX *= friction; petVelY *= friction;
+    const maxX = window.innerWidth - 130, maxY = window.innerHeight - 130;
+    if (x < 0) { x = 0; petVelX *= -0.5; } if (x > maxX) { x = maxX; petVelX *= -0.5; }
+    if (y < 0) { y = 0; petVelY *= -0.5; } if (y > maxY) { y = maxY; petVelY *= -0.5; }
+    desktopPet.style.left = x + 'px'; desktopPet.style.top = y + 'px';
+    if (Math.abs(petVelX) > minV || Math.abs(petVelY) > minV) requestAnimationFrame(step);
+    else { snapPetToEdge(); startPetRoamTimer(); }
+  }
+  requestAnimationFrame(step);
+}
+function snapPetToEdge() {
+  const rect = desktopPet.getBoundingClientRect(), snapDist = 80, pad = 10;
+  let nx = rect.left, ny = rect.top, shouldSnap = false;
+  if (nx < snapDist) { nx = pad; shouldSnap = true; }
+  else if (nx > window.innerWidth - 130 - snapDist) { nx = window.innerWidth - 140; shouldSnap = true; }
+  if (ny < snapDist) { ny = pad; shouldSnap = true; }
+  else if (ny > window.innerHeight - 130 - snapDist) { ny = window.innerHeight - 140; shouldSnap = true; }
+  if (shouldSnap) { desktopPet.style.transition = 'left 0.4s, top 0.4s'; desktopPet.style.left = nx+'px'; desktopPet.style.top = ny+'px'; setTimeout(()=>desktopPet.style.transition='', 400); }
+}
+function startPetRoamTimer() { if (petRoamTimer) clearTimeout(petRoamTimer); petRoamTimer = setTimeout(()=>startPetRoaming(), 15000); }
+function stopPetRoaming() { if (petRoamTimer) clearTimeout(petRoamTimer); if (petRoamRAF) cancelAnimationFrame(petRoamRAF); petIsRoaming = false; }
+function startPetRoaming() {
+  if (petDragging || document.getElementById('petChatPanel').classList.contains('show')) { startPetRoamTimer(); return; }
+  petIsRoaming = true;
+  const maxX = window.innerWidth - 150, maxY = window.innerHeight - 150;
+  const tx = 20 + Math.random() * (maxX - 20), ty = 20 + Math.random() * (maxY - 20);
+  const sx = desktopPet.offsetLeft, sy = desktopPet.offsetTop;
+  const dur = 3000 + Math.random() * 4000, t0 = performance.now();
+  function step(now) {
+    if (!petIsRoaming || petDragging) return;
+    const t = Math.min((now - t0) / dur, 1);
+    const ease = t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2;
+    desktopPet.style.left = (sx + (tx - sx) * ease) + 'px';
+    desktopPet.style.top = (sy + (ty - sy) * ease) + 'px';
+    if (t < 1) petRoamRAF = requestAnimationFrame(step);
+    else { petIsRoaming = false; startPetRoamTimer(); }
+  }
+  petRoamRAF = requestAnimationFrame(step);
+}
+startPetRoamTimer();
 
 // 宠物点击 / 双击
 desktopPet.addEventListener('click', e => {
@@ -2693,9 +2742,10 @@ function addUserMessage(text) {
   div.textContent = text;
   chatMessages.appendChild(div);
   chatMessages.scrollTop = chatMessages.scrollHeight;
+  PetMemory.add('user', text);
 }
 
-function addPetMessage(text, delay) {
+function addPetMessage(text, delay, onComplete) {
   if (delay === undefined) delay = 0;
   setTimeout(() => {
     const div = document.createElement('div');
@@ -2710,6 +2760,7 @@ function addPetMessage(text, delay) {
       if (i >= text.length) {
         clearInterval(interval);
         div.classList.remove('typing');
+        if (onComplete) onComplete();
       }
     }, 30);
   }, delay);
@@ -2747,7 +2798,7 @@ function findAnswer(input) {
   return defaults[Math.floor(Math.random() * defaults.length)];
 }
 
-function sendMessage() {
+async function sendMessage() {
   const text = chatInput.value.trim();
   if (!text) return;
   addUserMessage(text);
@@ -2759,8 +2810,31 @@ function sendMessage() {
     var m = PET_MOODS[mood];
     if (m) showPetBubble(randomFrom(m.bubbles));
   }
-  const answer = findAnswer(text);
-  addPetMessage(answer, 400 + Math.random() * 400);
+
+  // 构建 LLM 上下文
+  const ctx = {
+    petName: (typeof petName !== 'undefined') ? petName : '小Q',
+    personality: '活泼可爱',
+    mood: mood || currentPetMood || 'happy',
+    apiKey: '',
+    apiBase: 'https://api.openai.com/v1',
+    history: PetMemory.getRecent(10),
+    stats: null
+  };
+
+  try {
+    let replyText = '';
+    for await (const chunk of LLMBridge.chat(text, ctx)) {
+      if (chunk.type === 'token') replyText += chunk.content;
+    }
+    if (replyText) {
+      addPetMessage(replyText, 200, () => PetMemory.add('assistant', replyText));
+    }
+  } catch (e) {
+    console.error('[sendMessage] Error:', e);
+    const answer = findAnswer(text);
+    addPetMessage(answer, 400 + Math.random() * 400);
+  }
 }
 
 // 关键词 → 心情映射（按优先级匹配）
