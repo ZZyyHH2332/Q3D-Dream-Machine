@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q3D Dream Lattice — 造梦晶格</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --anthropic-dark: #141413;
+            --anthropic-light: #faf9f5;
+            --anthropic-mid-gray: #b0aea5;
+            --anthropic-light-gray: #e8e6dc;
+            --anthropic-orange: #d97757;
+            --anthropic-blue: #6a9bcc;
+            --anthropic-green: #788c5d;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--anthropic-light) 0%, #f5f3ee 100%);
+            min-height: 100vh;
+            color: var(--anthropic-dark);
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+            padding: 20px;
+            gap: 20px;
+        }
+        .sidebar {
+            width: 320px;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(20, 20, 19, 0.1);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        .sidebar h1 {
+            font-family: 'Lora', serif;
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--anthropic-dark);
+            margin-bottom: 8px;
+        }
+        .sidebar .subtitle {
+            color: var(--anthropic-mid-gray);
+            font-size: 14px;
+            margin-bottom: 32px;
+            line-height: 1.4;
+        }
+        .control-section { margin-bottom: 32px; }
+        .control-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--anthropic-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .control-section h3::before {
+            content: '\2022';
+            color: var(--anthropic-orange);
+            font-weight: bold;
+        }
+        .seed-input {
+            width: 100%;
+            background: var(--anthropic-light);
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin-bottom: 12px;
+            border: 1px solid var(--anthropic-light-gray);
+            text-align: center;
+        }
+        .seed-input:focus {
+            outline: none;
+            border-color: var(--anthropic-orange);
+            box-shadow: 0 0 0 2px rgba(217, 119, 87, 0.1);
+            background: white;
+        }
+        .seed-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .regen-button { margin-bottom: 0; }
+        .control-group { margin-bottom: 20px; }
+        .control-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--anthropic-dark);
+            margin-bottom: 8px;
+        }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .slider-container input[type="range"] {
+            flex: 1;
+            height: 4px;
+            background: var(--anthropic-light-gray);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--anthropic-orange);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .slider-container input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            background: #c86641;
+        }
+        .value-display {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: var(--anthropic-mid-gray);
+            min-width: 60px;
+            text-align: right;
+        }
+        .select-container select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--anthropic-light-gray);
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            background: var(--anthropic-light);
+            cursor: pointer;
+        }
+        .select-container select:focus {
+            outline: none;
+            border-color: var(--anthropic-orange);
+        }
+        .button {
+            background: var(--anthropic-orange);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+        .button:hover {
+            background: #c86641;
+            transform: translateY(-1px);
+        }
+        .button:active { transform: translateY(0); }
+        .button.secondary { background: var(--anthropic-blue); }
+        .button.secondary:hover { background: #5a8bb8; }
+        .button.tertiary { background: var(--anthropic-green); }
+        .button.tertiary:hover { background: #6b7b52; }
+        .button-row {
+            display: flex;
+            gap: 8px;
+        }
+        .button-row .button { flex: 1; }
+        .canvas-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+        }
+        #canvas-container {
+            width: 100%;
+            max-width: 1000px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(20, 20, 19, 0.1);
+            background: white;
+        }
+        #canvas-container canvas {
+            display: block;
+            width: 100% !important;
+            height: auto !important;
+        }
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--anthropic-mid-gray);
+            padding: 60px;
+        }
+        @media (max-width: 600px) {
+            .container { flex-direction: column; }
+            .sidebar { width: 100%; }
+            .canvas-area { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1>Q3D Dream Lattice</h1>
+            <div class="subtitle">造梦晶格 &mdash; 从二维照片到三维化身的粒子跃迁</div>
+
+            <div class="control-section">
+                <h3>Seed</h3>
+                <input type="number" id="seed-input" class="seed-input" value="42" onchange="updateSeed()">
+                <div class="seed-controls">
+                    <button class="button secondary" onclick="previousSeed()">&#8592; Prev</button>
+                    <button class="button secondary" onclick="nextSeed()">Next &#8594;</button>
+                </div>
+                <button class="button tertiary regen-button" onclick="randomSeedAndUpdate()">&#8635; Random</button>
+            </div>
+
+            <div class="control-section">
+                <h3>Parameters</h3>
+                <div class="control-group">
+                    <label>Particle Count</label>
+                    <div class="slider-container">
+                        <input type="range" id="particleCount" min="200" max="2000" step="100" value="800" oninput="updateParam('particleCount', this.value)">
+                        <span class="value-display" id="particleCount-value">800</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Rise Speed</label>
+                    <div class="slider-container">
+                        <input type="range" id="riseSpeed" min="0.5" max="3.0" step="0.1" value="1.5" oninput="updateParam('riseSpeed', this.value)">
+                        <span class="value-display" id="riseSpeed-value">1.5</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Noise Scale</label>
+                    <div class="slider-container">
+                        <input type="range" id="noiseScale" min="0.005" max="0.05" step="0.001" value="0.015" oninput="updateParam('noiseScale', this.value)">
+                        <span class="value-display" id="noiseScale-value">0.015</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Depth Intensity</label>
+                    <div class="slider-container">
+                        <input type="range" id="depthIntensity" min="0" max="1" step="0.05" value="0.7" oninput="updateParam('depthIntensity', this.value)">
+                        <span class="value-display" id="depthIntensity-value">0.70</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Style Palette</label>
+                    <div class="select-container">
+                        <select id="stylePalette" onchange="updateParam('stylePalette', this.value)">
+                            <option value="kawaii" selected>Kawaii &mdash; 软萌粉彩</option>
+                            <option value="guofeng">Guofeng &mdash; 国风墨韵</option>
+                            <option value="trendy">Trendy &mdash; 潮流电音</option>
+                            <option value="simple">Simple &mdash; 极简纯白</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <h3>Actions</h3>
+                <div class="button-row">
+                    <button class="button" onclick="resetParameters()">Reset</button>
+                    <button class="button secondary" onclick="downloadCanvas()">Download PNG</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="canvas-area">
+            <div id="canvas-container">
+                <div class="loading">Initializing Dream Lattice...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========================================================================
+        // Q3D DREAM LATTICE — Generative Art Parameters
+        // ========================================================================
+
+        let params = {
+            seed: 42,
+            particleCount: 800,
+            riseSpeed: 1.5,
+            noiseScale: 0.015,
+            depthIntensity: 0.7,
+            stylePalette: 'kawaii'
+        };
+
+        const defaultParams = JSON.parse(JSON.stringify(params));
+
+        // Color palettes for each Q3D style
+        const PALETTES = {
+            kawaii: [
+                [255, 183, 197],
+                [181, 216, 240],
+                [230, 213, 245],
+                [255, 218, 185],
+                [200, 230, 255]
+            ],
+            guofeng: [
+                [45, 138, 107],
+                [196, 69, 54],
+                [44, 44, 44],
+                [139, 90, 43],
+                [180, 160, 120]
+            ],
+            trendy: [
+                [0, 217, 255],
+                [255, 0, 110],
+                [255, 230, 0],
+                [255, 100, 0],
+                [150, 0, 255]
+            ],
+            simple: [
+                [255, 255, 255],
+                [224, 224, 224],
+                [255, 68, 68],
+                [200, 200, 200],
+                [245, 245, 245]
+            ]
+        };
+
+        // ========================================================================
+        // Particle System
+        // ========================================================================
+
+        let particles = [];
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = random(width);
+                this.y = random(height * 0.85, height + 50);
+                this.vx = 0;
+                this.vy = 0;
+                this.life = random(100, 255);
+                this.maxLife = this.life;
+                this.size = random(1.5, 4);
+                this.noiseOffset = random(1000);
+                this.paletteIndex = floor(random(5));
+            }
+
+            update() {
+                // Multi-layered Perlin noise flow field
+                let n1 = noise(this.x * params.noiseScale, this.y * params.noiseScale * 0.5, frameCount * 0.002);
+                let n2 = noise(this.x * params.noiseScale * 2 + 1000, this.y * params.noiseScale * 2, frameCount * 0.003);
+                let n3 = noise(this.x * params.noiseScale * 4 + 2000, this.y * params.noiseScale * 4, frameCount * 0.001);
+
+                // Flow field angle: gentle upward drift with horizontal meander
+                let angle = (n1 * TWO_PI * 2) - HALF_PI;
+                angle += (n2 - 0.5) * 0.8; // turbulence
+                angle += (n3 - 0.5) * 0.3; // fine perturbation
+
+                // Upward buoyancy proportional to depth (y position)
+                let depthFactor = map(this.y, 0, height, 1.5, 0.3);
+                let riseForce = params.riseSpeed * depthFactor;
+
+                // Central return force to prevent overcrowding at edges
+                let centerX = width / 2;
+                let distFromCenter = (this.x - centerX) / (width / 2);
+                let returnForce = -distFromCenter * 0.15;
+
+                // Apply forces
+                this.vx += cos(angle) * 0.3 + returnForce;
+                this.vy += sin(angle) * 0.3 - riseForce * 0.05;
+
+                // Damping
+                this.vx *= 0.96;
+                this.vy *= 0.96;
+
+                // Update position
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Decay life
+                this.life -= 0.8;
+
+                // Reset if dead or out of bounds (top)
+                if (this.life <= 0 || this.y < -50 || this.x < -50 || this.x > width + 50) {
+                    this.reset();
+                }
+            }
+
+            getColor() {
+                let palette = PALETTES[params.stylePalette];
+                let baseColor = palette[this.paletteIndex];
+
+                // Depth-based brightness modulation
+                let depth = map(this.y, height, 0, 0, 1);
+                let brightnessMod = 1.0 + (depth - 0.5) * params.depthIntensity * 0.6;
+
+                // Life-based alpha
+                let alpha = map(this.life, 0, this.maxLife, 0, 200);
+
+                // Add subtle noise-based hue shift
+                let hueShift = noise(this.x * 0.01, this.y * 0.01, this.noiseOffset) * 20 - 10;
+
+                let r = constrain(baseColor[0] * brightnessMod + hueShift, 0, 255);
+                let g = constrain(baseColor[1] * brightnessMod + hueShift, 0, 255);
+                let b = constrain(baseColor[2] * brightnessMod + hueShift, 0, 255);
+
+                return color(r, g, b, alpha);
+            }
+
+            draw() {
+                let c = this.getColor();
+                noStroke();
+                fill(c);
+                ellipse(this.x, this.y, this.size * map(this.life, 0, this.maxLife, 0.3, 1));
+
+                // Glow effect for brighter particles
+                if (this.life > this.maxLife * 0.7 && this.size > 2.5) {
+                    fill(red(c), green(c), blue(c), 30);
+                    ellipse(this.x, this.y, this.size * 3);
+                }
+            }
+        }
+
+        // ========================================================================
+        // P5.js Setup & Draw
+        // ========================================================================
+
+        function setup() {
+            let canvas = createCanvas(1200, 1200);
+            canvas.parent('canvas-container');
+            document.querySelector('.loading').style.display = 'none';
+            initializeSystem();
+        }
+
+        function initializeSystem() {
+            randomSeed(params.seed);
+            noiseSeed(params.seed);
+
+            particles = [];
+            for (let i = 0; i < params.particleCount; i++) {
+                let p = new Particle();
+                // Pre-warm particles across the canvas for instant visual
+                p.y = random(height * 0.3, height + 50);
+                p.life = random(50, 255);
+                p.maxLife = p.life;
+                particles.push(p);
+            }
+
+            background(250, 249, 245);
+        }
+
+        function draw() {
+            // Semi-transparent background for trails
+            background(250, 249, 245, 15);
+
+            for (let p of particles) {
+                p.update();
+                p.draw();
+            }
+
+            // Draw lattice nodes — bright constellation points where particles cluster
+            drawLatticeNodes();
+        }
+
+        function drawLatticeNodes() {
+            // Sample grid for density
+            let gridSize = 60;
+            for (let gx = 0; gx < width; gx += gridSize) {
+                for (let gy = 0; gy < height; gy += gridSize) {
+                    let count = 0;
+                    let cx = 0, cy = 0;
+                    for (let p of particles) {
+                        if (p.x > gx && p.x < gx + gridSize && p.y > gy && p.y < gy + gridSize) {
+                            count++;
+                            cx += p.x;
+                            cy += p.y;
+                        }
+                    }
+                    if (count > params.particleCount * 0.008) {
+                        cx /= count;
+                        cy /= count;
+                        let palette = PALETTES[params.stylePalette];
+                        let c = palette[0];
+                        let pulse = sin(frameCount * 0.03 + gx * 0.01 + gy * 0.01) * 0.5 + 0.5;
+                        noStroke();
+                        fill(c[0], c[1], c[2], 40 * pulse);
+                        ellipse(cx, cy, 20 + pulse * 15);
+                        fill(255, 255, 255, 60 * pulse);
+                        ellipse(cx, cy, 6);
+                    }
+                }
+            }
+        }
+
+        // ========================================================================
+        // UI Control Handlers
+        // ========================================================================
+
+        function updateParam(paramName, value) {
+            if (paramName === 'particleCount') {
+                params.particleCount = parseInt(value);
+                document.getElementById('particleCount-value').textContent = value;
+                // Reinitialize to adjust particle count
+                initializeSystem();
+            } else if (paramName === 'riseSpeed') {
+                params.riseSpeed = parseFloat(value);
+                document.getElementById('riseSpeed-value').textContent = value;
+            } else if (paramName === 'noiseScale') {
+                params.noiseScale = parseFloat(value);
+                document.getElementById('noiseScale-value').textContent = value;
+            } else if (paramName === 'depthIntensity') {
+                params.depthIntensity = parseFloat(value);
+                document.getElementById('depthIntensity-value').textContent = parseFloat(value).toFixed(2);
+            } else if (paramName === 'stylePalette') {
+                params.stylePalette = value;
+            }
+        }
+
+        function updateSeedDisplay() {
+            document.getElementById('seed-input').value = params.seed;
+        }
+
+        function updateSeed() {
+            let input = document.getElementById('seed-input');
+            let newSeed = parseInt(input.value);
+            if (newSeed && newSeed > 0) {
+                params.seed = newSeed;
+                initializeSystem();
+            } else {
+                updateSeedDisplay();
+            }
+        }
+
+        function previousSeed() {
+            params.seed = Math.max(1, params.seed - 1);
+            updateSeedDisplay();
+            initializeSystem();
+        }
+
+        function nextSeed() {
+            params.seed = params.seed + 1;
+            updateSeedDisplay();
+            initializeSystem();
+        }
+
+        function randomSeedAndUpdate() {
+            params.seed = Math.floor(Math.random() * 999999) + 1;
+            updateSeedDisplay();
+            initializeSystem();
+        }
+
+        function resetParameters() {
+            params = JSON.parse(JSON.stringify(defaultParams));
+            document.getElementById('particleCount').value = params.particleCount;
+            document.getElementById('particleCount-value').textContent = params.particleCount;
+            document.getElementById('riseSpeed').value = params.riseSpeed;
+            document.getElementById('riseSpeed-value').textContent = params.riseSpeed;
+            document.getElementById('noiseScale').value = params.noiseScale;
+            document.getElementById('noiseScale-value').textContent = params.noiseScale;
+            document.getElementById('depthIntensity').value = params.depthIntensity;
+            document.getElementById('depthIntensity-value').textContent = params.depthIntensity.toFixed(2);
+            document.getElementById('stylePalette').value = params.stylePalette;
+            updateSeedDisplay();
+            initializeSystem();
+        }
+
+        function downloadCanvas() {
+            saveCanvas('q3d-dream-lattice-seed-' + params.seed, 'png');
+        }
+
+        window.addEventListener('load', function() {
+            updateSeedDisplay();
+        });
+    </script>
+</body>
+</html>

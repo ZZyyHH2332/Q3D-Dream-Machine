@@ -41,6 +41,12 @@ export function copyFile(src, dest) {
 }
 export function openInBrowser(filePath) {
     return new Promise((resolve, reject) => {
+        // Skip actual browser open in test mode to avoid subprocess blocking
+        // and excessive browser windows during automated testing
+        if (process.env.Q3D_TEST_MODE === "mock") {
+            resolve();
+            return;
+        }
         const platform = process.platform;
         let command;
         let args;
