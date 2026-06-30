@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-06-27T09:12:17.873Z",
-  "totalLoops": 70,
-  "totalPass": 67,
-  "totalFail": 3,
-  "totalDurationMs": 47616,
+  "timestamp": "2026-06-30T05:46:03.013Z",
+  "totalLoops": 80,
+  "totalPass": 70,
+  "totalFail": 0,
+  "totalDurationMs": 40652,
   "agents": [
     {
       "agentId": "A",
       "pass": 40,
       "fail": 0,
-      "durationMs": 46933,
+      "durationMs": 39239,
       "loops": [
         {
           "loopId": 1,
@@ -215,9 +215,9 @@
     },
     {
       "agentId": "B",
-      "pass": 18,
-      "fail": 2,
-      "durationMs": 30268,
+      "pass": 20,
+      "fail": 0,
+      "durationMs": 24339,
       "loops": [
         {
           "loopId": 41,
@@ -251,7 +251,7 @@
         },
         {
           "loopId": 47,
-          "result": "FAIL",
+          "result": "PASS",
           "scenario": "跳过generate直接preview"
         },
         {
@@ -296,7 +296,7 @@
         },
         {
           "loopId": 56,
-          "result": "FAIL",
+          "result": "PASS",
           "scenario": "3D集成无avatar生成3D失败"
         },
         {
@@ -323,9 +323,9 @@
     },
     {
       "agentId": "C",
-      "pass": 9,
-      "fail": 1,
-      "durationMs": 16015,
+      "pass": 10,
+      "fail": 0,
+      "durationMs": 14451,
       "loops": [
         {
           "loopId": 61,
@@ -369,7 +369,7 @@
         },
         {
           "loopId": 69,
-          "result": "FAIL",
+          "result": "PASS",
           "scenario": "3D_无avatar错误"
         },
         {
@@ -378,26 +378,65 @@
           "scenario": "综合_跨工具一致性"
         }
       ]
+    },
+    {
+      "agentId": "X",
+      "pass": 0,
+      "fail": 0,
+      "durationMs": 1,
+      "loops": [
+        {
+          "loopId": 71,
+          "result": "SKIP",
+          "scenario": "随机图01_kawaii全链路"
+        },
+        {
+          "loopId": 72,
+          "result": "SKIP",
+          "scenario": "随机图02_guofeng全链路"
+        },
+        {
+          "loopId": 73,
+          "result": "SKIP",
+          "scenario": "随机图03_trendy全链路"
+        },
+        {
+          "loopId": 74,
+          "result": "SKIP",
+          "scenario": "随机图04_simple全链路"
+        },
+        {
+          "loopId": 75,
+          "result": "SKIP",
+          "scenario": "随机图05_kawaii全链路"
+        },
+        {
+          "loopId": 76,
+          "result": "SKIP",
+          "scenario": "随机图06_guofeng全链路"
+        },
+        {
+          "loopId": 77,
+          "result": "SKIP",
+          "scenario": "随机图07_trendy全链路"
+        },
+        {
+          "loopId": 78,
+          "result": "SKIP",
+          "scenario": "随机图08_simple全链路"
+        },
+        {
+          "loopId": 79,
+          "result": "SKIP",
+          "scenario": "随机图09_kawaii全链路"
+        },
+        {
+          "loopId": 80,
+          "result": "SKIP",
+          "scenario": "随机图10_guofeng全链路"
+        }
+      ]
     }
   ],
-  "failures": [
-    {
-      "agentId": "B",
-      "loopId": 47,
-      "scenario": "跳过generate直接preview",
-      "error": "UNKNOWN"
-    },
-    {
-      "agentId": "B",
-      "loopId": 56,
-      "scenario": "3D集成无avatar生成3D失败",
-      "error": "UNKNOWN"
-    },
-    {
-      "agentId": "C",
-      "loopId": 69,
-      "scenario": "3D_无avatar错误",
-      "error": "UNKNOWN"
-    }
-  ]
+  "failures": []
 }

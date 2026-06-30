@@ -15,38 +15,24 @@ export function registerGenerate3DModel(server) {
             description: "会话 ID（可选，用于确定输出目录）",
         },
     }, async (args) => {
-        // Mock mode: quick return with provider resolution feedback
-        if (config.testMode) {
-            let providerName = "none";
-            try {
-                const provider = await resolveProvider();
-                providerName = provider?.name || "none";
-            }
-            catch {
-                providerName = "error";
-            }
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: JSON.stringify({
-                            success: true,
-                            message: `[MOCK] 3D 模型生成成功（Provider: ${providerName}）`,
-                            glbPath: "mock://local/model.glb",
-                            provider: providerName,
-                            estimatedTime: "~30-60s（真实 API）",
-                        }),
-                    },
-                ],
-            };
-        }
         try {
             let avatarPath = args.avatarPath;
             let sessionId = args.sessionId;
-            // Find latest avatar if not provided
-            if (!avatarPath) {
+            // Session-scoped avatar lookup: when sessionId is provided, search ONLY
+            // within that session's directory. This prevents cross-session avatar
+            // leakage where findLatestAvatar() would find another session's avatar.
+            if (!avatarPath && sessionId) {
+                const sessionAvatarPath = path.join(config.outputDir, sessionId, "avatar.png");
+                if (fs.existsSync(sessionAvatarPath)) {
+                    avatarPath = sessionAvatarPath;
+                }
+            }
+            // Fallback: global search ONLY when no sessionId was provided
+            // (backward compatibility for direct tool calls without session context)
+            if (!avatarPath && !sessionId) {
                 avatarPath = findLatestAvatar(config.outputDir) || "";
             }
+            // Avatar existence check — runs in BOTH mock and real modes
             if (!avatarPath || !fs.existsSync(avatarPath)) {
                 return {
                     content: [
@@ -68,6 +54,32 @@ export function registerGenerate3DModel(server) {
             // Determine session from avatar path
             if (!sessionId && avatarPath) {
                 sessionId = path.basename(path.dirname(avatarPath));
+            }
+            // Mock mode: skip real API call but business validation already passed
+            if (config.testMode) {
+                let providerName = "none";
+                try {
+                    const provider = await resolveProvider();
+                    providerName = provider?.name || "none";
+                }
+                catch {
+                    providerName = "error";
+                }
+                return {
+                    content: [
+                        {
+                            type: "text",
+                            text: JSON.stringify({
+                                success: true,
+                                message: `[MOCK] 3D 模型生成成功（Provider: ${providerName}）`,
+                                glbPath: "mock://local/model.glb",
+                                provider: providerName,
+                                sessionId,
+                                estimatedTime: "~30-60s（真实 API）",
+                            }),
+                        },
+                    ],
+                };
             }
             // Resolve the best available 3D provider
             const provider = await resolveProvider();

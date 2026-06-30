@@ -19,13 +19,29 @@ export function registerCreate3DPreview(server: any): void {
         type: "string",
         description: "生成的 Q 版形象图片路径（可选，默认使用最近一次生成）",
       },
+      sessionId: {
+        type: "string",
+        description: "会话 ID（可选，用于精确定位 avatar）",
+      },
     },
-    async (args: { avatarPath?: string }) => {
+    async (args: { avatarPath?: string; sessionId?: string }) => {
       try {
         let avatarPath = args.avatarPath;
+        let sessionId = args.sessionId;
 
-        // If no avatar path provided, find the latest generated one
-        if (!avatarPath) {
+        // Session-scoped avatar lookup: when sessionId is provided, search ONLY
+        // within that session's directory. This prevents cross-session avatar
+        // leakage where findLatestAvatar() would find another session's avatar.
+        if (!avatarPath && sessionId) {
+          const sessionDir = path.join(config.outputDir, sessionId);
+          const candidatePath = path.join(sessionDir, "avatar.png");
+          if (fs.existsSync(candidatePath)) {
+            avatarPath = candidatePath;
+          }
+        }
+        // Fallback: global search ONLY when no sessionId was provided
+        // (backward compatibility for direct tool calls without session context)
+        if (!avatarPath && !sessionId) {
           avatarPath = findLatestAvatar(config.outputDir) || "";
         }
 
@@ -49,9 +65,11 @@ export function registerCreate3DPreview(server: any): void {
           };
         }
 
-        // Determine session ID from avatar path
-        const avatarDir = path.dirname(avatarPath);
-        const sessionId = path.basename(avatarDir);
+        // Determine session ID from avatar path if not already provided
+        if (!sessionId) {
+          const avatarDir = path.dirname(avatarPath);
+          sessionId = path.basename(avatarDir);
+        }
 
         // Read template
         const __dirname = path.dirname(fileURLToPath(import.meta.url));

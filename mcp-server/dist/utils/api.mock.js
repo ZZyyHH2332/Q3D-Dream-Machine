@@ -6,11 +6,23 @@ const mockImagePath = path.join(__dirname, "..", "..", "..", ".test-sandbox", "t
 function delay(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
+const MOCK_STYLE_PROMPTS = {
+    kawaii: "转换为软萌大头Q版风格，头部比例放大至全身1/2以上，眼睛圆润明亮占脸1/3，小鼻子微笑嘴型。默认配色：粉色、奶白色、浅紫色为主色调。线条圆润柔和无锐利棱角。背景纯色或简单几何图案。必须保留原照片发色、发型、眼镜等核心特征。English: soft pastel colors, big sparkling eyes, kawaii anime chibi style, round face, adorable, pink and mint tones",
+    guofeng: "转换为国风Q版风格，水墨感清雅含蓄，可含汉服或现代中式穿搭元素。默认配色：青绿、墨黑、宣纸白为主。线条带有书法笔触感飘逸流畅。背景可含淡墨山水或留白。必须保留原照片人物气质和核心面部特征。English: Chinese traditional style, ink wash aesthetics, elegant muted colors, flowing hanfu or modern Chinese fashion, graceful",
+    trendy: "转换为潮玩手办风格，类似盲盒玩具质感，高饱和度配色，轮廓锐利。默认配色：霓虹色、金属色、撞色为主。线条清晰硬边阴影分明。背景纯色高对比或渐变。必须保留原照片核心识别特征。English: trendy toy figure style, bold saturated colors, sharp outlines, blind box toy aesthetic, collectible figure look",
+    simple: "转换为简约卡通风格，极简几何感，色块平涂无复杂纹理。默认配色：黑白灰加单强调色。线条干净一笔画无多余装饰。背景必须极简无场景元素。保留核心轮廓和发色即可。English: minimalist cartoon style, clean lines, flat colors, geometric shapes, simple and cute, modern illustration",
+};
 export async function generateAvatar(_imageBase64, style, customPrompt) {
     await delay(100 + Math.random() * 200);
+    const styleDesc = MOCK_STYLE_PROMPTS[style] || MOCK_STYLE_PROMPTS.kawaii;
+    const mockDescription = "gender: unknown, age: 20s, hair: short black hair, face: round face with bright eyes, clothing: casual wear, expression: smiling, vibe: friendly";
+    let revisedPrompt = `A cute Q-version (chibi) character portrait. ${styleDesc}. The character is based on: ${mockDescription}. Big head proportion, small body, adorable expression. Clean light background, high quality digital art, character facing forward.`;
+    if (customPrompt) {
+        revisedPrompt += ` | User's additional requirements (highest priority): ${customPrompt}. If additional requirements conflict with the default style, follow the additional requirements.`;
+    }
     return {
         imageUrl: "mock://local/test-avatar.png",
-        revisedPrompt: `Mock: ${customPrompt || style} chibi avatar`,
+        revisedPrompt,
     };
 }
 export async function downloadImage(url, destPath) {

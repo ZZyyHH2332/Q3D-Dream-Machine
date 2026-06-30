@@ -41,7 +41,7 @@ const PLACEHOLDER_PATTERNS = [
 
 // Invalid characters (beyond normal multilingual + punctuation)
 // Whitelist includes: CJK chars, ASCII alnum, whitespace, common CN/EN punctuation
-const INVALID_CHAR_PATTERN = /[^\u4e00-\u9fa5a-zA-Z0-9\s,，.。!！?？:：;；""''（）()【】\u3001\u300A-\u300F\u00B7\u2014—–\-–/|+=%&@#*~^]/g;
+const INVALID_CHAR_PATTERN = /[^\u4e00-\u9fa5a-zA-Z0-9\s\u3000-\u303F\uFF00-\uFFEF\u2010-\u2027\u2030-\u205F\u00B7/|+=%&@#*~^_\-]/g;
 
 // DALL-E 3 recommended max prompt length
 const MAX_PROMPT_LENGTH = 1000;

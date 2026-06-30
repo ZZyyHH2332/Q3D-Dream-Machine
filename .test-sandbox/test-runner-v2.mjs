@@ -3,8 +3,8 @@
  * Q3D MCP Server Test Runner v2
  * Usage: node test-runner-v2.mjs <agent-id> <loop-start> <loop-end>
  *   agent-id: A | B | C
- *   loop-start: 1-70
- *   loop-end: 1-70
+ *   loop-start: 1-80
+ *   loop-end: 1-80
  */
 
 import fs from "fs";
@@ -18,7 +18,7 @@ const distDir = path.join(projectRoot, "mcp-server", "dist");
 // Parse args
 const agentId = process.argv[2] || "X";
 const loopStart = parseInt(process.argv[3] || "1");
-const loopEnd = parseInt(process.argv[4] || "70");
+const loopEnd = parseInt(process.argv[4] || "80");
 
 // Set test environment - per-agent isolation
 process.env.Q3D_UPLOADS_DIR = path.join(__dirname, `uploads-test-${agentId}`);
@@ -124,7 +124,13 @@ function isGlb(filePath) {
 // Shared sample image path
 const sampleImage = path.join(__dirname, "test-data", "sample-portrait.jpg");
 
-// ===== Scenarios: 70 loops partitioned by Agent =====
+// Random test images directory (Loop 71-80: 10-image random full-chain test)
+const randomImageDir = path.join(__dirname, "test-data", "random");
+const randomImages = fs.existsSync(randomImageDir)
+  ? fs.readdirSync(randomImageDir).filter(f => /^img-\d{2}\./.test(f)).sort().map(f => path.join(randomImageDir, f))
+  : [];
+
+// ===== Scenarios: 80 loops partitioned by Agent =====
 const scenarios = {
   // ===== Agent A: Loop 1-40 (效果测试) =====
   // --- kawaii 专项 (Loop 1-8) ---
@@ -537,6 +543,100 @@ const scenarios = {
     { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "一致性检查" } },
     { tool: "q3d_health_check", args: {} },
   ]},
+
+  // ===== Loop 71-80: 随机图片全链路测试 (10图随机, style 循环 kawaii/guofeng/trendy/simple) =====
+  // 每个 Loop 对应一张随机图片, 走完整6步链路 + 1步错误恢复测试(无avatar生成3D应失败)
+  // 若 randomImages 为空(未准备图片), 对应 Loop 自动跳过
+  71: { name: "随机图01_kawaii全链路", skip: !randomImages[0], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[0], style: "kawaii" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "kawaii" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "随机01", personality: "活泼可爱" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "随机图01全链路" } },
+    { tool: "q3d_generate_3d_model", args: { avatarPath: "nonexistent/no-avatar-error.png" }, expectError: true },
+  ]},
+  72: { name: "随机图02_guofeng全链路", skip: !randomImages[1], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[1], style: "guofeng" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "guofeng" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "随机02", personality: "温婉优雅" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "随机图02全链路" } },
+    { tool: "q3d_generate_3d_model", args: { avatarPath: "nonexistent/no-avatar-error.png" }, expectError: true },
+  ]},
+  73: { name: "随机图03_trendy全链路", skip: !randomImages[2], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[2], style: "trendy" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "trendy" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "随机03", personality: "酷炫个性" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "随机图03全链路" } },
+    { tool: "q3d_generate_3d_model", args: { avatarPath: "nonexistent/no-avatar-error.png" }, expectError: true },
+  ]},
+  74: { name: "随机图04_simple全链路", skip: !randomImages[3], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[3], style: "simple" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "simple" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "随机04", personality: "安静内向" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "随机图04全链路" } },
+    { tool: "q3d_generate_3d_model", args: { avatarPath: "nonexistent/no-avatar-error.png" }, expectError: true },
+  ]},
+  75: { name: "随机图05_kawaii全链路", skip: !randomImages[4], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[4], style: "kawaii" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "kawaii" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "随机05", personality: "活泼可爱" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "随机图05全链路" } },
+    { tool: "q3d_generate_3d_model", args: { avatarPath: "nonexistent/no-avatar-error.png" }, expectError: true },
+  ]},
+  76: { name: "随机图06_guofeng全链路", skip: !randomImages[5], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[5], style: "guofeng" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "guofeng" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "随机06", personality: "温婉优雅" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "随机图06全链路" } },
+    { tool: "q3d_generate_3d_model", args: { avatarPath: "nonexistent/no-avatar-error.png" }, expectError: true },
+  ]},
+  77: { name: "随机图07_trendy全链路", skip: !randomImages[6], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[6], style: "trendy" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "trendy" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "随机07", personality: "酷炫个性" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "随机图07全链路" } },
+    { tool: "q3d_generate_3d_model", args: { avatarPath: "nonexistent/no-avatar-error.png" }, expectError: true },
+  ]},
+  78: { name: "随机图08_simple全链路", skip: !randomImages[7], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[7], style: "simple" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "simple" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "随机08", personality: "安静内向" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "随机图08全链路" } },
+    { tool: "q3d_generate_3d_model", args: { avatarPath: "nonexistent/no-avatar-error.png" }, expectError: true },
+  ]},
+  79: { name: "随机图09_kawaii全链路", skip: !randomImages[8], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[8], style: "kawaii" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "kawaii" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "随机09", personality: "活泼可爱" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "随机图09全链路" } },
+    { tool: "q3d_generate_3d_model", args: { avatarPath: "nonexistent/no-avatar-error.png" }, expectError: true },
+  ]},
+  80: { name: "随机图10_guofeng全链路", skip: !randomImages[9], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[9], style: "guofeng" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "guofeng" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "随机10", personality: "温婉优雅" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "随机图10全链路" } },
+    { tool: "q3d_generate_3d_model", args: { avatarPath: "nonexistent/no-avatar-error.png" }, expectError: true },
+  ]},
 };
 
 // Run a single loop
@@ -544,6 +644,21 @@ async function runLoop(loopId) {
   const scenario = scenarios[loopId];
   if (!scenario) {
     throw new Error(`Unknown loopId: ${loopId}`);
+  }
+
+  // Skip scenario (e.g., Loop 71-80 when no random images are prepared)
+  if (scenario.skip) {
+    console.error(`[Loop ${loopId}] ${scenario.name} (SKIPPED - no test image)`);
+    return {
+      loopId,
+      scenario: scenario.name,
+      overallResult: "SKIP",
+      totalDurationMs: 0,
+      stepResults: [],
+      artifactsVerified: {},
+      worksIndexEntry: null,
+      lastSessionId: null,
+    };
   }
 
   // Handle noMock flag for legacy loops
@@ -740,6 +855,7 @@ async function main() {
     timestamp: new Date().toISOString(),
     passCount: 0,
     failCount: 0,
+    skipCount: 0,
     totalDurationMs: 0,
     loopResults: [],
   };
@@ -752,6 +868,8 @@ async function main() {
       report.loopResults.push(result);
       if (result.overallResult === "PASS") {
         report.passCount++;
+      } else if (result.overallResult === "SKIP") {
+        report.skipCount++;
       } else {
         report.failCount++;
       }
@@ -774,13 +892,14 @@ async function main() {
   const reportPath = path.join(reportDir, `agent-${agentId}-report.json`);
   fs.writeFileSync(reportPath, JSON.stringify(report, null, 2), "utf-8");
   console.error(`[TestRunner] Agent ${agentId} done. Report: ${reportPath}`);
-  console.error(`[TestRunner] PASS: ${report.passCount}/${report.loopResults.length}, FAIL: ${report.failCount}/${report.loopResults.length}`);
+  console.error(`[TestRunner] PASS: ${report.passCount}/${report.loopResults.length}, FAIL: ${report.failCount}/${report.loopResults.length}, SKIP: ${report.skipCount}/${report.loopResults.length}`);
 
   // Print summary to stdout for parent agent
   console.log(JSON.stringify({
     agentId,
     passCount: report.passCount,
     failCount: report.failCount,
+    skipCount: report.skipCount,
     totalDurationMs: report.totalDurationMs,
     loops: report.loopResults.map(r => ({ loopId: r.loopId, result: r.overallResult, scenario: r.scenario })),
   }));

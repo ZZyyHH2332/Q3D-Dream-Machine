@@ -586,6 +586,42 @@
   .pet-spin { animation: petSpin 0.6s var(--bounce); }
   @keyframes petSpin { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
 
+  /* 心情动画 */
+  .petHappy { animation: petHappy 1.5s ease-in-out infinite; transform-origin: center bottom; }
+  @keyframes petHappy {
+    0%, 100% { transform: translateY(0) scale(1); }
+    30% { transform: translateY(-10px) scale(1.05); }
+    60% { transform: translateY(0) scale(1); }
+  }
+  .petExcited { animation: petExcited 0.8s ease-in-out infinite; }
+  @keyframes petExcited {
+    0%, 100% { transform: translateY(0) rotate(0); }
+    25% { transform: translateY(-12px) rotate(-3deg); }
+    50% { transform: translateY(0) rotate(0); }
+    75% { transform: translateY(-12px) rotate(3deg); }
+  }
+  .petCurious { animation: petCurious 2s ease-in-out infinite; transform-origin: center bottom; }
+  @keyframes petCurious {
+    0%, 100% { transform: rotate(0) translateY(0); }
+    50% { transform: rotate(5deg) translateY(-4px); }
+  }
+  .petSad { animation: petSad 3s ease-in-out infinite; transform-origin: center bottom; }
+  @keyframes petSad {
+    0%, 100% { transform: scale(1) rotate(0); }
+    50% { transform: scale(0.96) rotate(-2deg); }
+  }
+  .petLove { animation: petLove 1s ease-in-out infinite; transform-origin: center; }
+  @keyframes petLove {
+    0%, 100% { transform: scale(1); }
+    30% { transform: scale(1.08); }
+    60% { transform: scale(1); }
+  }
+  .petBlink { animation: petBlink 0.18s ease-in-out; transform-origin: center; }
+  @keyframes petBlink {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(0.1); }
+  }
+
   /* 宠物气泡 */
   .pet-bubble {
     position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%);
@@ -1085,13 +1121,19 @@
     <circle cx="60" cy="48" r="32" fill="url(#headGrad)" />
     <!-- 头发/装饰 -->
     <path d="M28 38 Q20 20 40 22 Q35 10 55 16 Q60 5 75 15 Q90 10 92 30 Q100 35 90 48" fill="none" stroke="#007aff" stroke-width="4" stroke-linecap="round" id="petHair"/>
-    <!-- 左眼 -->
-    <ellipse cx="48" cy="45" rx="5" ry="7" fill="#1d1d1f" id="eyeL"/>
+    <!-- 左眼（g 容器：ellipse 默认形态 + path 特殊形态如星形/心形，通过 style.display 切换） -->
+    <g id="eyeL">
+      <ellipse cx="48" cy="45" rx="5" ry="7" fill="#1d1d1f"/>
+      <path d="" fill="#1d1d1f" stroke="none" transform="translate(0,0)" style="display:none"/>
+    </g>
     <!-- 右眼 -->
-    <ellipse cx="72" cy="45" rx="5" ry="7" fill="#1d1d1f" id="eyeR"/>
+    <g id="eyeR">
+      <ellipse cx="72" cy="45" rx="5" ry="7" fill="#1d1d1f"/>
+      <path d="" fill="#1d1d1f" stroke="none" transform="translate(24,0)" style="display:none"/>
+    </g>
     <!-- 腮红 -->
-    <ellipse cx="40" cy="56" rx="5" ry="3" fill="#bf5af2" opacity="0.4"/>
-    <ellipse cx="80" cy="56" rx="5" ry="3" fill="#bf5af2" opacity="0.4"/>
+    <ellipse cx="40" cy="56" rx="5" ry="3" fill="#bf5af2" opacity="0.4" data-blush/>
+    <ellipse cx="80" cy="56" rx="5" ry="3" fill="#bf5af2" opacity="0.4" data-blush/>
     <!-- 嘴巴 -->
     <path d="M55 58 Q60 63 65 58" fill="none" stroke="#1d1d1f" stroke-width="2" stroke-linecap="round" id="petMouth"/>
     <!-- 手 -->
@@ -1409,6 +1451,130 @@ for (const [k, svg] of Object.entries(PRESET_AVATAR_SVGS)) {
   PRESET_AVATARS[k] = 'data:image/svg+xml,' + encodeURIComponent(svg);
 }
 
+// ===== 桌宠心情状态机 =====
+// 7 种心情：happy/excited/sleeping/curious/sad/love/idle
+// 每种含：eyes（shape/rx/ry/path）、mouth（path/width）、blush（opacity/color）、animation（CSS类名）、bubbles（文案数组）、icon
+var PET_MOODS = {
+  idle: {
+    icon: '😺',
+    eyes: { shape: 'ellipse', rx: 5, ry: 7, path: '' },
+    mouth: { path: 'M55 58 Q60 63 65 58', width: 2 },
+    blush: { opacity: 0.4, color: '#bf5af2' },
+    animation: 'pet-bounce',
+    bubbles: ['发呆中...', '嗯？', '今天天气不错~', '在想事情呢...']
+  },
+  happy: {
+    icon: '😄',
+    eyes: { shape: 'path', rx: 5, ry: 7, path: 'M43 47 Q48 40 53 47' },
+    mouth: { path: 'M50 56 Q60 70 70 56', width: 2.5 },
+    blush: { opacity: 0.6, color: '#ff5e8a' },
+    animation: 'petHappy',
+    bubbles: ['好开心呀！', '嘿嘿~', '今天真棒！', '心情超好~']
+  },
+  excited: {
+    icon: '🤩',
+    eyes: { shape: 'path', rx: 5, ry: 7, path: 'M43 42 L48 50 L53 42 Z' },
+    mouth: { path: 'M48 55 Q60 72 72 55 Q60 64 48 55', width: 2.5 },
+    blush: { opacity: 0.7, color: '#ff3b6b' },
+    animation: 'petExcited',
+    bubbles: ['太棒啦！', '冲冲冲！', '耶耶耶~', '超级兴奋！']
+  },
+  sleeping: {
+    icon: '😴',
+    eyes: { shape: 'path', rx: 5, ry: 7, path: 'M43 46 Q48 44 53 46' },
+    mouth: { path: 'M57 60 Q60 62 63 60', width: 2 },
+    blush: { opacity: 0.5, color: '#ff9ec4' },
+    animation: 'petSleep',
+    bubbles: ['Zzz...', '呼噜噜~', '困了...', '梦到骨头了...']
+  },
+  curious: {
+    icon: '🤔',
+    eyes: { shape: 'ellipse', rx: 4, ry: 9, path: '' },
+    mouth: { path: 'M56 60 Q60 58 64 60', width: 2 },
+    blush: { opacity: 0.3, color: '#bf5af2' },
+    animation: 'petCurious',
+    bubbles: ['咦？', '是什么呢？', '让我看看~', '好奇！']
+  },
+  sad: {
+    icon: '😢',
+    eyes: { shape: 'path', rx: 5, ry: 7, path: 'M43 48 Q48 43 53 48' },
+    mouth: { path: 'M50 62 Q60 54 70 62', width: 2 },
+    blush: { opacity: 0.2, color: '#8a8aff' },
+    animation: 'petSad',
+    bubbles: ['呜呜...', '有点难过...', '抱抱我...', '唉...']
+  },
+  love: {
+    icon: '😍',
+    eyes: { shape: 'path', rx: 6, ry: 6, path: 'M48 41 C46 38 43 38 43 41 C43 44 48 48 48 48 C48 48 53 44 53 41 C53 38 50 38 48 41 Z' },
+    mouth: { path: 'M52 57 Q60 65 68 57', width: 2.5 },
+    blush: { opacity: 0.8, color: '#ff2d6f' },
+    animation: 'petLove',
+    bubbles: ['好喜欢呀~', '心动！', '么么哒~', '爱你哦！']
+  }
+};
+
+var currentPetMood = 'idle';
+var petColorTheme = null;
+
+// 工具：从数组随机取一项
+function randomFrom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+// ===== 程序化微表情生成器（Perlin noise 驱动不规则眨眼）=====
+// 简化的一维 Perlin-like noise（不依赖 p5 实例）
+var _petNoiseSeed = Math.random() * 1000;
+function petNoise(x) {
+  var xi = Math.floor(x);
+  var xf = x - xi;
+  function rand(i){
+    var s = Math.sin((i + _petNoiseSeed) * 12.9898) * 43758.5453;
+    return s - Math.floor(s);
+  }
+  var a = rand(xi), b = rand(xi + 1);
+  var t = xf * xf * (3 - 2 * xf); // smoothstep 平滑插值
+  return a + (b - a) * t;
+}
+
+var petBlinkTimer = null;
+function scheduleNextBlink() {
+  // 用 noise 生成 2~6s 的不规则眨眼间隔
+  var n = petNoise(Date.now() / 1000);
+  var delay = 2000 + n * 4000; // 2000ms ~ 6000ms
+  petBlinkTimer = setTimeout(function(){
+    triggerPetBlink();
+    scheduleNextBlink();
+  }, delay);
+}
+
+function triggerPetBlink() {
+  // 仅在 idle/happy/curious 状态下触发眨眼微表情，且桌宠可见
+  if (currentPetMood !== 'idle' && currentPetMood !== 'happy' && currentPetMood !== 'curious') return;
+  var svg = document.getElementById('petSvg');
+  if (!svg) return;
+  var dp = document.getElementById('desktopPet');
+  if (dp && dp.style.display === 'none') return;
+  ['eyeL', 'eyeR'].forEach(function(id){
+    var g = svg.querySelector('#' + id);
+    if (!g) return;
+    g.classList.remove('petBlink');
+    void g.offsetWidth; // 强制重排以重启动画
+    g.classList.add('petBlink');
+  });
+  // 动画结束后移除类
+  setTimeout(function(){
+    ['eyeL', 'eyeR'].forEach(function(id){
+      var g = svg.querySelector('#' + id);
+      if (g) g.classList.remove('petBlink');
+    });
+  }, 220);
+}
+
+// 启动微表情循环
+function startPetMicroExpressions() {
+  if (petBlinkTimer) clearTimeout(petBlinkTimer);
+  scheduleNextBlink();
+}
+startPetMicroExpressions();
+
 // ===== 预设作品数据 =====
 const defaultWorks = [
   { id: 'demo-1', style: 'kawaii', name: '软萌大头', date: '2026-06-26', avatar: PRESET_AVATARS.kawaii },
@@ -1651,6 +1817,117 @@ function createToonGradientMap(levels) {
   return texture;
 }
 
+// ===== 图片主色调提取（桌宠动态配色）=====
+// HSL 明度调整：factor 正值变亮、负值变暗，范围 -1~1
+function lightenColor(hex, factor) {
+  try {
+    var h = (hex || '#888888').replace('#','');
+    if (h.length === 3) h = h.split('').map(function(c){return c+c;}).join('');
+    var r = parseInt(h.substr(0,2),16)/255;
+    var g = parseInt(h.substr(2,2),16)/255;
+    var b = parseInt(h.substr(4,2),16)/255;
+    var max = Math.max(r,g,b), min = Math.min(r,g,b);
+    var l = (max+min)/2, s = 0, hh = 0;
+    var d = max - min;
+    if (d !== 0) {
+      s = l > 0.5 ? d/(2-max-min) : d/(max+min);
+      switch(max){
+        case r: hh = (g-b)/d + (g<b?6:0); break;
+        case g: hh = (b-r)/d + 2; break;
+        case b: hh = (r-g)/d + 4; break;
+      }
+      hh /= 6;
+    }
+    l = Math.max(0, Math.min(1, l + factor));
+    function hue2rgb(p,q,t){
+      if(t<0)t+=1; if(t>1)t-=1;
+      if(t<1/6)return p+(q-p)*6*t;
+      if(t<1/2)return q;
+      if(t<2/3)return p+(q-p)*(2/3-t)*6;
+      return p;
+    }
+    var q = l < 0.5 ? l*(1+s) : l+s-l*s;
+    var p = 2*l - q;
+    var nr = Math.round(hue2rgb(p,q,hh+1/3)*255);
+    var ng = Math.round(hue2rgb(p,q,hh)*255);
+    var nb = Math.round(hue2rgb(p,q,hh-1/3)*255);
+    function toHex(n){n=Math.max(0,Math.min(255,n));return n.toString(16).padStart(2,'0');}
+    return '#' + toHex(nr) + toHex(ng) + toHex(nb);
+  } catch(e) { return hex || '#888888'; }
+}
+
+// Canvas 降采样到 64x64，RGB 量化到 4x4x4 色阶，取频率最高的 3 个颜色
+function extractImageColors(dataUrl) {
+  return new Promise(function(resolve){
+    try {
+      var img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = function(){
+        try {
+          var canvas = document.createElement('canvas');
+          canvas.width = 64; canvas.height = 64;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, 64, 64);
+          var data = ctx.getImageData(0, 0, 64, 64).data;
+          var bucket = {};
+          for (var i = 0; i < data.length; i += 4) {
+            var r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+            if (a < 128) continue; // 跳过透明像素
+            var qr = Math.floor(r/64)*64;       // 0/64/128/192
+            var qg = Math.floor(g/64)*64;
+            var qb = Math.floor(b/64)*64;
+            var key = qr + ',' + qg + ',' + qb;
+            if (!bucket[key]) bucket[key] = { count: 0, r: qr, g: qg, b: qb };
+            bucket[key].count++;
+          }
+          var arr = [];
+          for (var k in bucket) { if (bucket.hasOwnProperty(k)) arr.push(bucket[k]); }
+          arr.sort(function(a,b){ return b.count - a.count; });
+          if (arr.length === 0) { resolve(null); return; }
+          function toHex(v){ v = Math.max(0,Math.min(255,v)); return v.toString(16).padStart(2,'0'); }
+          function colorStr(c){ return '#' + toHex(c.r) + toHex(c.g) + toHex(c.b); }
+          var primary = colorStr(arr[0]);
+          var secondary = arr[1] ? colorStr(arr[1]) : lightenColor(primary, 0.2);
+          var accent = arr[2] ? colorStr(arr[2]) : lightenColor(primary, -0.2);
+          resolve({ primary: primary, secondary: secondary, accent: accent });
+        } catch(e) { resolve(null); }
+      };
+      img.onerror = function() { resolve(null); };
+      img.src = dataUrl;
+    } catch(e) { resolve(null); }
+  });
+}
+
+// 将提取的颜色注入桌宠 SVG：headGrad/bodyGrad 渐变 stop-color、petHair stroke、腮红 fill
+function applyPetColors(colors) {
+  if (!colors) return;
+  petColorTheme = colors;
+  try {
+    var svg = document.getElementById('petSvg');
+    if (!svg) return;
+    var headStops = svg.querySelectorAll('#headGrad stop');
+    var bodyStops = svg.querySelectorAll('#bodyGrad stop');
+    var headLight = lightenColor(colors.primary, 0.28);
+    var headDark = colors.primary;
+    var bodyLight = lightenColor(colors.secondary, 0.28);
+    var bodyDark = colors.secondary;
+    if (headStops.length >= 2) {
+      headStops[0].setAttribute('stop-color', headLight);
+      headStops[1].setAttribute('stop-color', headDark);
+    }
+    if (bodyStops.length >= 2) {
+      bodyStops[0].setAttribute('stop-color', bodyLight);
+      bodyStops[1].setAttribute('stop-color', bodyDark);
+    }
+    var hair = svg.querySelector('#petHair');
+    if (hair) hair.setAttribute('stroke', colors.accent);
+    var blushes = svg.querySelectorAll('[data-blush]');
+    for (var i = 0; i < blushes.length; i++) {
+      blushes[i].setAttribute('fill', colors.accent);
+    }
+  } catch(e) {}
+}
+
 // Character color scheme per style
 const characterColors = {
   kawaii: { head: 0xFF8FAB, body: 0xA8E6CF, arms: 0xFFD93D, legs: 0xB4D7F0 },
@@ -1879,6 +2156,13 @@ function handleFile(file) {
     previewImg.src = ev.target.result; uploadedImage = ev.target.result;
     uploadPreview.style.display = 'block';
     // 图片已上传到 previewImg，Three.js 预览将由 GLB 模型驱动
+    // 提取图片主色调并应用到桌宠
+    extractImageColors(uploadedImage).then(function(colors){
+      if (colors) {
+        applyPetColors(colors);
+        petColorTheme = colors;
+      }
+    });
   };
   reader.readAsDataURL(file);
 }
@@ -1946,6 +2230,23 @@ function applyStyle(style) {
       }
     });
   }
+  // 联动桌宠：无上传图片时用风格预设色着色
+  if (!uploadedImage) {
+    var cc = characterColors[style] || characterColors.kawaii;
+    function hexOf(num){ return '#' + (num >>> 0).toString(16).padStart(6, '0'); }
+    var petColors = {
+      primary: hexOf(cc.head),
+      secondary: hexOf(cc.body),
+      accent: (styleColors[style] && styleColors[style].hair) ? styleColors[style].hair : hexOf(cc.arms)
+    };
+    applyPetColors(petColors);
+  }
+  // 显示桌宠时触发好奇 → 2s 后转开心
+  if (desktopPet.style.display !== 'none' && desktopPet.style.display !== '') {
+    applyPetMood('curious');
+    showPetBubble('换风格啦，看看我~');
+    setTimeout(function(){ applyPetMood('happy'); }, 2000);
+  }
 }
 
 styleOptions.forEach(opt => {
@@ -2012,10 +2313,17 @@ generateBtn.addEventListener('click', () => {
 
 function showDesktopPet() {
   desktopPet.style.display = 'block';
-  desktopPet.classList.add('pet-bounce');
+  if (petColorTheme) applyPetColors(petColorTheme);
+  clearTimeout(petIdleTimer);
+  petEntranceActive = true;
+  applyPetMood('excited');
   showPetBubble('角色生成成功！快跟我聊聊吧~');
   spawnConfetti();
-  resetPetIdle();
+  setTimeout(function(){ applyPetMood('happy'); }, 3000);
+  setTimeout(function(){
+    petEntranceActive = false;
+    resetPetIdle();
+  }, 6000);
   setTimeout(() => {
     const chatPanel = document.getElementById('petChatPanel');
     positionChatPanel();
@@ -2085,12 +2393,10 @@ desktopPet.addEventListener('click', e => {
   }
 });
 desktopPet.addEventListener('dblclick', () => {
-  desktopPet.classList.remove('pet-bounce', 'pet-sleep');
-  void desktopPet.offsetWidth;
-  desktopPet.classList.add('pet-spin');
-  setTimeout(() => desktopPet.classList.remove('pet-spin'), 600);
+  applyPetMood('excited');
   showPetBubble('旋转跳跃我闭着眼~');
   spawnConfetti();
+  setTimeout(() => applyPetMood('happy'), 1500);
 });
 
 // 右键菜单
@@ -2125,6 +2431,58 @@ document.getElementById('ctxHide').addEventListener('click', () => {
   desktopPet.style.display = 'none';
 });
 
+// 心情渲染：动态切换眼睛形状 / 嘴巴 / 腮红 / CSS 动画
+function applyPetMood(mood) {
+  var m = PET_MOODS[mood] || PET_MOODS.idle;
+  var svg = document.getElementById('petSvg');
+  if (!svg) return;
+  currentPetMood = mood;
+
+  // 更新眼睛（切换 ellipse/path 显示，设置 rx/ry）
+  ['eyeL', 'eyeR'].forEach(function(id){
+    var g = svg.querySelector('#' + id);
+    if (!g) return;
+    var ellipse = g.querySelector('ellipse');
+    var path = g.querySelector('path');
+    if (m.eyes.shape === 'path') {
+      if (ellipse) ellipse.style.display = 'none';
+      if (path) {
+        path.style.display = '';
+        path.setAttribute('d', m.eyes.path || '');
+      }
+    } else {
+      if (path) path.style.display = 'none';
+      if (ellipse) {
+        ellipse.style.display = '';
+        ellipse.setAttribute('rx', m.eyes.rx);
+        ellipse.setAttribute('ry', m.eyes.ry);
+      }
+    }
+  });
+
+  // 更新嘴巴（path d + stroke-width）
+  var mouth = svg.querySelector('#petMouth');
+  if (mouth) {
+    mouth.setAttribute('d', m.mouth.path);
+    mouth.setAttribute('stroke-width', m.mouth.width);
+  }
+
+  // 更新腮红（opacity + fill）
+  var blushes = svg.querySelectorAll('[data-blush]');
+  for (var i = 0; i < blushes.length; i++) {
+    blushes[i].setAttribute('opacity', m.blush.opacity);
+    blushes[i].setAttribute('fill', m.blush.color);
+  }
+
+  // 更新 CSS 动画类（移除所有心情类 + 强制重排 offsetWidth + 添加新类）
+  var moodClasses = ['pet-bounce', 'pet-sleep', 'pet-spin', 'petHappy', 'petExcited', 'petCurious', 'petSad', 'petLove'];
+  for (var j = 0; j < moodClasses.length; j++) {
+    desktopPet.classList.remove(moodClasses[j]);
+  }
+  void desktopPet.offsetWidth; // 强制重排以重启动画
+  if (m.animation) desktopPet.classList.add(m.animation);
+}
+
 // 气泡提示
 function showPetBubble(text) {
   const bubble = document.getElementById('petBubble');
@@ -2134,17 +2492,20 @@ function showPetBubble(text) {
 }
 
 // 闲置动画
-let petIdleTimer;
+var petIdleTimer;
+var petEntranceActive = false;
 function resetPetIdle() {
   clearTimeout(petIdleTimer);
-  desktopPet.classList.remove('pet-sleep');
-  desktopPet.classList.add('pet-bounce');
-  petIdleTimer = setTimeout(() => {
-    desktopPet.classList.remove('pet-bounce');
-    const actions = ['pet-sleep', 'pet-bounce'];
-    const action = actions[Math.floor(Math.random() * actions.length)];
-    desktopPet.classList.add(action);
-    if (action === 'pet-sleep') showPetBubble('Zzz... 打盹中...');
+  // 入场序列（excited→happy）期间不强制切回 idle，避免打断
+  if (!petEntranceActive) applyPetMood('idle');
+  petIdleTimer = setTimeout(function(){
+    // 5s 无操作：40% 概率进入 sleeping
+    if (Math.random() < 0.4) {
+      applyPetMood('sleeping');
+      showPetBubble(randomFrom(PET_MOODS.sleeping.bubbles));
+    } else {
+      applyPetMood('idle');
+    }
   }, 5000);
 }
 document.addEventListener('mousemove', resetPetIdle);
@@ -2162,15 +2523,34 @@ async function togglePiP() {
     });
     pipWindow.document.body.style.margin = '0';
     pipWindow.document.body.style.background = 'transparent';
+    // 深拷贝桌宠 SVG：动态配色（渐变 stop-color / petHair stroke / 腮红 fill）与心情状态
+    // （眼睛形状 style.display / 嘴巴 path / 腮红 opacity 均为属性，cloneNode(true) 可完整保留）
+    var cloned = petSvg.cloneNode(true);
+    var moodData = PET_MOODS[currentPetMood] || PET_MOODS.idle;
+    var moodAnim = moodData.animation || 'pet-bounce';
     pipWindow.document.body.innerHTML = `
       <style>
         body { margin:0; background:transparent; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; }
-        .pip-pet { width:140px; height:140px; animation: bounce 2s infinite; cursor:pointer; }
-        @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+        .pip-pet { width:140px; height:140px; cursor:pointer; }
+        .pip-pet svg { width:100%; height:100%; }
         .pip-bubble { background:rgba(255,255,255,0.9); border:1px solid rgba(0,0,0,0.08); border-radius:12px; padding:8px 12px; font-size:12px; color:#1d1d1f; margin-bottom:8px; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+        @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+        .pet-bounce { animation: bounce 2s ease-in-out infinite; }
+        @keyframes petHappy { 0%,100%{transform:translateY(0) scale(1);} 30%{transform:translateY(-10px) scale(1.05);} 60%{transform:translateY(0) scale(1);} }
+        .petHappy { animation: petHappy 1.5s ease-in-out infinite; transform-origin:center bottom; }
+        @keyframes petExcited { 0%,100%{transform:translateY(0) rotate(0);} 25%{transform:translateY(-12px) rotate(-3deg);} 50%{transform:translateY(0) rotate(0);} 75%{transform:translateY(-12px) rotate(3deg);} }
+        .petExcited { animation: petExcited 0.8s ease-in-out infinite; }
+        @keyframes petCurious { 0%,100%{transform:rotate(0) translateY(0);} 50%{transform:rotate(5deg) translateY(-4px);} }
+        .petCurious { animation: petCurious 2s ease-in-out infinite; transform-origin:center bottom; }
+        @keyframes petSad { 0%,100%{transform:scale(1) rotate(0);} 50%{transform:scale(0.96) rotate(-2deg);} }
+        .petSad { animation: petSad 3s ease-in-out infinite; transform-origin:center bottom; }
+        @keyframes petLove { 0%,100%{transform:scale(1);} 30%{transform:scale(1.08);} 60%{transform:scale(1);} }
+        .petLove { animation: petLove 1s ease-in-out infinite; transform-origin:center; }
+        @keyframes petSleep { 0%,100%{transform:scale(1);} 50%{transform:scale(1.03) rotate(-2deg);} }
+        .petSleep { animation: petSleep 3s ease-in-out infinite; }
       </style>
       <div class="pip-bubble">我在这里置顶陪你~</div>
-      <div class="pip-pet">${petSvg.outerHTML}</div>
+      <div class="pip-pet ${moodAnim}">${cloned.outerHTML}</div>
     `;
     showPetBubble('已置顶到桌面！切换窗口也能看到我啦');
   } catch (e) {
@@ -2303,8 +2683,26 @@ function sendMessage() {
   if (!text) return;
   addUserMessage(text);
   chatInput.value = '';
+  // 关键词情绪检测 → 切换桌宠心情 + 气泡
+  var mood = detectPetMood(text);
+  if (mood) {
+    applyPetMood(mood);
+    var m = PET_MOODS[mood];
+    if (m) showPetBubble(randomFrom(m.bubbles));
+  }
   const answer = findAnswer(text);
   addPetMessage(answer, 400 + Math.random() * 400);
+}
+
+// 关键词 → 心情映射（按优先级匹配）
+function detectPetMood(text) {
+  var t = (text || '').toLowerCase();
+  if (/(太棒了|厉害|牛|冲|加油|66)/.test(t)) return 'excited';
+  if (/(可爱|好看|漂亮|棒|喜欢|爱|萌)/.test(t)) return 'love';
+  if (/(难过|伤心|哭|不开心|emo)/.test(t)) return 'sad';
+  if (/(你好|hi|hello|嗨|早上好|晚上好)/.test(t)) return 'happy';
+  if (/(什么|为什么|怎么|？|\?|吗)/.test(t)) return 'curious';
+  return null;
 }
 
 sendBtn.addEventListener('click', sendMessage);
