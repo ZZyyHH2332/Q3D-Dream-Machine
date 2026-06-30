@@ -347,7 +347,8 @@
     updateNurtureUI();
 
     // PET_MOODS: 心情动画定义表（SVG 骨骼 + 动画配置）
-    const PET_MOODS = {
+    // 挂载到 window 以便 pet-animation.js 等外部脚本访问
+    window.PET_MOODS = {
       idle:    { label: '平静', icon: '😌', anim: 'breathe',      eyeShape: 'normal', mouth: 'neutral', color: '#FF8FAB' },
       happy:   { label: '开心', icon: '😊', anim: 'bounce',       eyeShape: 'happy',  mouth: 'smile',   color: '#FFD700' },
       excited: { label: '兴奋', icon: '🤩', anim: 'jump',         eyeShape: 'star',   mouth: 'open',    color: '#FF6B6B' },
@@ -360,7 +361,7 @@
     // 初始化 SVG 骨骼动画
     PetAnimation.init();
 
-    // Setup avatar — 更新 SVG image href，不破坏骨骼结构
+    // Setup avatar — 更新 SVG image href
     const avatarImg = document.getElementById('avatar-img');
     if (avatarPath) {
       avatarImg.setAttribute('href', avatarPath);
@@ -541,7 +542,7 @@
       const moods = ['happy', 'excited', 'curious', 'love'];
       const r = moods[Math.floor(Math.random() * moods.length)];
       PetAnimation.setMood(r, 3);
-      showBubble(PET_MOODS[r].icon + ' 旋转跳跃我闭着眼~ 🎵');
+      showBubble(window.PET_MOODS[r].icon + ' 旋转跳跃我闭着眼~ 🎵');
     });
 
     function showBubble(text) {

@@ -36,6 +36,7 @@ npm-debug.log*
 *.tmp
 *.bak
 .cache/
+test-screenshots/
 
 # === 运行时产物 ===
 assets/generated/

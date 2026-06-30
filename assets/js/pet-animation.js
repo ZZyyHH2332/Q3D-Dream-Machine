@@ -72,7 +72,7 @@ const PetAnimation = (function() {
     applyBlink(dt);
 
     // 心情动画
-    const cfg = PET_MOODS[currentMood];
+    const cfg = window.PET_MOODS?.[currentMood];
     if (cfg) {
       applyMoodAnim(cfg.anim, time);
       updateMouth(cfg.mouth);
@@ -232,7 +232,7 @@ const PetAnimation = (function() {
 
   // ========== 心情状态机 ==========
   function setMood(mood, durationSec) {
-    if (!PET_MOODS[mood]) return;
+    if (!(window.PET_MOODS && window.PET_MOODS[mood])) return;
     currentMood = mood;
     if (tempMoodTimer) clearTimeout(tempMoodTimer);
     if (durationSec && durationSec > 0) {
