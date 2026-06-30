@@ -1,0 +1,65 @@
+name: Q3D 80 Loop Regression Test
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: 80 Loop Multi-Agent Cluster Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install MCP Server dependencies
+        working-directory: ./mcp-server
+        run: npm ci
+
+      - name: Build MCP Server
+        working-directory: ./mcp-server
+        run: npm run build
+
+      - name: Run 80 Loop Test
+        working-directory: ./.test-sandbox
+        run: node run-70loop-test.mjs
+        env:
+          Q3D_TEST_MODE: mock
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-reports
+          path: |
+            .test-sandbox/reports/*.json
+            .test-sandbox/reports/*.md
+
+      - name: Check test results
+        working-directory: ./.test-sandbox/reports
+        run: |
+          echo "=== Test Summary ==="
+          node -e "
+            const fs = require('fs');
+            const summary = JSON.parse(fs.readFileSync('final-70loop-summary.json', 'utf-8'));
+            console.log('Total Loops:', summary.totalLoops);
+            console.log('Total Pass:', summary.totalPass);
+            console.log('Total Fail:', summary.totalFail);
+            console.log('Duration:', (summary.totalDurationMs / 1000).toFixed(1), 's');
+            if (summary.totalFail > 0) {
+              console.log('FAILURES:');
+              summary.failures.forEach(f => console.log('  -', f.agentId, f.loopId, f.scenario));
+              process.exit(1);
+            }
+            console.log('All loops passed!');
+          "
