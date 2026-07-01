@@ -1,6 +1,7 @@
 /**
  * Q3D Pet LLM Bridge — 统一 LLM 适配层
- * 支持：Ollama 本地 / OpenAI 兼容远程 API / 模拟降级
+ * 支持：TRAE Bridge / Ollama 本地 / OpenAI 兼容远程 API / 模拟降级
+ * 优先级：TRAE → Ollama → OpenAI → Mock
  * 流式输出（SSE / NDJSON）+ 动态人格化 Prompt
  */
 
@@ -13,10 +14,136 @@ const LLMBridge = (function() {
     ollamaTimeout: 3000,
     streamTimeout: 30000,
     maxRetries: 1,
+    traeTimeout: 10000,
   };
 
-  let currentProvider = 'mock'; // 'ollama' | 'openai' | 'mock'
+  let currentProvider = 'mock'; // 'trae' | 'ollama' | 'openai' | 'mock'
   let ollamaModel = null;
+  let traeAvailable = false;
+  let traeReqId = 0;
+  const traePending = new Map(); // reqId -> { resolve, reject, timer }
+
+  // ========== TRAE Bridge 探测 ==========
+  function probeTraeBridge() {
+    return new Promise((resolve) => {
+      // 方法1：检查 window.__TRAE__ 全局对象
+      if (window.__TRAE__ && typeof window.__TRAE__.chat === 'function') {
+        traeAvailable = true;
+        resolve(true);
+        return;
+      }
+
+      // 方法2：通过 postMessage 握手检测
+      const handshakeToken = 'q3d-pet-handshake-' + Date.now();
+      let resolved = false;
+      const timer = setTimeout(() => {
+        if (!resolved) {
+          resolved = true;
+          window.removeEventListener('message', handler);
+          resolve(false);
+        }
+      }, 1500);
+
+      function handler(e) {
+        if (e.data && e.data.type === 'trae-pet-handshake-ack' && e.data.token === handshakeToken) {
+          if (!resolved) {
+            resolved = true;
+            clearTimeout(timer);
+            traeAvailable = true;
+            window.removeEventListener('message', handler);
+            resolve(true);
+          }
+        }
+      }
+
+      window.addEventListener('message', handler);
+      // 向上级窗口或 TRAE 宿主发送握手
+      if (window.parent !== window) {
+        window.parent.postMessage({ type: 'q3d-pet-handshake', token: handshakeToken }, '*');
+      }
+      // 也尝试 top window
+      if (window.top !== window && window.top !== window.parent) {
+        window.top.postMessage({ type: 'q3d-pet-handshake', token: handshakeToken }, '*');
+      }
+    });
+  }
+
+  // ========== TRAE Bridge 流式对话 ==========
+  async function* streamTrae(messages, ctx) {
+    const reqId = ++traeReqId;
+
+    // 模式1：window.__TRAE__.chat 直接 API（如果 TRAE 注入了全局对象）
+    if (window.__TRAE__ && typeof window.__TRAE__.chat === 'function') {
+      try {
+        const result = await window.__TRAE__.chat(messages, {
+          temperature: 0.8,
+          max_tokens: 150,
+          petName: ctx.petName,
+          mood: ctx.mood,
+        });
+        // 统一逐字输出（模拟流式效果）
+        const text = typeof result === 'string' ? result : (result?.content || String(result));
+        for (const ch of text) {
+          yield { type: 'token', content: ch };
+        }
+        yield { type: 'done' };
+        return;
+      } catch (e) {
+        // 失败则降级到 postMessage
+        console.warn('[LLMBridge] __TRAE__.chat failed, fallback to postMessage:', e.message);
+      }
+    }
+
+    // 模式2：postMessage 与 TRAE 宿主通信（iframe 嵌入场景）
+    const reply = await new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        cleanup();
+        reject(new Error('TRAE chat timeout'));
+      }, CFG.traeTimeout);
+
+      function handler(e) {
+        if (e.data && e.data.reqId !== reqId) return;
+        if (e.data?.type === 'q3d-pet-chat-reply') {
+          cleanup();
+          clearTimeout(timer);
+          resolve(e.data.content || '');
+        }
+        if (e.data?.type === 'q3d-pet-chat-error') {
+          cleanup();
+          clearTimeout(timer);
+          reject(new Error(e.data.message || 'TRAE chat error'));
+        }
+      }
+
+      function cleanup() {
+        window.removeEventListener('message', handler);
+      }
+
+      window.addEventListener('message', handler);
+      const payload = {
+        type: 'q3d-pet-chat-request',
+        reqId,
+        messages,
+        options: {
+          petName: ctx.petName,
+          mood: ctx.mood,
+          personality: ctx.personality,
+          stats: ctx.stats,
+        },
+      };
+      if (window.parent !== window) window.parent.postMessage(payload, '*');
+      if (window.top !== window && window.top !== window.parent) {
+        window.top.postMessage(payload, '*');
+      }
+    });
+
+    // 逐字输出模拟流式效果
+    const chars = String(reply).split('');
+    for (const ch of chars) {
+      yield { type: 'token', content: ch };
+    }
+    yield { type: 'done' };
+  }
 
   // ========== Ollama 探测 ==========
   async function probeOllama() {
@@ -195,20 +322,27 @@ const LLMBridge = (function() {
     }
     msgs.push({ role: 'user', content: userText });
 
-    // 探测优先级：Ollama > OpenAI > Mock
+    // 探测优先级：TRAE > Ollama > OpenAI > Mock
     if (currentProvider === 'mock') {
       // 尝试自动升级
-      const ollamaModelName = await probeOllama();
-      if (ollamaModelName) {
-        ollamaModel = ollamaModelName;
-        currentProvider = 'ollama';
-      } else if (ctx.apiKey) {
-        currentProvider = 'openai';
+      const traeOk = await probeTraeBridge();
+      if (traeOk) {
+        currentProvider = 'trae';
+      } else {
+        const ollamaModelName = await probeOllama();
+        if (ollamaModelName) {
+          ollamaModel = ollamaModelName;
+          currentProvider = 'ollama';
+        } else if (ctx.apiKey) {
+          currentProvider = 'openai';
+        }
       }
     }
 
     try {
-      if (currentProvider === 'ollama' && ollamaModel) {
+      if (currentProvider === 'trae') {
+        yield* streamTrae(msgs, ctx);
+      } else if (currentProvider === 'ollama' && ollamaModel) {
         yield* streamOllama(msgs, ollamaModel);
       } else if (currentProvider === 'openai' && ctx.apiKey) {
         yield* streamOpenAI(msgs, ctx.apiBase, ctx.apiKey, ctx.model);
@@ -217,8 +351,21 @@ const LLMBridge = (function() {
       }
     } catch (e) {
       console.error('[LLMBridge] Error:', e);
-      // 降级到 mock
-      currentProvider = 'mock';
+      // 降级到下一级
+      const order = ['trae', 'ollama', 'openai', 'mock'];
+      const idx = order.indexOf(currentProvider);
+      if (idx >= 0 && idx < order.length - 1) {
+        currentProvider = order[idx + 1];
+        console.log('[LLMBridge] Downgraded to:', currentProvider);
+        // 重新尝试（最多降级一次）
+        if (currentProvider === 'ollama' && ollamaModel) {
+          yield* streamOllama(msgs, ollamaModel);
+          return;
+        } else if (currentProvider === 'openai' && ctx.apiKey) {
+          yield* streamOpenAI(msgs, ctx.apiBase, ctx.apiKey, ctx.model);
+          return;
+        }
+      }
       yield* streamMock(userText, ctx.petName);
     }
   }

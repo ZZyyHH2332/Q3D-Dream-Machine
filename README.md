@@ -19,12 +19,30 @@ TRAE Skill: q3d-avatar-creator
     v
 MCP Server: q3d-tools (stdio)
     |
+    +-- AI Provider Layer (优先级: TRAE Native → External API → Mock)
+    |   ├── TRAE Native: 使用 TRAE 内置 Vision + GenerateImage（零配置）
+    |   ├── External API: OpenAI 兼容接口（GPT-4o + DALL-E 3 / 豆包 / 通义万相）
+    |   └── Mock: 本地模拟数据（测试用）
+    |
     +-- q3d_upload_photo     --> assets/uploads/
-    +-- q3d_generate_avatar  --> AI API (OpenAI兼容) --> assets/generated/
+    +-- q3d_generate_avatar  --> AI Provider --> assets/generated/
+    +-- q3d_save_avatar      --> TRAE 模式下保存已生成的图片
     +-- q3d_create_3d_preview --> preview-template/ --> 浏览器打开
     +-- q3d_spawn_pet        --> pet-template/ --> 浏览器打开
-    +-- q3d_chat_with_pet    --> AI API --> chat-history.json
+    +-- q3d_chat_with_pet    --> AI Provider --> chat-history.json
 ```
+
+### AI Provider 架构
+
+Q3D 采用**多 Provider 自动降级**架构，优先使用 TRAE 原生能力：
+
+| 优先级 | Provider | 说明 | 适用场景 |
+|--------|----------|------|---------|
+| **P0** | TRAE Native | TRAE 内置多模态模型 + GenerateImage 工具，零配置即用 | TRAE IDE 环境 |
+| **P1** | External API | OpenAI 兼容接口（GPT-4o Vision + DALL-E 3） | 非 TRAE 环境，有 API Key |
+| **P2** | Mock | 本地模拟数据 | 测试 / 演示 |
+
+通过 `Q3D_AI_PROVIDER` 环境变量切换：`trae` / `external` / `auto`（默认）
 
 ## 在线体验
 
@@ -38,7 +56,8 @@ MCP Server: q3d-tools (stdio)
 |---|---|
 | **TRAE Skill 触发** | 在 TRAE 中输入"生成Q版形象"即可触发完整工作流 |
 | **图片上传** | TRAE 对话中上传照片，自动保存到本地 |
-| **AI 形象生成** | AI 分析 + Q 版图生成（支持 4 种风格；Demo 以程序化生成呈现，配置 API Key 后接入真实 GPT-4o vision + DALL-E 3） |
+| **AI 形象生成** | 多 Provider 自动降级（TRAE 原生 → 外部 API → Mock），支持 4 种风格（kawaii/国风/潮玩/简约） |
+| **TRAE Native 模式** | 零配置使用 TRAE 内置 Vision + GenerateImage，无需 API Key |
 | **3D 预览** | Three.js 真 3D 场景，球体头部贴 AI 生成图，支持拖拽旋转 |
 | **桌面宠物** | 生成独立本地 HTML 页面，浮动宠物 + 对话面板 + PiP 置顶 |
 | **桌宠心情系统** | 7 种心情状态（idle/happy/excited/sleeping/curious/sad/love），基于上传图片主色调自动配色，支持关键词情绪检测与双击互动 |
@@ -73,17 +92,35 @@ npm install
 npm run build
 ```
 
-### 3. 配置 AI API
+### 3. 配置 AI Provider
+
+Q3D 支持多种 AI Provider，**默认自动选择 TRAE 原生模式**（零配置即用）：
 
 ```bash
 cp .env.example .env
-# 编辑 .env，填写你的 API Key
+# 编辑 .env，配置 AI Provider
 ```
 
+**TRAE Native 模式（默认，推荐）：
+```dotenv
+Q3D_AI_PROVIDER=auto   # 自动探测，优先 TRAE 原生
+```
+- 无需 API Key，直接使用 TRAE 内置多模态能力
+- Vision 分析：TRAE 内置模型直接解析照片
+- 图像生成：TRAE GenerateImage 工具生成 Q 版形象
+- 对话：TRAE 内置对话模型
+
+External API 模式（可选）：
+```dotenv
+Q3D_AI_PROVIDER=external
+Q3D_API_KEY=sk-xxx
+Q3D_API_BASE=https://api.openai.com/v1
+```
 支持任意 OpenAI 兼容接口：
 - OpenAI（默认）
 - 阿里云百炼
 - 通义万相
+- 豆包
 - Together AI 等
 
 ### 4. 在 TRAE 中注册 MCP Server
@@ -113,15 +150,22 @@ Q3D_Dream_Machine/
 │   ├── src/
 │   │   ├── index.ts                         # MCP Server 入口
 │   │   ├── config.ts                        # 环境变量配置
+│   │   ├── providers/                       # AI Provider 层
+│   │   │   ├── types.ts                     # Provider 接口定义
+│   │   │   ├── trae-native.ts               # TRAE 原生 Provider（协作模式）
+│   │   │   ├── external-api.ts              # 外部 API Provider
+│   │   │   ├── mock-avatar.ts               # Mock Provider
+│   │   │   └── avatar-resolver.ts           # Provider 解析器（自动降级）
 │   │   ├── utils/
 │   │   │   ├── file.ts                      # 文件操作（含 openInBrowser）
-│   │   │   ├── api.ts                       # AI API 封装
-│   │   │   ├── api.mock.ts                  # Mock 模式实现
+│   │   │   ├── api.ts                       # AI API 封装（向后兼容）
+│   │   │   ├── api.mock.ts                  # Mock 模式实现（向后兼容）
 │   │   │   └── works-index.ts               # 作品索引管理
 │   │   └── tools/
 │   │       ├── health-check.ts
 │   │       ├── upload-photo.ts
-│   │       ├── generate-avatar.ts
+│   │       ├── generate-avatar.ts           # 形象生成（支持 photoAnalysis / generatedImagePath 参数）
+│   │       ├── save-avatar.ts               # 【新增】保存已生成头像（TRAE 模式用）
 │   │       ├── generate-3d-model.ts         # 3D 模型生成
 │   │       ├── create-3d-preview.ts         # 3D 预览页面
 │   │       ├── spawn-pet.ts                 # 桌宠生成
