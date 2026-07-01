@@ -26,6 +26,7 @@ function getConfig() {
             ? path.resolve(process.env.Q3D_WORKS_INDEX)
             : path.join(projectRoot, "works-index.json"),
         testMode: process.env.Q3D_TEST_MODE === "mock",
+        defaultStyle: process.env.Q3D_DEFAULT_STYLE || "kawaii",
         provider3D: process.env.Q3D_3D_PROVIDER || "auto",
         hunyuanApiUrl: process.env.Q3D_HUNYUAN_API_URL || "http://localhost:8080",
         api302Key: process.env.Q3D_302AI_API_KEY || undefined,

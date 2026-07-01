@@ -10,6 +10,8 @@ const STATUS_ORDER = [
     "uploaded",
     "avatar_generated",
     "preview_created",
+    "bones_preview_created",
+    "model_generated",
     "pet_spawned",
 ];
 function toRelativePath(absPath) {
@@ -56,11 +58,13 @@ export function addOrUpdateWork(sessionId, updates) {
             updatedAt: now,
             avatarPath: updates.avatarPath ? toRelativePath(updates.avatarPath) : null,
             previewPath: updates.previewPath ? toRelativePath(updates.previewPath) : null,
+            bonesPreviewPath: updates.bonesPreviewPath ? toRelativePath(updates.bonesPreviewPath) : null,
             petPath: updates.petPath ? toRelativePath(updates.petPath) : null,
             glbPath: updates.glbPath ? toRelativePath(updates.glbPath) : null,
             petName: updates.petName || null,
             personality: updates.personality || null,
             originalPath: updates.originalPath ? toRelativePath(updates.originalPath) : null,
+            initialMood: updates.initialMood || null,
         };
         index.works.unshift(entry);
     }
@@ -81,6 +85,9 @@ export function addOrUpdateWork(sessionId, updates) {
         if (updates.previewPath) {
             entry.previewPath = toRelativePath(updates.previewPath);
         }
+        if (updates.bonesPreviewPath) {
+            entry.bonesPreviewPath = toRelativePath(updates.bonesPreviewPath);
+        }
         if (updates.petPath) {
             entry.petPath = toRelativePath(updates.petPath);
         }
@@ -92,6 +99,9 @@ export function addOrUpdateWork(sessionId, updates) {
         }
         if (updates.originalPath) {
             entry.originalPath = toRelativePath(updates.originalPath);
+        }
+        if (updates.initialMood !== undefined) {
+            entry.initialMood = updates.initialMood;
         }
         entry.updatedAt = now;
     }
@@ -109,5 +119,28 @@ export function removeWork(sessionId) {
 }
 export function readWorksIndex() {
     return readIndex();
+}
+// 获取所有作品
+export function getAllWorks() {
+    return readIndex().works;
+}
+// 根据 ID 获取单个作品
+export function getWorkById(sessionId) {
+    return readIndex().works.find((w) => w.sessionId === sessionId);
+}
+// 获取作品统计
+export function getWorksStats() {
+    const works = readIndex().works;
+    const byStatus = {};
+    const byStyle = {};
+    for (const w of works) {
+        byStatus[w.status] = (byStatus[w.status] || 0) + 1;
+        byStyle[w.style] = (byStyle[w.style] || 0) + 1;
+    }
+    return {
+        total: works.length,
+        byStatus,
+        byStyle,
+    };
 }
 //# sourceMappingURL=works-index.js.map

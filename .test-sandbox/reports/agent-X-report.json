@@ -1,65 +1,65 @@
 {
   "agentId": "X",
   "loopStart": 71,
-  "loopEnd": 80,
-  "timestamp": "2026-06-30T06:48:26.676Z",
-  "passCount": 10,
+  "loopEnd": 90,
+  "timestamp": "2026-07-01T05:32:03.733Z",
+  "passCount": 20,
   "failCount": 0,
   "skipCount": 0,
-  "totalDurationMs": 34758,
+  "totalDurationMs": 72939,
   "loopResults": [
     {
       "loopId": 71,
       "scenario": "随机图01_kawaii全链路",
       "overallResult": "PASS",
-      "totalDurationMs": 3593,
+      "totalDurationMs": 3713,
       "stepResults": [
         {
           "stepOrder": 1,
           "toolName": "q3d_upload_photo",
           "success": true,
-          "durationMs": 14,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782802106679-0687\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782802106679-0687\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
+          "durationMs": 7,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883923735-3762\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883923735-3762\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
           "errorCode": null
         },
         {
           "stepOrder": 2,
           "toolName": "q3d_generate_avatar",
           "success": true,
-          "durationMs": 373,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802106679-0687\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "durationMs": 387,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883923735-3762\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
           "errorCode": null
         },
         {
           "stepOrder": 3,
           "toolName": "q3d_generate_3d_model",
           "success": true,
-          "durationMs": 3041,
-          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782802106679-0687\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "durationMs": 3036,
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883923735-3762\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
           "errorCode": null
         },
         {
           "stepOrder": 4,
           "toolName": "q3d_create_3d_preview",
           "success": true,
-          "durationMs": 61,
-          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802106679-0687\\\\preview-3d.html\",\n  \"sessionId\": \"1782802106679-0687\",\n  \"message\": \"3D 预览页面",
+          "durationMs": 49,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883923735-3762\\\\preview-3d.html\",\n  \"sessionId\": \"1782883923735-3762\",\n  \"message\": \"3D 预览页面",
           "errorCode": null
         },
         {
           "stepOrder": 5,
           "toolName": "q3d_spawn_pet",
           "success": true,
-          "durationMs": 79,
-          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802106679-0687\\\\pet.html\",\n  \"sessionId\": \"1782802106679-0687\",\n  \"name\": \"随机01\",\n  \"personality\"",
+          "durationMs": 71,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883923735-3762\\\\pet.html\",\n  \"sessionId\": \"1782883923735-3762\",\n  \"name\": \"随机01\",\n  \"personality\"",
           "errorCode": null
         },
         {
           "stepOrder": 6,
           "toolName": "q3d_chat_with_pet",
           "success": true,
-          "durationMs": 4,
-          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"我也觉得呢！你很有眼光哦~ 💕\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782802106679-0687\",\n  \"historyLength\": 2,\n  \"message\": \"我也觉得呢！你很有眼光哦~ 💕\"\n}",
+          "durationMs": 145,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"你好呀！我是小Q，你的专属Q版宠物~ 🎉 [MOCK]\",\n  \"emotion\": \"excited\",\n  \"sessionId\": \"1782883923735-3762\",\n  \"historyLength\": 2,\n  \"message\": \"你好呀！我是小Q，你的专属Q版宠物~ 🎉 [MOCK]\"\n}",
           "errorCode": null
         },
         {
@@ -72,16 +72,16 @@
         }
       ],
       "artifactsVerified": {
-        "uploads/1782802106679-0687/original.jpg": {
+        "uploads/1782883923735-3762/original.jpg": {
           "exists": true,
           "sizeBytes": 83941
         },
-        "generated/1782802106679-0687/avatar.png": {
+        "generated/1782883923735-3762/avatar.png": {
           "exists": true,
           "sizeBytes": 69,
           "isPng": true
         },
-        "generated/1782802106679-0687/prompt-check": {
+        "generated/1782883923735-3762/prompt-check": {
           "hasStyleKeyword": true,
           "hasCustomPrompt": true,
           "lengthOk": true,
@@ -89,30 +89,30 @@
           "revisedPromptLength": 577,
           "style": "kawaii"
         },
-        "generated/1782802106679-0687/preview-3d.html": {
+        "generated/1782883923735-3762/preview-3d.html": {
           "exists": true,
           "sizeBytes": 10919
         },
-        "generated/1782802106679-0687/pet.html": {
+        "generated/1782883923735-3762/pet.html": {
           "exists": true,
-          "sizeBytes": 16694
+          "sizeBytes": 27040
         },
-        "generated/1782802106679-0687/chat-history.json": {
+        "generated/1782883923735-3762/chat-history.json": {
           "exists": true,
-          "sizeBytes": 163
+          "sizeBytes": 181
         },
-        "generated/1782802106679-0687/metadata.json": {
+        "generated/1782883923735-3762/metadata.json": {
           "exists": true,
-          "sizeBytes": 1170
+          "sizeBytes": 1446
         },
-        "generated/1782802106679-0687/model.glb": {
+        "generated/1782883923735-3762/model.glb": {
           "exists": false,
           "sizeBytes": 0,
           "isGlb": false
         }
       },
       "worksIndexEntry": {
-        "sessionId": "1782802106679-0687",
+        "sessionId": "1782883923735-3762",
         "status": "pet_spawned",
         "style": "kawaii",
         "hasAvatarPath": true,
@@ -120,60 +120,60 @@
         "hasPetPath": true,
         "hasGlbPath": false
       },
-      "lastSessionId": "1782802106679-0687"
+      "lastSessionId": "1782883923735-3762"
     },
     {
       "loopId": 72,
       "scenario": "随机图02_guofeng全链路",
       "overallResult": "PASS",
-      "totalDurationMs": 3431,
+      "totalDurationMs": 3678,
       "stepResults": [
         {
           "stepOrder": 1,
           "toolName": "q3d_upload_photo",
           "success": true,
-          "durationMs": 63,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782802110272-0405\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782802110272-0405\\\\original.jpg\",\n  \"style\": \"guofeng\",\n  \"mess",
+          "durationMs": 62,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883927449-1102\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883927449-1102\\\\original.jpg\",\n  \"style\": \"guofeng\",\n  \"mess",
           "errorCode": null
         },
         {
           "stepOrder": 2,
           "toolName": "q3d_generate_avatar",
           "success": true,
-          "durationMs": 196,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802110272-0405\\\\avatar.png\",\n  \"style\": \"guofeng\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_",
+          "durationMs": 382,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883927449-1102\\\\avatar.png\",\n  \"style\": \"guofeng\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_",
           "errorCode": null
         },
         {
           "stepOrder": 3,
           "toolName": "q3d_generate_3d_model",
           "success": true,
-          "durationMs": 3008,
-          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782802110272-0405\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "durationMs": 3004,
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883927449-1102\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
           "errorCode": null
         },
         {
           "stepOrder": 4,
           "toolName": "q3d_create_3d_preview",
           "success": true,
-          "durationMs": 69,
-          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802110272-0405\\\\preview-3d.html\",\n  \"sessionId\": \"1782802110272-0405\",\n  \"message\": \"3D 预览页面",
+          "durationMs": 60,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883927449-1102\\\\preview-3d.html\",\n  \"sessionId\": \"1782883927449-1102\",\n  \"message\": \"3D 预览页面",
           "errorCode": null
         },
         {
           "stepOrder": 5,
           "toolName": "q3d_spawn_pet",
           "success": true,
-          "durationMs": 75,
-          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802110272-0405\\\\pet.html\",\n  \"sessionId\": \"1782802110272-0405\",\n  \"name\": \"随机02\",\n  \"personality\"",
+          "durationMs": 59,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883927449-1102\\\\pet.html\",\n  \"sessionId\": \"1782883927449-1102\",\n  \"name\": \"随机02\",\n  \"personality\"",
           "errorCode": null
         },
         {
           "stepOrder": 6,
           "toolName": "q3d_chat_with_pet",
           "success": true,
-          "durationMs": 2,
-          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"我在听呢，继续说呀~ 👂\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782802110272-0405\",\n  \"historyLength\": 2,\n  \"message\": \"我在听呢，继续说呀~ 👂\"\n}",
+          "durationMs": 93,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"抱抱！你的小Q在这里陪着你哦 [MOCK]\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782883927449-1102\",\n  \"historyLength\": 2,\n  \"message\": \"抱抱！你的小Q在这里陪着你哦 [MOCK]\"\n}",
           "errorCode": null
         },
         {
@@ -186,16 +186,16 @@
         }
       ],
       "artifactsVerified": {
-        "uploads/1782802110272-0405/original.jpg": {
+        "uploads/1782883927449-1102/original.jpg": {
           "exists": true,
           "sizeBytes": 205071
         },
-        "generated/1782802110272-0405/avatar.png": {
+        "generated/1782883927449-1102/avatar.png": {
           "exists": true,
           "sizeBytes": 69,
           "isPng": true
         },
-        "generated/1782802110272-0405/prompt-check": {
+        "generated/1782883927449-1102/prompt-check": {
           "hasStyleKeyword": true,
           "hasCustomPrompt": true,
           "lengthOk": true,
@@ -203,30 +203,30 @@
           "revisedPromptLength": 571,
           "style": "guofeng"
         },
-        "generated/1782802110272-0405/preview-3d.html": {
+        "generated/1782883927449-1102/preview-3d.html": {
           "exists": true,
           "sizeBytes": 10919
         },
-        "generated/1782802110272-0405/pet.html": {
+        "generated/1782883927449-1102/pet.html": {
           "exists": true,
-          "sizeBytes": 16694
+          "sizeBytes": 27040
         },
-        "generated/1782802110272-0405/chat-history.json": {
+        "generated/1782883927449-1102/chat-history.json": {
           "exists": true,
-          "sizeBytes": 154
+          "sizeBytes": 168
         },
-        "generated/1782802110272-0405/metadata.json": {
+        "generated/1782883927449-1102/metadata.json": {
           "exists": true,
-          "sizeBytes": 1141
+          "sizeBytes": 1417
         },
-        "generated/1782802110272-0405/model.glb": {
+        "generated/1782883927449-1102/model.glb": {
           "exists": false,
           "sizeBytes": 0,
           "isGlb": false
         }
       },
       "worksIndexEntry": {
-        "sessionId": "1782802110272-0405",
+        "sessionId": "1782883927449-1102",
         "status": "pet_spawned",
         "style": "guofeng",
         "hasAvatarPath": true,
@@ -234,60 +234,60 @@
         "hasPetPath": true,
         "hasGlbPath": false
       },
-      "lastSessionId": "1782802110272-0405"
+      "lastSessionId": "1782883927449-1102"
     },
     {
       "loopId": 73,
       "scenario": "随机图03_trendy全链路",
       "overallResult": "PASS",
-      "totalDurationMs": 3517,
+      "totalDurationMs": 3626,
       "stepResults": [
         {
           "stepOrder": 1,
           "toolName": "q3d_upload_photo",
           "success": true,
-          "durationMs": 57,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782802113703-6486\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782802113703-6486\\\\original.jpg\",\n  \"style\": \"trendy\",\n  \"messa",
+          "durationMs": 50,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883931126-2679\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883931126-2679\\\\original.jpg\",\n  \"style\": \"trendy\",\n  \"messa",
           "errorCode": null
         },
         {
           "stepOrder": 2,
           "toolName": "q3d_generate_avatar",
           "success": true,
-          "durationMs": 313,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802113703-6486\\\\avatar.png\",\n  \"style\": \"trendy\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "durationMs": 369,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883931126-2679\\\\avatar.png\",\n  \"style\": \"trendy\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
           "errorCode": null
         },
         {
           "stepOrder": 3,
           "toolName": "q3d_generate_3d_model",
           "success": true,
-          "durationMs": 3016,
-          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782802113703-6486\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "durationMs": 3005,
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883931126-2679\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
           "errorCode": null
         },
         {
           "stepOrder": 4,
           "toolName": "q3d_create_3d_preview",
           "success": true,
-          "durationMs": 53,
-          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802113703-6486\\\\preview-3d.html\",\n  \"sessionId\": \"1782802113703-6486\",\n  \"message\": \"3D 预览页面",
+          "durationMs": 41,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883931126-2679\\\\preview-3d.html\",\n  \"sessionId\": \"1782883931126-2679\",\n  \"message\": \"3D 预览页面",
           "errorCode": null
         },
         {
           "stepOrder": 5,
           "toolName": "q3d_spawn_pet",
           "success": true,
-          "durationMs": 61,
-          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802113703-6486\\\\pet.html\",\n  \"sessionId\": \"1782802113703-6486\",\n  \"name\": \"随机03\",\n  \"personality\"",
+          "durationMs": 47,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883931126-2679\\\\pet.html\",\n  \"sessionId\": \"1782883931126-2679\",\n  \"name\": \"随机03\",\n  \"personality\"",
           "errorCode": null
         },
         {
           "stepOrder": 6,
           "toolName": "q3d_chat_with_pet",
           "success": true,
-          "durationMs": 1,
-          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"我在听呢，继续说呀~ 👂\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782802113703-6486\",\n  \"historyLength\": 2,\n  \"message\": \"我在听呢，继续说呀~ 👂\"\n}",
+          "durationMs": 101,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"抱抱！你的小Q在这里陪着你哦 [MOCK]\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782883931126-2679\",\n  \"historyLength\": 2,\n  \"message\": \"抱抱！你的小Q在这里陪着你哦 [MOCK]\"\n}",
           "errorCode": null
         },
         {
@@ -300,47 +300,47 @@
         }
       ],
       "artifactsVerified": {
-        "uploads/1782802113703-6486/original.jpg": {
+        "uploads/1782883931126-2679/original.jpg": {
           "exists": true,
           "sizeBytes": 95040
         },
-        "generated/1782802113703-6486/avatar.png": {
+        "generated/1782883931126-2679/avatar.png": {
           "exists": true,
           "sizeBytes": 69,
           "isPng": true
         },
-        "generated/1782802113703-6486/prompt-check": {
+        "generated/1782883931126-2679/prompt-check": {
           "hasStyleKeyword": true,
           "hasCustomPrompt": true,
           "lengthOk": true,
           "noPlaceholder": true,
-          "revisedPromptLength": 555,
+          "revisedPromptLength": 568,
           "style": "trendy"
         },
-        "generated/1782802113703-6486/preview-3d.html": {
+        "generated/1782883931126-2679/preview-3d.html": {
           "exists": true,
           "sizeBytes": 10919
         },
-        "generated/1782802113703-6486/pet.html": {
+        "generated/1782883931126-2679/pet.html": {
           "exists": true,
-          "sizeBytes": 16694
+          "sizeBytes": 27040
         },
-        "generated/1782802113703-6486/chat-history.json": {
+        "generated/1782883931126-2679/chat-history.json": {
           "exists": true,
-          "sizeBytes": 154
+          "sizeBytes": 168
         },
-        "generated/1782802113703-6486/metadata.json": {
+        "generated/1782883931126-2679/metadata.json": {
           "exists": true,
-          "sizeBytes": 1108
+          "sizeBytes": 1423
         },
-        "generated/1782802113703-6486/model.glb": {
+        "generated/1782883931126-2679/model.glb": {
           "exists": false,
           "sizeBytes": 0,
           "isGlb": false
         }
       },
       "worksIndexEntry": {
-        "sessionId": "1782802113703-6486",
+        "sessionId": "1782883931126-2679",
         "status": "pet_spawned",
         "style": "trendy",
         "hasAvatarPath": true,
@@ -348,60 +348,60 @@
         "hasPetPath": true,
         "hasGlbPath": false
       },
-      "lastSessionId": "1782802113703-6486"
+      "lastSessionId": "1782883931126-2679"
     },
     {
       "loopId": 74,
       "scenario": "随机图04_simple全链路",
       "overallResult": "PASS",
-      "totalDurationMs": 3547,
+      "totalDurationMs": 3639,
       "stepResults": [
         {
           "stepOrder": 1,
           "toolName": "q3d_upload_photo",
           "success": true,
-          "durationMs": 52,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782802117220-8144\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782802117220-8144\\\\original.jpg\",\n  \"style\": \"simple\",\n  \"messa",
+          "durationMs": 43,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883934753-2636\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883934753-2636\\\\original.jpg\",\n  \"style\": \"simple\",\n  \"messa",
           "errorCode": null
         },
         {
           "stepOrder": 2,
           "toolName": "q3d_generate_avatar",
           "success": true,
-          "durationMs": 356,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802117220-8144\\\\avatar.png\",\n  \"style\": \"simple\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "durationMs": 421,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883934753-2636\\\\avatar.png\",\n  \"style\": \"simple\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
           "errorCode": null
         },
         {
           "stepOrder": 3,
           "toolName": "q3d_generate_3d_model",
           "success": true,
-          "durationMs": 3017,
-          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782802117220-8144\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "durationMs": 3002,
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883934753-2636\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
           "errorCode": null
         },
         {
           "stepOrder": 4,
           "toolName": "q3d_create_3d_preview",
           "success": true,
-          "durationMs": 53,
-          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802117220-8144\\\\preview-3d.html\",\n  \"sessionId\": \"1782802117220-8144\",\n  \"message\": \"3D 预览页面",
+          "durationMs": 45,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883934753-2636\\\\preview-3d.html\",\n  \"sessionId\": \"1782883934753-2636\",\n  \"message\": \"3D 预览页面",
           "errorCode": null
         },
         {
           "stepOrder": 5,
           "toolName": "q3d_spawn_pet",
           "success": true,
-          "durationMs": 54,
-          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802117220-8144\\\\pet.html\",\n  \"sessionId\": \"1782802117220-8144\",\n  \"name\": \"随机04\",\n  \"personality\"",
+          "durationMs": 53,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883934753-2636\\\\pet.html\",\n  \"sessionId\": \"1782883934753-2636\",\n  \"name\": \"随机04\",\n  \"personality\"",
           "errorCode": null
         },
         {
           "stepOrder": 6,
           "toolName": "q3d_chat_with_pet",
           "success": true,
-          "durationMs": 2,
-          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"你好呀！我是小Q，你的专属 Q 版宠物~ 🎉\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782802117220-8144\",\n  \"historyLength\": 2,\n  \"message\": \"你好呀！我是小Q，你的专属 Q 版宠物~ 🎉\"\n}",
+          "durationMs": 65,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"哇，你终于来找我聊天啦！今天心情怎么样？ [MOCK]\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782883934753-2636\",\n  \"historyLength\": 2,\n  \"message\": \"哇，你终于来找我聊天啦！今天心情怎么样？ [MOCK]\"\n}",
           "errorCode": null
         },
         {
@@ -414,47 +414,47 @@
         }
       ],
       "artifactsVerified": {
-        "uploads/1782802117220-8144/original.jpg": {
+        "uploads/1782883934753-2636/original.jpg": {
           "exists": true,
           "sizeBytes": 154464
         },
-        "generated/1782802117220-8144/avatar.png": {
+        "generated/1782883934753-2636/avatar.png": {
           "exists": true,
           "sizeBytes": 69,
           "isPng": true
         },
-        "generated/1782802117220-8144/prompt-check": {
+        "generated/1782883934753-2636/prompt-check": {
           "hasStyleKeyword": true,
           "hasCustomPrompt": true,
           "lengthOk": true,
           "noPlaceholder": true,
-          "revisedPromptLength": 541,
+          "revisedPromptLength": 547,
           "style": "simple"
         },
-        "generated/1782802117220-8144/preview-3d.html": {
+        "generated/1782883934753-2636/preview-3d.html": {
           "exists": true,
           "sizeBytes": 10919
         },
-        "generated/1782802117220-8144/pet.html": {
+        "generated/1782883934753-2636/pet.html": {
           "exists": true,
-          "sizeBytes": 16694
+          "sizeBytes": 27040
         },
-        "generated/1782802117220-8144/chat-history.json": {
+        "generated/1782883934753-2636/chat-history.json": {
           "exists": true,
-          "sizeBytes": 176
+          "sizeBytes": 188
         },
-        "generated/1782802117220-8144/metadata.json": {
+        "generated/1782883934753-2636/metadata.json": {
           "exists": true,
-          "sizeBytes": 1078
+          "sizeBytes": 1370
         },
-        "generated/1782802117220-8144/model.glb": {
+        "generated/1782883934753-2636/model.glb": {
           "exists": false,
           "sizeBytes": 0,
           "isGlb": false
         }
       },
       "worksIndexEntry": {
-        "sessionId": "1782802117220-8144",
+        "sessionId": "1782883934753-2636",
         "status": "pet_spawned",
         "style": "simple",
         "hasAvatarPath": true,
@@ -462,484 +462,28 @@
         "hasPetPath": true,
         "hasGlbPath": false
       },
-      "lastSessionId": "1782802117220-8144"
+      "lastSessionId": "1782883934753-2636"
     },
     {
       "loopId": 75,
       "scenario": "随机图05_kawaii全链路",
       "overallResult": "PASS",
-      "totalDurationMs": 3489,
+      "totalDurationMs": 3624,
       "stepResults": [
         {
           "stepOrder": 1,
           "toolName": "q3d_upload_photo",
           "success": true,
-          "durationMs": 46,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782802120768-8142\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782802120768-8142\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
+          "durationMs": 40,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883938392-3913\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883938392-3913\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
           "errorCode": null
         },
         {
           "stepOrder": 2,
           "toolName": "q3d_generate_avatar",
           "success": true,
-          "durationMs": 321,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802120768-8142\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 3,
-          "toolName": "q3d_generate_3d_model",
-          "success": true,
-          "durationMs": 3015,
-          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782802120768-8142\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 4,
-          "toolName": "q3d_create_3d_preview",
-          "success": true,
-          "durationMs": 48,
-          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802120768-8142\\\\preview-3d.html\",\n  \"sessionId\": \"1782802120768-8142\",\n  \"message\": \"3D 预览页面",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 5,
-          "toolName": "q3d_spawn_pet",
-          "success": true,
-          "durationMs": 46,
-          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802120768-8142\\\\pet.html\",\n  \"sessionId\": \"1782802120768-8142\",\n  \"name\": \"随机05\",\n  \"personality\"",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 6,
-          "toolName": "q3d_chat_with_pet",
-          "success": true,
-          "durationMs": 2,
-          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"哈哈，你真可爱！跟我聊聊天吧~ 😄\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782802120768-8142\",\n  \"historyLength\": 2,\n  \"message\": \"哈哈，你真可爱！跟我聊聊天吧~ 😄\"\n}",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 7,
-          "toolName": "q3d_generate_3d_model",
-          "success": true,
-          "durationMs": 0,
-          "responseSummary": "{\"success\":false,\"error\":{\"code\":\"MODEL_AVATAR_NOT_FOUND\",\"message\":\"未找到 Q 版形象图片\",\"suggestion\":\"请先调用 q3d_generate_avatar 生成形象，或提供 avatarPath 参数\"}}",
-          "errorCode": null
-        }
-      ],
-      "artifactsVerified": {
-        "uploads/1782802120768-8142/original.jpg": {
-          "exists": true,
-          "sizeBytes": 139395
-        },
-        "generated/1782802120768-8142/avatar.png": {
-          "exists": true,
-          "sizeBytes": 69,
-          "isPng": true
-        },
-        "generated/1782802120768-8142/prompt-check": {
-          "hasStyleKeyword": true,
-          "hasCustomPrompt": true,
-          "lengthOk": true,
-          "noPlaceholder": true,
-          "revisedPromptLength": 577,
-          "style": "kawaii"
-        },
-        "generated/1782802120768-8142/preview-3d.html": {
-          "exists": true,
-          "sizeBytes": 10919
-        },
-        "generated/1782802120768-8142/pet.html": {
-          "exists": true,
-          "sizeBytes": 16694
-        },
-        "generated/1782802120768-8142/chat-history.json": {
-          "exists": true,
-          "sizeBytes": 169
-        },
-        "generated/1782802120768-8142/metadata.json": {
-          "exists": true,
-          "sizeBytes": 1170
-        },
-        "generated/1782802120768-8142/model.glb": {
-          "exists": false,
-          "sizeBytes": 0,
-          "isGlb": false
-        }
-      },
-      "worksIndexEntry": {
-        "sessionId": "1782802120768-8142",
-        "status": "pet_spawned",
-        "style": "kawaii",
-        "hasAvatarPath": true,
-        "hasPreviewPath": true,
-        "hasPetPath": true,
-        "hasGlbPath": false
-      },
-      "lastSessionId": "1782802120768-8142"
-    },
-    {
-      "loopId": 76,
-      "scenario": "随机图06_guofeng全链路",
-      "overallResult": "PASS",
-      "totalDurationMs": 3433,
-      "stepResults": [
-        {
-          "stepOrder": 1,
-          "toolName": "q3d_upload_photo",
-          "success": true,
-          "durationMs": 46,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782802124256-6878\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782802124256-6878\\\\original.jpg\",\n  \"style\": \"guofeng\",\n  \"mess",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 2,
-          "toolName": "q3d_generate_avatar",
-          "success": true,
-          "durationMs": 259,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802124256-6878\\\\avatar.png\",\n  \"style\": \"guofeng\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 3,
-          "toolName": "q3d_generate_3d_model",
-          "success": true,
-          "durationMs": 3014,
-          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782802124256-6878\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 4,
-          "toolName": "q3d_create_3d_preview",
-          "success": true,
-          "durationMs": 50,
-          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802124256-6878\\\\preview-3d.html\",\n  \"sessionId\": \"1782802124256-6878\",\n  \"message\": \"3D 预览页面",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 5,
-          "toolName": "q3d_spawn_pet",
-          "success": true,
-          "durationMs": 51,
-          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802124256-6878\\\\pet.html\",\n  \"sessionId\": \"1782802124256-6878\",\n  \"name\": \"随机06\",\n  \"personality\"",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 6,
-          "toolName": "q3d_chat_with_pet",
-          "success": true,
-          "durationMs": 1,
-          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"我也觉得呢！你很有眼光哦~ 💕\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782802124256-6878\",\n  \"historyLength\": 2,\n  \"message\": \"我也觉得呢！你很有眼光哦~ 💕\"\n}",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 7,
-          "toolName": "q3d_generate_3d_model",
-          "success": true,
-          "durationMs": 1,
-          "responseSummary": "{\"success\":false,\"error\":{\"code\":\"MODEL_AVATAR_NOT_FOUND\",\"message\":\"未找到 Q 版形象图片\",\"suggestion\":\"请先调用 q3d_generate_avatar 生成形象，或提供 avatarPath 参数\"}}",
-          "errorCode": null
-        }
-      ],
-      "artifactsVerified": {
-        "uploads/1782802124256-6878/original.jpg": {
-          "exists": true,
-          "sizeBytes": 183102
-        },
-        "generated/1782802124256-6878/avatar.png": {
-          "exists": true,
-          "sizeBytes": 69,
-          "isPng": true
-        },
-        "generated/1782802124256-6878/prompt-check": {
-          "hasStyleKeyword": true,
-          "hasCustomPrompt": true,
-          "lengthOk": true,
-          "noPlaceholder": true,
-          "revisedPromptLength": 571,
-          "style": "guofeng"
-        },
-        "generated/1782802124256-6878/preview-3d.html": {
-          "exists": true,
-          "sizeBytes": 10919
-        },
-        "generated/1782802124256-6878/pet.html": {
-          "exists": true,
-          "sizeBytes": 16694
-        },
-        "generated/1782802124256-6878/chat-history.json": {
-          "exists": true,
-          "sizeBytes": 163
-        },
-        "generated/1782802124256-6878/metadata.json": {
-          "exists": true,
-          "sizeBytes": 1141
-        },
-        "generated/1782802124256-6878/model.glb": {
-          "exists": false,
-          "sizeBytes": 0,
-          "isGlb": false
-        }
-      },
-      "worksIndexEntry": {
-        "sessionId": "1782802124256-6878",
-        "status": "pet_spawned",
-        "style": "guofeng",
-        "hasAvatarPath": true,
-        "hasPreviewPath": true,
-        "hasPetPath": true,
-        "hasGlbPath": false
-      },
-      "lastSessionId": "1782802124256-6878"
-    },
-    {
-      "loopId": 77,
-      "scenario": "随机图07_trendy全链路",
-      "overallResult": "PASS",
-      "totalDurationMs": 3412,
-      "stepResults": [
-        {
-          "stepOrder": 1,
-          "toolName": "q3d_upload_photo",
-          "success": true,
-          "durationMs": 67,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782802127689-2009\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782802127689-2009\\\\original.jpg\",\n  \"style\": \"trendy\",\n  \"messa",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 2,
-          "toolName": "q3d_generate_avatar",
-          "success": true,
-          "durationMs": 234,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802127689-2009\\\\avatar.png\",\n  \"style\": \"trendy\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 3,
-          "toolName": "q3d_generate_3d_model",
-          "success": true,
-          "durationMs": 3012,
-          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782802127689-2009\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 4,
-          "toolName": "q3d_create_3d_preview",
-          "success": true,
-          "durationMs": 42,
-          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802127689-2009\\\\preview-3d.html\",\n  \"sessionId\": \"1782802127689-2009\",\n  \"message\": \"3D 预览页面",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 5,
-          "toolName": "q3d_spawn_pet",
-          "success": true,
-          "durationMs": 44,
-          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802127689-2009\\\\pet.html\",\n  \"sessionId\": \"1782802127689-2009\",\n  \"name\": \"随机07\",\n  \"personality\"",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 6,
-          "toolName": "q3d_chat_with_pet",
-          "success": true,
-          "durationMs": 2,
-          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"哈哈，你真可爱！跟我聊聊天吧~ 😄\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782802127689-2009\",\n  \"historyLength\": 2,\n  \"message\": \"哈哈，你真可爱！跟我聊聊天吧~ 😄\"\n}",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 7,
-          "toolName": "q3d_generate_3d_model",
-          "success": true,
-          "durationMs": 1,
-          "responseSummary": "{\"success\":false,\"error\":{\"code\":\"MODEL_AVATAR_NOT_FOUND\",\"message\":\"未找到 Q 版形象图片\",\"suggestion\":\"请先调用 q3d_generate_avatar 生成形象，或提供 avatarPath 参数\"}}",
-          "errorCode": null
-        }
-      ],
-      "artifactsVerified": {
-        "uploads/1782802127689-2009/original.jpg": {
-          "exists": true,
-          "sizeBytes": 396723
-        },
-        "generated/1782802127689-2009/avatar.png": {
-          "exists": true,
-          "sizeBytes": 69,
-          "isPng": true
-        },
-        "generated/1782802127689-2009/prompt-check": {
-          "hasStyleKeyword": true,
-          "hasCustomPrompt": true,
-          "lengthOk": true,
-          "noPlaceholder": true,
-          "revisedPromptLength": 555,
-          "style": "trendy"
-        },
-        "generated/1782802127689-2009/preview-3d.html": {
-          "exists": true,
-          "sizeBytes": 10919
-        },
-        "generated/1782802127689-2009/pet.html": {
-          "exists": true,
-          "sizeBytes": 16694
-        },
-        "generated/1782802127689-2009/chat-history.json": {
-          "exists": true,
-          "sizeBytes": 169
-        },
-        "generated/1782802127689-2009/metadata.json": {
-          "exists": true,
-          "sizeBytes": 1108
-        },
-        "generated/1782802127689-2009/model.glb": {
-          "exists": false,
-          "sizeBytes": 0,
-          "isGlb": false
-        }
-      },
-      "worksIndexEntry": {
-        "sessionId": "1782802127689-2009",
-        "status": "pet_spawned",
-        "style": "trendy",
-        "hasAvatarPath": true,
-        "hasPreviewPath": true,
-        "hasPetPath": true,
-        "hasGlbPath": false
-      },
-      "lastSessionId": "1782802127689-2009"
-    },
-    {
-      "loopId": 78,
-      "scenario": "随机图08_simple全链路",
-      "overallResult": "PASS",
-      "totalDurationMs": 3499,
-      "stepResults": [
-        {
-          "stepOrder": 1,
-          "toolName": "q3d_upload_photo",
-          "success": true,
-          "durationMs": 41,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782802131101-7386\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782802131101-7386\\\\original.jpg\",\n  \"style\": \"simple\",\n  \"messa",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 2,
-          "toolName": "q3d_generate_avatar",
-          "success": true,
-          "durationMs": 339,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802131101-7386\\\\avatar.png\",\n  \"style\": \"simple\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 3,
-          "toolName": "q3d_generate_3d_model",
-          "success": true,
-          "durationMs": 3015,
-          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782802131101-7386\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 4,
-          "toolName": "q3d_create_3d_preview",
-          "success": true,
-          "durationMs": 45,
-          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802131101-7386\\\\preview-3d.html\",\n  \"sessionId\": \"1782802131101-7386\",\n  \"message\": \"3D 预览页面",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 5,
-          "toolName": "q3d_spawn_pet",
-          "success": true,
-          "durationMs": 46,
-          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802131101-7386\\\\pet.html\",\n  \"sessionId\": \"1782802131101-7386\",\n  \"name\": \"随机08\",\n  \"personality\"",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 6,
-          "toolName": "q3d_chat_with_pet",
-          "success": true,
-          "durationMs": 3,
-          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"我在听呢，继续说呀~ 👂\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782802131101-7386\",\n  \"historyLength\": 2,\n  \"message\": \"我在听呢，继续说呀~ 👂\"\n}",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 7,
-          "toolName": "q3d_generate_3d_model",
-          "success": true,
-          "durationMs": 0,
-          "responseSummary": "{\"success\":false,\"error\":{\"code\":\"MODEL_AVATAR_NOT_FOUND\",\"message\":\"未找到 Q 版形象图片\",\"suggestion\":\"请先调用 q3d_generate_avatar 生成形象，或提供 avatarPath 参数\"}}",
-          "errorCode": null
-        }
-      ],
-      "artifactsVerified": {
-        "uploads/1782802131101-7386/original.jpg": {
-          "exists": true,
-          "sizeBytes": 68689
-        },
-        "generated/1782802131101-7386/avatar.png": {
-          "exists": true,
-          "sizeBytes": 69,
-          "isPng": true
-        },
-        "generated/1782802131101-7386/prompt-check": {
-          "hasStyleKeyword": true,
-          "hasCustomPrompt": true,
-          "lengthOk": true,
-          "noPlaceholder": true,
-          "revisedPromptLength": 541,
-          "style": "simple"
-        },
-        "generated/1782802131101-7386/preview-3d.html": {
-          "exists": true,
-          "sizeBytes": 10919
-        },
-        "generated/1782802131101-7386/pet.html": {
-          "exists": true,
-          "sizeBytes": 16694
-        },
-        "generated/1782802131101-7386/chat-history.json": {
-          "exists": true,
-          "sizeBytes": 154
-        },
-        "generated/1782802131101-7386/metadata.json": {
-          "exists": true,
-          "sizeBytes": 1078
-        },
-        "generated/1782802131101-7386/model.glb": {
-          "exists": false,
-          "sizeBytes": 0,
-          "isGlb": false
-        }
-      },
-      "worksIndexEntry": {
-        "sessionId": "1782802131101-7386",
-        "status": "pet_spawned",
-        "style": "simple",
-        "hasAvatarPath": true,
-        "hasPreviewPath": true,
-        "hasPetPath": true,
-        "hasGlbPath": false
-      },
-      "lastSessionId": "1782802131101-7386"
-    },
-    {
-      "loopId": 79,
-      "scenario": "随机图09_kawaii全链路",
-      "overallResult": "PASS",
-      "totalDurationMs": 3464,
-      "stepResults": [
-        {
-          "stepOrder": 1,
-          "toolName": "q3d_upload_photo",
-          "success": true,
-          "durationMs": 45,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782802134601-7953\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782802134601-7953\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
-          "errorCode": null
-        },
-        {
-          "stepOrder": 2,
-          "toolName": "q3d_generate_avatar",
-          "success": true,
-          "durationMs": 283,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802134601-7953\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "durationMs": 362,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883938392-3913\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
           "errorCode": null
         },
         {
@@ -947,7 +491,7 @@
           "toolName": "q3d_generate_3d_model",
           "success": true,
           "durationMs": 3006,
-          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782802134601-7953\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883938392-3913\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
           "errorCode": null
         },
         {
@@ -955,23 +499,23 @@
           "toolName": "q3d_create_3d_preview",
           "success": true,
           "durationMs": 48,
-          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802134601-7953\\\\preview-3d.html\",\n  \"sessionId\": \"1782802134601-7953\",\n  \"message\": \"3D 预览页面",
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883938392-3913\\\\preview-3d.html\",\n  \"sessionId\": \"1782883938392-3913\",\n  \"message\": \"3D 预览页面",
           "errorCode": null
         },
         {
           "stepOrder": 5,
           "toolName": "q3d_spawn_pet",
           "success": true,
-          "durationMs": 58,
-          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802134601-7953\\\\pet.html\",\n  \"sessionId\": \"1782802134601-7953\",\n  \"name\": \"随机09\",\n  \"personality\"",
+          "durationMs": 52,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883938392-3913\\\\pet.html\",\n  \"sessionId\": \"1782883938392-3913\",\n  \"name\": \"随机05\",\n  \"personality\"",
           "errorCode": null
         },
         {
           "stepOrder": 6,
           "toolName": "q3d_chat_with_pet",
           "success": true,
-          "durationMs": 2,
-          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"你好呀！我是小Q，你的专属 Q 版宠物~ 🎉\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782802134601-7953\",\n  \"historyLength\": 2,\n  \"message\": \"你好呀！我是小Q，你的专属 Q 版宠物~ 🎉\"\n}",
+          "durationMs": 105,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"抱抱！你的小Q在这里陪着你哦 [MOCK]\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782883938392-3913\",\n  \"historyLength\": 2,\n  \"message\": \"抱抱！你的小Q在这里陪着你哦 [MOCK]\"\n}",
           "errorCode": null
         },
         {
@@ -984,16 +528,16 @@
         }
       ],
       "artifactsVerified": {
-        "uploads/1782802134601-7953/original.jpg": {
+        "uploads/1782883938392-3913/original.jpg": {
           "exists": true,
-          "sizeBytes": 446644
+          "sizeBytes": 139395
         },
-        "generated/1782802134601-7953/avatar.png": {
+        "generated/1782883938392-3913/avatar.png": {
           "exists": true,
           "sizeBytes": 69,
           "isPng": true
         },
-        "generated/1782802134601-7953/prompt-check": {
+        "generated/1782883938392-3913/prompt-check": {
           "hasStyleKeyword": true,
           "hasCustomPrompt": true,
           "lengthOk": true,
@@ -1001,30 +545,30 @@
           "revisedPromptLength": 577,
           "style": "kawaii"
         },
-        "generated/1782802134601-7953/preview-3d.html": {
+        "generated/1782883938392-3913/preview-3d.html": {
           "exists": true,
           "sizeBytes": 10919
         },
-        "generated/1782802134601-7953/pet.html": {
+        "generated/1782883938392-3913/pet.html": {
           "exists": true,
-          "sizeBytes": 16694
+          "sizeBytes": 27040
         },
-        "generated/1782802134601-7953/chat-history.json": {
+        "generated/1782883938392-3913/chat-history.json": {
           "exists": true,
-          "sizeBytes": 176
+          "sizeBytes": 168
         },
-        "generated/1782802134601-7953/metadata.json": {
+        "generated/1782883938392-3913/metadata.json": {
           "exists": true,
-          "sizeBytes": 1170
+          "sizeBytes": 1446
         },
-        "generated/1782802134601-7953/model.glb": {
+        "generated/1782883938392-3913/model.glb": {
           "exists": false,
           "sizeBytes": 0,
           "isGlb": false
         }
       },
       "worksIndexEntry": {
-        "sessionId": "1782802134601-7953",
+        "sessionId": "1782883938392-3913",
         "status": "pet_spawned",
         "style": "kawaii",
         "hasAvatarPath": true,
@@ -1032,60 +576,60 @@
         "hasPetPath": true,
         "hasGlbPath": false
       },
-      "lastSessionId": "1782802134601-7953"
+      "lastSessionId": "1782883938392-3913"
     },
     {
-      "loopId": 80,
-      "scenario": "随机图10_guofeng全链路",
+      "loopId": 76,
+      "scenario": "随机图06_guofeng全链路",
       "overallResult": "PASS",
-      "totalDurationMs": 3370,
+      "totalDurationMs": 3703,
       "stepResults": [
         {
           "stepOrder": 1,
           "toolName": "q3d_upload_photo",
           "success": true,
-          "durationMs": 54,
-          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782802138065-6525\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782802138065-6525\\\\original.jpg\",\n  \"style\": \"guofeng\",\n  \"mess",
+          "durationMs": 41,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883942017-7372\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883942017-7372\\\\original.jpg\",\n  \"style\": \"guofeng\",\n  \"mess",
           "errorCode": null
         },
         {
           "stepOrder": 2,
           "toolName": "q3d_generate_avatar",
           "success": true,
-          "durationMs": 197,
-          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802138065-6525\\\\avatar.png\",\n  \"style\": \"guofeng\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_",
+          "durationMs": 423,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883942017-7372\\\\avatar.png\",\n  \"style\": \"guofeng\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_",
           "errorCode": null
         },
         {
           "stepOrder": 3,
           "toolName": "q3d_generate_3d_model",
           "success": true,
-          "durationMs": 3012,
-          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782802138065-6525\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "durationMs": 3009,
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883942017-7372\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
           "errorCode": null
         },
         {
           "stepOrder": 4,
           "toolName": "q3d_create_3d_preview",
           "success": true,
-          "durationMs": 42,
-          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802138065-6525\\\\preview-3d.html\",\n  \"sessionId\": \"1782802138065-6525\",\n  \"message\": \"3D 预览页面",
+          "durationMs": 50,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883942017-7372\\\\preview-3d.html\",\n  \"sessionId\": \"1782883942017-7372\",\n  \"message\": \"3D 预览页面",
           "errorCode": null
         },
         {
           "stepOrder": 5,
           "toolName": "q3d_spawn_pet",
           "success": true,
-          "durationMs": 52,
-          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782802138065-6525\\\\pet.html\",\n  \"sessionId\": \"1782802138065-6525\",\n  \"name\": \"随机10\",\n  \"personality\"",
+          "durationMs": 66,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883942017-7372\\\\pet.html\",\n  \"sessionId\": \"1782883942017-7372\",\n  \"name\": \"随机06\",\n  \"personality\"",
           "errorCode": null
         },
         {
           "stepOrder": 6,
           "toolName": "q3d_chat_with_pet",
           "success": true,
-          "durationMs": 3,
-          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"我在听呢，继续说呀~ 👂\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782802138065-6525\",\n  \"historyLength\": 2,\n  \"message\": \"我在听呢，继续说呀~ 👂\"\n}",
+          "durationMs": 100,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"抱抱！你的小Q在这里陪着你哦 [MOCK]\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782883942017-7372\",\n  \"historyLength\": 2,\n  \"message\": \"抱抱！你的小Q在这里陪着你哦 [MOCK]\"\n}",
           "errorCode": null
         },
         {
@@ -1098,16 +642,16 @@
         }
       ],
       "artifactsVerified": {
-        "uploads/1782802138065-6525/original.jpg": {
+        "uploads/1782883942017-7372/original.jpg": {
           "exists": true,
-          "sizeBytes": 333793
+          "sizeBytes": 183102
         },
-        "generated/1782802138065-6525/avatar.png": {
+        "generated/1782883942017-7372/avatar.png": {
           "exists": true,
           "sizeBytes": 69,
           "isPng": true
         },
-        "generated/1782802138065-6525/prompt-check": {
+        "generated/1782883942017-7372/prompt-check": {
           "hasStyleKeyword": true,
           "hasCustomPrompt": true,
           "lengthOk": true,
@@ -1115,30 +659,30 @@
           "revisedPromptLength": 571,
           "style": "guofeng"
         },
-        "generated/1782802138065-6525/preview-3d.html": {
+        "generated/1782883942017-7372/preview-3d.html": {
           "exists": true,
           "sizeBytes": 10919
         },
-        "generated/1782802138065-6525/pet.html": {
+        "generated/1782883942017-7372/pet.html": {
           "exists": true,
-          "sizeBytes": 16694
+          "sizeBytes": 27040
         },
-        "generated/1782802138065-6525/chat-history.json": {
+        "generated/1782883942017-7372/chat-history.json": {
           "exists": true,
-          "sizeBytes": 154
+          "sizeBytes": 168
         },
-        "generated/1782802138065-6525/metadata.json": {
+        "generated/1782883942017-7372/metadata.json": {
           "exists": true,
-          "sizeBytes": 1141
+          "sizeBytes": 1417
         },
-        "generated/1782802138065-6525/model.glb": {
+        "generated/1782883942017-7372/model.glb": {
           "exists": false,
           "sizeBytes": 0,
           "isGlb": false
         }
       },
       "worksIndexEntry": {
-        "sessionId": "1782802138065-6525",
+        "sessionId": "1782883942017-7372",
         "status": "pet_spawned",
         "style": "guofeng",
         "hasAvatarPath": true,
@@ -1146,7 +690,1523 @@
         "hasPetPath": true,
         "hasGlbPath": false
       },
-      "lastSessionId": "1782802138065-6525"
+      "lastSessionId": "1782883942017-7372"
+    },
+    {
+      "loopId": 77,
+      "scenario": "随机图07_trendy全链路",
+      "overallResult": "PASS",
+      "totalDurationMs": 3771,
+      "stepResults": [
+        {
+          "stepOrder": 1,
+          "toolName": "q3d_upload_photo",
+          "success": true,
+          "durationMs": 49,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883945721-5160\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883945721-5160\\\\original.jpg\",\n  \"style\": \"trendy\",\n  \"messa",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 2,
+          "toolName": "q3d_generate_avatar",
+          "success": true,
+          "durationMs": 468,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883945721-5160\\\\avatar.png\",\n  \"style\": \"trendy\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 3,
+          "toolName": "q3d_generate_3d_model",
+          "success": true,
+          "durationMs": 3007,
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883945721-5160\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 4,
+          "toolName": "q3d_create_3d_preview",
+          "success": true,
+          "durationMs": 39,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883945721-5160\\\\preview-3d.html\",\n  \"sessionId\": \"1782883945721-5160\",\n  \"message\": \"3D 预览页面",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 5,
+          "toolName": "q3d_spawn_pet",
+          "success": true,
+          "durationMs": 51,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883945721-5160\\\\pet.html\",\n  \"sessionId\": \"1782883945721-5160\",\n  \"name\": \"随机07\",\n  \"personality\"",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 6,
+          "toolName": "q3d_chat_with_pet",
+          "success": true,
+          "durationMs": 147,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"哇，你终于来找我聊天啦！今天心情怎么样？ [MOCK]\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782883945721-5160\",\n  \"historyLength\": 2,\n  \"message\": \"哇，你终于来找我聊天啦！今天心情怎么样？ [MOCK]\"\n}",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 7,
+          "toolName": "q3d_generate_3d_model",
+          "success": true,
+          "durationMs": 0,
+          "responseSummary": "{\"success\":false,\"error\":{\"code\":\"MODEL_AVATAR_NOT_FOUND\",\"message\":\"未找到 Q 版形象图片\",\"suggestion\":\"请先调用 q3d_generate_avatar 生成形象，或提供 avatarPath 参数\"}}",
+          "errorCode": null
+        }
+      ],
+      "artifactsVerified": {
+        "uploads/1782883945721-5160/original.jpg": {
+          "exists": true,
+          "sizeBytes": 396723
+        },
+        "generated/1782883945721-5160/avatar.png": {
+          "exists": true,
+          "sizeBytes": 69,
+          "isPng": true
+        },
+        "generated/1782883945721-5160/prompt-check": {
+          "hasStyleKeyword": true,
+          "hasCustomPrompt": true,
+          "lengthOk": true,
+          "noPlaceholder": true,
+          "revisedPromptLength": 568,
+          "style": "trendy"
+        },
+        "generated/1782883945721-5160/preview-3d.html": {
+          "exists": true,
+          "sizeBytes": 10919
+        },
+        "generated/1782883945721-5160/pet.html": {
+          "exists": true,
+          "sizeBytes": 27040
+        },
+        "generated/1782883945721-5160/chat-history.json": {
+          "exists": true,
+          "sizeBytes": 188
+        },
+        "generated/1782883945721-5160/metadata.json": {
+          "exists": true,
+          "sizeBytes": 1423
+        },
+        "generated/1782883945721-5160/model.glb": {
+          "exists": false,
+          "sizeBytes": 0,
+          "isGlb": false
+        }
+      },
+      "worksIndexEntry": {
+        "sessionId": "1782883945721-5160",
+        "status": "pet_spawned",
+        "style": "trendy",
+        "hasAvatarPath": true,
+        "hasPreviewPath": true,
+        "hasPetPath": true,
+        "hasGlbPath": false
+      },
+      "lastSessionId": "1782883945721-5160"
+    },
+    {
+      "loopId": 78,
+      "scenario": "随机图08_simple全链路",
+      "overallResult": "PASS",
+      "totalDurationMs": 3566,
+      "stepResults": [
+        {
+          "stepOrder": 1,
+          "toolName": "q3d_upload_photo",
+          "success": true,
+          "durationMs": 45,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883949492-6055\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883949492-6055\\\\original.jpg\",\n  \"style\": \"simple\",\n  \"messa",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 2,
+          "toolName": "q3d_generate_avatar",
+          "success": true,
+          "durationMs": 295,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883949492-6055\\\\avatar.png\",\n  \"style\": \"simple\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 3,
+          "toolName": "q3d_generate_3d_model",
+          "success": true,
+          "durationMs": 3011,
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883949492-6055\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 4,
+          "toolName": "q3d_create_3d_preview",
+          "success": true,
+          "durationMs": 44,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883949492-6055\\\\preview-3d.html\",\n  \"sessionId\": \"1782883949492-6055\",\n  \"message\": \"3D 预览页面",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 5,
+          "toolName": "q3d_spawn_pet",
+          "success": true,
+          "durationMs": 49,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883949492-6055\\\\pet.html\",\n  \"sessionId\": \"1782883949492-6055\",\n  \"name\": \"随机08\",\n  \"personality\"",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 6,
+          "toolName": "q3d_chat_with_pet",
+          "success": true,
+          "durationMs": 109,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"嘻嘻，我一直在等着你呢~ [MOCK]\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782883949492-6055\",\n  \"historyLength\": 2,\n  \"message\": \"嘻嘻，我一直在等着你呢~ [MOCK]\"\n}",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 7,
+          "toolName": "q3d_generate_3d_model",
+          "success": true,
+          "durationMs": 0,
+          "responseSummary": "{\"success\":false,\"error\":{\"code\":\"MODEL_AVATAR_NOT_FOUND\",\"message\":\"未找到 Q 版形象图片\",\"suggestion\":\"请先调用 q3d_generate_avatar 生成形象，或提供 avatarPath 参数\"}}",
+          "errorCode": null
+        }
+      ],
+      "artifactsVerified": {
+        "uploads/1782883949492-6055/original.jpg": {
+          "exists": true,
+          "sizeBytes": 68689
+        },
+        "generated/1782883949492-6055/avatar.png": {
+          "exists": true,
+          "sizeBytes": 69,
+          "isPng": true
+        },
+        "generated/1782883949492-6055/prompt-check": {
+          "hasStyleKeyword": true,
+          "hasCustomPrompt": true,
+          "lengthOk": true,
+          "noPlaceholder": true,
+          "revisedPromptLength": 547,
+          "style": "simple"
+        },
+        "generated/1782883949492-6055/preview-3d.html": {
+          "exists": true,
+          "sizeBytes": 10919
+        },
+        "generated/1782883949492-6055/pet.html": {
+          "exists": true,
+          "sizeBytes": 27040
+        },
+        "generated/1782883949492-6055/chat-history.json": {
+          "exists": true,
+          "sizeBytes": 162
+        },
+        "generated/1782883949492-6055/metadata.json": {
+          "exists": true,
+          "sizeBytes": 1370
+        },
+        "generated/1782883949492-6055/model.glb": {
+          "exists": false,
+          "sizeBytes": 0,
+          "isGlb": false
+        }
+      },
+      "worksIndexEntry": {
+        "sessionId": "1782883949492-6055",
+        "status": "pet_spawned",
+        "style": "simple",
+        "hasAvatarPath": true,
+        "hasPreviewPath": true,
+        "hasPetPath": true,
+        "hasGlbPath": false
+      },
+      "lastSessionId": "1782883949492-6055"
+    },
+    {
+      "loopId": 79,
+      "scenario": "随机图09_kawaii全链路",
+      "overallResult": "PASS",
+      "totalDurationMs": 3523,
+      "stepResults": [
+        {
+          "stepOrder": 1,
+          "toolName": "q3d_upload_photo",
+          "success": true,
+          "durationMs": 53,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883953058-6394\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883953058-6394\\\\original.jpg\",\n  \"style\": \"kawaii\",\n  \"messa",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 2,
+          "toolName": "q3d_generate_avatar",
+          "success": true,
+          "durationMs": 246,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883953058-6394\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 3,
+          "toolName": "q3d_generate_3d_model",
+          "success": true,
+          "durationMs": 3010,
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883953058-6394\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 4,
+          "toolName": "q3d_create_3d_preview",
+          "success": true,
+          "durationMs": 43,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883953058-6394\\\\preview-3d.html\",\n  \"sessionId\": \"1782883953058-6394\",\n  \"message\": \"3D 预览页面",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 5,
+          "toolName": "q3d_spawn_pet",
+          "success": true,
+          "durationMs": 66,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883953058-6394\\\\pet.html\",\n  \"sessionId\": \"1782883953058-6394\",\n  \"name\": \"随机09\",\n  \"personality\"",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 6,
+          "toolName": "q3d_chat_with_pet",
+          "success": true,
+          "durationMs": 93,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"嘻嘻，我一直在等着你呢~ [MOCK]\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782883953058-6394\",\n  \"historyLength\": 2,\n  \"message\": \"嘻嘻，我一直在等着你呢~ [MOCK]\"\n}",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 7,
+          "toolName": "q3d_generate_3d_model",
+          "success": true,
+          "durationMs": 1,
+          "responseSummary": "{\"success\":false,\"error\":{\"code\":\"MODEL_AVATAR_NOT_FOUND\",\"message\":\"未找到 Q 版形象图片\",\"suggestion\":\"请先调用 q3d_generate_avatar 生成形象，或提供 avatarPath 参数\"}}",
+          "errorCode": null
+        }
+      ],
+      "artifactsVerified": {
+        "uploads/1782883953058-6394/original.jpg": {
+          "exists": true,
+          "sizeBytes": 446644
+        },
+        "generated/1782883953058-6394/avatar.png": {
+          "exists": true,
+          "sizeBytes": 69,
+          "isPng": true
+        },
+        "generated/1782883953058-6394/prompt-check": {
+          "hasStyleKeyword": true,
+          "hasCustomPrompt": true,
+          "lengthOk": true,
+          "noPlaceholder": true,
+          "revisedPromptLength": 577,
+          "style": "kawaii"
+        },
+        "generated/1782883953058-6394/preview-3d.html": {
+          "exists": true,
+          "sizeBytes": 10919
+        },
+        "generated/1782883953058-6394/pet.html": {
+          "exists": true,
+          "sizeBytes": 27040
+        },
+        "generated/1782883953058-6394/chat-history.json": {
+          "exists": true,
+          "sizeBytes": 162
+        },
+        "generated/1782883953058-6394/metadata.json": {
+          "exists": true,
+          "sizeBytes": 1446
+        },
+        "generated/1782883953058-6394/model.glb": {
+          "exists": false,
+          "sizeBytes": 0,
+          "isGlb": false
+        }
+      },
+      "worksIndexEntry": {
+        "sessionId": "1782883953058-6394",
+        "status": "pet_spawned",
+        "style": "kawaii",
+        "hasAvatarPath": true,
+        "hasPreviewPath": true,
+        "hasPetPath": true,
+        "hasGlbPath": false
+      },
+      "lastSessionId": "1782883953058-6394"
+    },
+    {
+      "loopId": 80,
+      "scenario": "随机图10_guofeng全链路",
+      "overallResult": "PASS",
+      "totalDurationMs": 3735,
+      "stepResults": [
+        {
+          "stepOrder": 1,
+          "toolName": "q3d_upload_photo",
+          "success": true,
+          "durationMs": 70,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883956582-0463\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883956582-0463\\\\original.jpg\",\n  \"style\": \"guofeng\",\n  \"mess",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 2,
+          "toolName": "q3d_generate_avatar",
+          "success": true,
+          "durationMs": 386,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883956582-0463\\\\avatar.png\",\n  \"style\": \"guofeng\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 3,
+          "toolName": "q3d_generate_3d_model",
+          "success": true,
+          "durationMs": 3013,
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883956582-0463\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 4,
+          "toolName": "q3d_create_3d_preview",
+          "success": true,
+          "durationMs": 45,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883956582-0463\\\\preview-3d.html\",\n  \"sessionId\": \"1782883956582-0463\",\n  \"message\": \"3D 预览页面",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 5,
+          "toolName": "q3d_spawn_pet",
+          "success": true,
+          "durationMs": 47,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883956582-0463\\\\pet.html\",\n  \"sessionId\": \"1782883956582-0463\",\n  \"name\": \"随机10\",\n  \"personality\"",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 6,
+          "toolName": "q3d_chat_with_pet",
+          "success": true,
+          "durationMs": 163,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"抱抱！你的小Q在这里陪着你哦 [MOCK]\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782883956582-0463\",\n  \"historyLength\": 2,\n  \"message\": \"抱抱！你的小Q在这里陪着你哦 [MOCK]\"\n}",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 7,
+          "toolName": "q3d_generate_3d_model",
+          "success": true,
+          "durationMs": 0,
+          "responseSummary": "{\"success\":false,\"error\":{\"code\":\"MODEL_AVATAR_NOT_FOUND\",\"message\":\"未找到 Q 版形象图片\",\"suggestion\":\"请先调用 q3d_generate_avatar 生成形象，或提供 avatarPath 参数\"}}",
+          "errorCode": null
+        }
+      ],
+      "artifactsVerified": {
+        "uploads/1782883956582-0463/original.jpg": {
+          "exists": true,
+          "sizeBytes": 333793
+        },
+        "generated/1782883956582-0463/avatar.png": {
+          "exists": true,
+          "sizeBytes": 69,
+          "isPng": true
+        },
+        "generated/1782883956582-0463/prompt-check": {
+          "hasStyleKeyword": true,
+          "hasCustomPrompt": true,
+          "lengthOk": true,
+          "noPlaceholder": true,
+          "revisedPromptLength": 571,
+          "style": "guofeng"
+        },
+        "generated/1782883956582-0463/preview-3d.html": {
+          "exists": true,
+          "sizeBytes": 10919
+        },
+        "generated/1782883956582-0463/pet.html": {
+          "exists": true,
+          "sizeBytes": 27040
+        },
+        "generated/1782883956582-0463/chat-history.json": {
+          "exists": true,
+          "sizeBytes": 168
+        },
+        "generated/1782883956582-0463/metadata.json": {
+          "exists": true,
+          "sizeBytes": 1417
+        },
+        "generated/1782883956582-0463/model.glb": {
+          "exists": false,
+          "sizeBytes": 0,
+          "isGlb": false
+        }
+      },
+      "worksIndexEntry": {
+        "sessionId": "1782883956582-0463",
+        "status": "pet_spawned",
+        "style": "guofeng",
+        "hasAvatarPath": true,
+        "hasPreviewPath": true,
+        "hasPetPath": true,
+        "hasGlbPath": false
+      },
+      "lastSessionId": "1782883956582-0463"
+    },
+    {
+      "loopId": 81,
+      "scenario": "随机图11_卡通PNG_trendy全链路",
+      "overallResult": "PASS",
+      "totalDurationMs": 3726,
+      "stepResults": [
+        {
+          "stepOrder": 1,
+          "toolName": "q3d_upload_photo",
+          "success": true,
+          "durationMs": 40,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883960317-5153\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883960317-5153\\\\original.png\",\n  \"style\": \"trendy\",\n  \"messa",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 2,
+          "toolName": "q3d_generate_avatar",
+          "success": true,
+          "durationMs": 446,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883960317-5153\\\\avatar.png\",\n  \"style\": \"trendy\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 3,
+          "toolName": "q3d_generate_3d_model",
+          "success": true,
+          "durationMs": 3014,
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883960317-5153\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 4,
+          "toolName": "q3d_create_3d_preview",
+          "success": true,
+          "durationMs": 43,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883960317-5153\\\\preview-3d.html\",\n  \"sessionId\": \"1782883960317-5153\",\n  \"message\": \"3D 预览页面",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 5,
+          "toolName": "q3d_spawn_pet",
+          "success": true,
+          "durationMs": 50,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883960317-5153\\\\pet.html\",\n  \"sessionId\": \"1782883960317-5153\",\n  \"name\": \"卡通11\",\n  \"personality\"",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 6,
+          "toolName": "q3d_chat_with_pet",
+          "success": true,
+          "durationMs": 124,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"嘻嘻，我一直在等着你呢~ [MOCK]\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782883960317-5153\",\n  \"historyLength\": 2,\n  \"message\": \"嘻嘻，我一直在等着你呢~ [MOCK]\"\n}",
+          "errorCode": null
+        }
+      ],
+      "artifactsVerified": {
+        "uploads/1782883960317-5153/original.png": {
+          "exists": true,
+          "sizeBytes": 365278
+        },
+        "generated/1782883960317-5153/avatar.png": {
+          "exists": true,
+          "sizeBytes": 69,
+          "isPng": true
+        },
+        "generated/1782883960317-5153/prompt-check": {
+          "hasStyleKeyword": true,
+          "hasCustomPrompt": true,
+          "lengthOk": true,
+          "noPlaceholder": true,
+          "revisedPromptLength": 568,
+          "style": "trendy"
+        },
+        "generated/1782883960317-5153/preview-3d.html": {
+          "exists": true,
+          "sizeBytes": 10919
+        },
+        "generated/1782883960317-5153/pet.html": {
+          "exists": true,
+          "sizeBytes": 27040
+        },
+        "generated/1782883960317-5153/chat-history.json": {
+          "exists": true,
+          "sizeBytes": 163
+        },
+        "generated/1782883960317-5153/metadata.json": {
+          "exists": true,
+          "sizeBytes": 1423
+        },
+        "generated/1782883960317-5153/model.glb": {
+          "exists": false,
+          "sizeBytes": 0,
+          "isGlb": false
+        }
+      },
+      "worksIndexEntry": {
+        "sessionId": "1782883960317-5153",
+        "status": "pet_spawned",
+        "style": "trendy",
+        "hasAvatarPath": true,
+        "hasPreviewPath": true,
+        "hasPetPath": true,
+        "hasGlbPath": false
+      },
+      "lastSessionId": "1782883960317-5153"
+    },
+    {
+      "loopId": 82,
+      "scenario": "随机图12_素描竖版_simple全链路",
+      "overallResult": "PASS",
+      "totalDurationMs": 3723,
+      "stepResults": [
+        {
+          "stepOrder": 1,
+          "toolName": "q3d_upload_photo",
+          "success": true,
+          "durationMs": 39,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883964042-4083\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883964042-4083\\\\original.jpg\",\n  \"style\": \"simple\",\n  \"messa",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 2,
+          "toolName": "q3d_generate_avatar",
+          "success": true,
+          "durationMs": 498,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883964042-4083\\\\avatar.png\",\n  \"style\": \"simple\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 3,
+          "toolName": "q3d_generate_3d_model",
+          "success": true,
+          "durationMs": 3013,
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883964042-4083\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 4,
+          "toolName": "q3d_create_3d_preview",
+          "success": true,
+          "durationMs": 40,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883964042-4083\\\\preview-3d.html\",\n  \"sessionId\": \"1782883964042-4083\",\n  \"message\": \"3D 预览页面",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 5,
+          "toolName": "q3d_spawn_pet",
+          "success": true,
+          "durationMs": 49,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883964042-4083\\\\pet.html\",\n  \"sessionId\": \"1782883964042-4083\",\n  \"name\": \"素描12\",\n  \"personality\"",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 6,
+          "toolName": "q3d_chat_with_pet",
+          "success": true,
+          "durationMs": 70,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"抱抱！你的小Q在这里陪着你哦 [MOCK]\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782883964042-4083\",\n  \"historyLength\": 2,\n  \"message\": \"抱抱！你的小Q在这里陪着你哦 [MOCK]\"\n}",
+          "errorCode": null
+        }
+      ],
+      "artifactsVerified": {
+        "uploads/1782883964042-4083/original.jpg": {
+          "exists": true,
+          "sizeBytes": 147752
+        },
+        "generated/1782883964042-4083/avatar.png": {
+          "exists": true,
+          "sizeBytes": 69,
+          "isPng": true
+        },
+        "generated/1782883964042-4083/prompt-check": {
+          "hasStyleKeyword": true,
+          "hasCustomPrompt": true,
+          "lengthOk": true,
+          "noPlaceholder": true,
+          "revisedPromptLength": 547,
+          "style": "simple"
+        },
+        "generated/1782883964042-4083/preview-3d.html": {
+          "exists": true,
+          "sizeBytes": 10919
+        },
+        "generated/1782883964042-4083/pet.html": {
+          "exists": true,
+          "sizeBytes": 27040
+        },
+        "generated/1782883964042-4083/chat-history.json": {
+          "exists": true,
+          "sizeBytes": 166
+        },
+        "generated/1782883964042-4083/metadata.json": {
+          "exists": true,
+          "sizeBytes": 1370
+        },
+        "generated/1782883964042-4083/model.glb": {
+          "exists": false,
+          "sizeBytes": 0,
+          "isGlb": false
+        }
+      },
+      "worksIndexEntry": {
+        "sessionId": "1782883964042-4083",
+        "status": "pet_spawned",
+        "style": "simple",
+        "hasAvatarPath": true,
+        "hasPreviewPath": true,
+        "hasPetPath": true,
+        "hasGlbPath": false
+      },
+      "lastSessionId": "1782883964042-4083"
+    },
+    {
+      "loopId": 83,
+      "scenario": "随机图13_3D渲染PNG_kawaii全链路",
+      "overallResult": "PASS",
+      "totalDurationMs": 3681,
+      "stepResults": [
+        {
+          "stepOrder": 1,
+          "toolName": "q3d_upload_photo",
+          "success": true,
+          "durationMs": 45,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883967765-1081\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883967765-1081\\\\original.png\",\n  \"style\": \"kawaii\",\n  \"messa",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 2,
+          "toolName": "q3d_generate_avatar",
+          "success": true,
+          "durationMs": 370,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883967765-1081\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 3,
+          "toolName": "q3d_generate_3d_model",
+          "success": true,
+          "durationMs": 3014,
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883967765-1081\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 4,
+          "toolName": "q3d_create_3d_preview",
+          "success": true,
+          "durationMs": 40,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883967765-1081\\\\preview-3d.html\",\n  \"sessionId\": \"1782883967765-1081\",\n  \"message\": \"3D 预览页面",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 5,
+          "toolName": "q3d_spawn_pet",
+          "success": true,
+          "durationMs": 46,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883967765-1081\\\\pet.html\",\n  \"sessionId\": \"1782883967765-1081\",\n  \"name\": \"3D13\",\n  \"personality\"",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 6,
+          "toolName": "q3d_chat_with_pet",
+          "success": true,
+          "durationMs": 156,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"抱抱！你的小Q在这里陪着你哦 [MOCK]\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782883967765-1081\",\n  \"historyLength\": 2,\n  \"message\": \"抱抱！你的小Q在这里陪着你哦 [MOCK]\"\n}",
+          "errorCode": null
+        }
+      ],
+      "artifactsVerified": {
+        "uploads/1782883967765-1081/original.png": {
+          "exists": true,
+          "sizeBytes": 368729
+        },
+        "generated/1782883967765-1081/avatar.png": {
+          "exists": true,
+          "sizeBytes": 69,
+          "isPng": true
+        },
+        "generated/1782883967765-1081/prompt-check": {
+          "hasStyleKeyword": true,
+          "hasCustomPrompt": true,
+          "lengthOk": true,
+          "noPlaceholder": true,
+          "revisedPromptLength": 577,
+          "style": "kawaii"
+        },
+        "generated/1782883967765-1081/preview-3d.html": {
+          "exists": true,
+          "sizeBytes": 10919
+        },
+        "generated/1782883967765-1081/pet.html": {
+          "exists": true,
+          "sizeBytes": 27040
+        },
+        "generated/1782883967765-1081/chat-history.json": {
+          "exists": true,
+          "sizeBytes": 168
+        },
+        "generated/1782883967765-1081/metadata.json": {
+          "exists": true,
+          "sizeBytes": 1446
+        },
+        "generated/1782883967765-1081/model.glb": {
+          "exists": false,
+          "sizeBytes": 0,
+          "isGlb": false
+        }
+      },
+      "worksIndexEntry": {
+        "sessionId": "1782883967765-1081",
+        "status": "pet_spawned",
+        "style": "kawaii",
+        "hasAvatarPath": true,
+        "hasPreviewPath": true,
+        "hasPetPath": true,
+        "hasGlbPath": false
+      },
+      "lastSessionId": "1782883967765-1081"
+    },
+    {
+      "loopId": 84,
+      "scenario": "随机图14_全身竖版_guofeng全链路",
+      "overallResult": "PASS",
+      "totalDurationMs": 3539,
+      "stepResults": [
+        {
+          "stepOrder": 1,
+          "toolName": "q3d_upload_photo",
+          "success": true,
+          "durationMs": 40,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883971446-0351\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883971446-0351\\\\original.jpg\",\n  \"style\": \"guofeng\",\n  \"mess",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 2,
+          "toolName": "q3d_generate_avatar",
+          "success": true,
+          "durationMs": 311,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883971446-0351\\\\avatar.png\",\n  \"style\": \"guofeng\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 3,
+          "toolName": "q3d_generate_3d_model",
+          "success": true,
+          "durationMs": 3006,
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883971446-0351\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 4,
+          "toolName": "q3d_create_3d_preview",
+          "success": true,
+          "durationMs": 44,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883971446-0351\\\\preview-3d.html\",\n  \"sessionId\": \"1782883971446-0351\",\n  \"message\": \"3D 预览页面",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 5,
+          "toolName": "q3d_spawn_pet",
+          "success": true,
+          "durationMs": 57,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883971446-0351\\\\pet.html\",\n  \"sessionId\": \"1782883971446-0351\",\n  \"name\": \"全身14\",\n  \"personality\"",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 6,
+          "toolName": "q3d_chat_with_pet",
+          "success": true,
+          "durationMs": 70,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"你好呀！我是小Q，你的专属Q版宠物~ 🎉 [MOCK]\",\n  \"emotion\": \"excited\",\n  \"sessionId\": \"1782883971446-0351\",\n  \"historyLength\": 2,\n  \"message\": \"你好呀！我是小Q，你的专属Q版宠物~ 🎉 [MOCK]\"\n}",
+          "errorCode": null
+        }
+      ],
+      "artifactsVerified": {
+        "uploads/1782883971446-0351/original.jpg": {
+          "exists": true,
+          "sizeBytes": 193705
+        },
+        "generated/1782883971446-0351/avatar.png": {
+          "exists": true,
+          "sizeBytes": 69,
+          "isPng": true
+        },
+        "generated/1782883971446-0351/prompt-check": {
+          "hasStyleKeyword": true,
+          "hasCustomPrompt": true,
+          "lengthOk": true,
+          "noPlaceholder": true,
+          "revisedPromptLength": 571,
+          "style": "guofeng"
+        },
+        "generated/1782883971446-0351/preview-3d.html": {
+          "exists": true,
+          "sizeBytes": 10919
+        },
+        "generated/1782883971446-0351/pet.html": {
+          "exists": true,
+          "sizeBytes": 27040
+        },
+        "generated/1782883971446-0351/chat-history.json": {
+          "exists": true,
+          "sizeBytes": 182
+        },
+        "generated/1782883971446-0351/metadata.json": {
+          "exists": true,
+          "sizeBytes": 1417
+        },
+        "generated/1782883971446-0351/model.glb": {
+          "exists": false,
+          "sizeBytes": 0,
+          "isGlb": false
+        }
+      },
+      "worksIndexEntry": {
+        "sessionId": "1782883971446-0351",
+        "status": "pet_spawned",
+        "style": "guofeng",
+        "hasAvatarPath": true,
+        "hasPreviewPath": true,
+        "hasPetPath": true,
+        "hasGlbPath": false
+      },
+      "lastSessionId": "1782883971446-0351"
+    },
+    {
+      "loopId": 85,
+      "scenario": "随机图15_多人合影横版_trendy全链路",
+      "overallResult": "PASS",
+      "totalDurationMs": 3532,
+      "stepResults": [
+        {
+          "stepOrder": 1,
+          "toolName": "q3d_upload_photo",
+          "success": true,
+          "durationMs": 42,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883974986-3577\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883974986-3577\\\\original.jpg\",\n  \"style\": \"trendy\",\n  \"messa",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 2,
+          "toolName": "q3d_generate_avatar",
+          "success": true,
+          "durationMs": 287,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883974986-3577\\\\avatar.png\",\n  \"style\": \"trendy\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 3,
+          "toolName": "q3d_generate_3d_model",
+          "success": true,
+          "durationMs": 3018,
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883974986-3577\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 4,
+          "toolName": "q3d_create_3d_preview",
+          "success": true,
+          "durationMs": 42,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883974986-3577\\\\preview-3d.html\",\n  \"sessionId\": \"1782883974986-3577\",\n  \"message\": \"3D 预览页面",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 5,
+          "toolName": "q3d_spawn_pet",
+          "success": true,
+          "durationMs": 49,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883974986-3577\\\\pet.html\",\n  \"sessionId\": \"1782883974986-3577\",\n  \"name\": \"合影15\",\n  \"personality\"",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 6,
+          "toolName": "q3d_chat_with_pet",
+          "success": true,
+          "durationMs": 84,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"哇，你终于来找我聊天啦！今天心情怎么样？ [MOCK]\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782883974986-3577\",\n  \"historyLength\": 2,\n  \"message\": \"哇，你终于来找我聊天啦！今天心情怎么样？ [MOCK]\"\n}",
+          "errorCode": null
+        }
+      ],
+      "artifactsVerified": {
+        "uploads/1782883974986-3577/original.jpg": {
+          "exists": true,
+          "sizeBytes": 234358
+        },
+        "generated/1782883974986-3577/avatar.png": {
+          "exists": true,
+          "sizeBytes": 69,
+          "isPng": true
+        },
+        "generated/1782883974986-3577/prompt-check": {
+          "hasStyleKeyword": true,
+          "hasCustomPrompt": true,
+          "lengthOk": true,
+          "noPlaceholder": true,
+          "revisedPromptLength": 568,
+          "style": "trendy"
+        },
+        "generated/1782883974986-3577/preview-3d.html": {
+          "exists": true,
+          "sizeBytes": 10919
+        },
+        "generated/1782883974986-3577/pet.html": {
+          "exists": true,
+          "sizeBytes": 27040
+        },
+        "generated/1782883974986-3577/chat-history.json": {
+          "exists": true,
+          "sizeBytes": 186
+        },
+        "generated/1782883974986-3577/metadata.json": {
+          "exists": true,
+          "sizeBytes": 1423
+        },
+        "generated/1782883974986-3577/model.glb": {
+          "exists": false,
+          "sizeBytes": 0,
+          "isGlb": false
+        }
+      },
+      "worksIndexEntry": {
+        "sessionId": "1782883974986-3577",
+        "status": "pet_spawned",
+        "style": "trendy",
+        "hasAvatarPath": true,
+        "hasPreviewPath": true,
+        "hasPetPath": true,
+        "hasGlbPath": false
+      },
+      "lastSessionId": "1782883974986-3577"
+    },
+    {
+      "loopId": 86,
+      "scenario": "随机图16_动物猫_simple全链路",
+      "overallResult": "PASS",
+      "totalDurationMs": 3610,
+      "stepResults": [
+        {
+          "stepOrder": 1,
+          "toolName": "q3d_upload_photo",
+          "success": true,
+          "durationMs": 38,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883978518-1248\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883978518-1248\\\\original.jpg\",\n  \"style\": \"simple\",\n  \"messa",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 2,
+          "toolName": "q3d_generate_avatar",
+          "success": true,
+          "durationMs": 381,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883978518-1248\\\\avatar.png\",\n  \"style\": \"simple\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 3,
+          "toolName": "q3d_generate_3d_model",
+          "success": true,
+          "durationMs": 3016,
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883978518-1248\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 4,
+          "toolName": "q3d_create_3d_preview",
+          "success": true,
+          "durationMs": 45,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883978518-1248\\\\preview-3d.html\",\n  \"sessionId\": \"1782883978518-1248\",\n  \"message\": \"3D 预览页面",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 5,
+          "toolName": "q3d_spawn_pet",
+          "success": true,
+          "durationMs": 49,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883978518-1248\\\\pet.html\",\n  \"sessionId\": \"1782883978518-1248\",\n  \"name\": \"猫咪16\",\n  \"personality\"",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 6,
+          "toolName": "q3d_chat_with_pet",
+          "success": true,
+          "durationMs": 71,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"嘻嘻，我一直在等着你呢~ [MOCK]\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782883978518-1248\",\n  \"historyLength\": 2,\n  \"message\": \"嘻嘻，我一直在等着你呢~ [MOCK]\"\n}",
+          "errorCode": null
+        }
+      ],
+      "artifactsVerified": {
+        "uploads/1782883978518-1248/original.jpg": {
+          "exists": true,
+          "sizeBytes": 70813
+        },
+        "generated/1782883978518-1248/avatar.png": {
+          "exists": true,
+          "sizeBytes": 69,
+          "isPng": true
+        },
+        "generated/1782883978518-1248/prompt-check": {
+          "hasStyleKeyword": true,
+          "hasCustomPrompt": true,
+          "lengthOk": true,
+          "noPlaceholder": true,
+          "revisedPromptLength": 547,
+          "style": "simple"
+        },
+        "generated/1782883978518-1248/preview-3d.html": {
+          "exists": true,
+          "sizeBytes": 10919
+        },
+        "generated/1782883978518-1248/pet.html": {
+          "exists": true,
+          "sizeBytes": 27040
+        },
+        "generated/1782883978518-1248/chat-history.json": {
+          "exists": true,
+          "sizeBytes": 157
+        },
+        "generated/1782883978518-1248/metadata.json": {
+          "exists": true,
+          "sizeBytes": 1370
+        },
+        "generated/1782883978518-1248/model.glb": {
+          "exists": false,
+          "sizeBytes": 0,
+          "isGlb": false
+        }
+      },
+      "worksIndexEntry": {
+        "sessionId": "1782883978518-1248",
+        "status": "pet_spawned",
+        "style": "simple",
+        "hasAvatarPath": true,
+        "hasPreviewPath": true,
+        "hasPetPath": true,
+        "hasGlbPath": false
+      },
+      "lastSessionId": "1782883978518-1248"
+    },
+    {
+      "loopId": 87,
+      "scenario": "随机图17_动物狗卡通PNG_kawaii全链路",
+      "overallResult": "PASS",
+      "totalDurationMs": 3590,
+      "stepResults": [
+        {
+          "stepOrder": 1,
+          "toolName": "q3d_upload_photo",
+          "success": true,
+          "durationMs": 39,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883982128-5052\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883982128-5052\\\\original.png\",\n  \"style\": \"kawaii\",\n  \"messa",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 2,
+          "toolName": "q3d_generate_avatar",
+          "success": true,
+          "durationMs": 313,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883982128-5052\\\\avatar.png\",\n  \"style\": \"kawaii\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 3,
+          "toolName": "q3d_generate_3d_model",
+          "success": true,
+          "durationMs": 3017,
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883982128-5052\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 4,
+          "toolName": "q3d_create_3d_preview",
+          "success": true,
+          "durationMs": 45,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883982128-5052\\\\preview-3d.html\",\n  \"sessionId\": \"1782883982128-5052\",\n  \"message\": \"3D 预览页面",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 5,
+          "toolName": "q3d_spawn_pet",
+          "success": true,
+          "durationMs": 50,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883982128-5052\\\\pet.html\",\n  \"sessionId\": \"1782883982128-5052\",\n  \"name\": \"狗狗17\",\n  \"personality\"",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 6,
+          "toolName": "q3d_chat_with_pet",
+          "success": true,
+          "durationMs": 116,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"你好呀！我是小Q，你的专属Q版宠物~ 🎉 [MOCK]\",\n  \"emotion\": \"excited\",\n  \"sessionId\": \"1782883982128-5052\",\n  \"historyLength\": 2,\n  \"message\": \"你好呀！我是小Q，你的专属Q版宠物~ 🎉 [MOCK]\"\n}",
+          "errorCode": null
+        }
+      ],
+      "artifactsVerified": {
+        "uploads/1782883982128-5052/original.png": {
+          "exists": true,
+          "sizeBytes": 203937
+        },
+        "generated/1782883982128-5052/avatar.png": {
+          "exists": true,
+          "sizeBytes": 69,
+          "isPng": true
+        },
+        "generated/1782883982128-5052/prompt-check": {
+          "hasStyleKeyword": true,
+          "hasCustomPrompt": true,
+          "lengthOk": true,
+          "noPlaceholder": true,
+          "revisedPromptLength": 577,
+          "style": "kawaii"
+        },
+        "generated/1782883982128-5052/preview-3d.html": {
+          "exists": true,
+          "sizeBytes": 10919
+        },
+        "generated/1782883982128-5052/pet.html": {
+          "exists": true,
+          "sizeBytes": 27040
+        },
+        "generated/1782883982128-5052/chat-history.json": {
+          "exists": true,
+          "sizeBytes": 182
+        },
+        "generated/1782883982128-5052/metadata.json": {
+          "exists": true,
+          "sizeBytes": 1446
+        },
+        "generated/1782883982128-5052/model.glb": {
+          "exists": false,
+          "sizeBytes": 0,
+          "isGlb": false
+        }
+      },
+      "worksIndexEntry": {
+        "sessionId": "1782883982128-5052",
+        "status": "pet_spawned",
+        "style": "kawaii",
+        "hasAvatarPath": true,
+        "hasPreviewPath": true,
+        "hasPetPath": true,
+        "hasGlbPath": false
+      },
+      "lastSessionId": "1782883982128-5052"
+    },
+    {
+      "loopId": 88,
+      "scenario": "随机图18_风景横版169_guofeng全链路",
+      "overallResult": "PASS",
+      "totalDurationMs": 3561,
+      "stepResults": [
+        {
+          "stepOrder": 1,
+          "toolName": "q3d_upload_photo",
+          "success": true,
+          "durationMs": 47,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883985717-5809\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883985717-5809\\\\original.jpg\",\n  \"style\": \"guofeng\",\n  \"mess",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 2,
+          "toolName": "q3d_generate_avatar",
+          "success": true,
+          "durationMs": 262,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883985717-5809\\\\avatar.png\",\n  \"style\": \"guofeng\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 3,
+          "toolName": "q3d_generate_3d_model",
+          "success": true,
+          "durationMs": 3005,
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883985717-5809\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 4,
+          "toolName": "q3d_create_3d_preview",
+          "success": true,
+          "durationMs": 41,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883985717-5809\\\\preview-3d.html\",\n  \"sessionId\": \"1782883985717-5809\",\n  \"message\": \"3D 预览页面",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 5,
+          "toolName": "q3d_spawn_pet",
+          "success": true,
+          "durationMs": 44,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883985717-5809\\\\pet.html\",\n  \"sessionId\": \"1782883985717-5809\",\n  \"name\": \"风景18\",\n  \"personality\"",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 6,
+          "toolName": "q3d_chat_with_pet",
+          "success": true,
+          "durationMs": 151,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"嘻嘻，我一直在等着你呢~ [MOCK]\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782883985717-5809\",\n  \"historyLength\": 2,\n  \"message\": \"嘻嘻，我一直在等着你呢~ [MOCK]\"\n}",
+          "errorCode": null
+        }
+      ],
+      "artifactsVerified": {
+        "uploads/1782883985717-5809/original.jpg": {
+          "exists": true,
+          "sizeBytes": 438635
+        },
+        "generated/1782883985717-5809/avatar.png": {
+          "exists": true,
+          "sizeBytes": 69,
+          "isPng": true
+        },
+        "generated/1782883985717-5809/prompt-check": {
+          "hasStyleKeyword": true,
+          "hasCustomPrompt": true,
+          "lengthOk": true,
+          "noPlaceholder": true,
+          "revisedPromptLength": 571,
+          "style": "guofeng"
+        },
+        "generated/1782883985717-5809/preview-3d.html": {
+          "exists": true,
+          "sizeBytes": 10919
+        },
+        "generated/1782883985717-5809/pet.html": {
+          "exists": true,
+          "sizeBytes": 27040
+        },
+        "generated/1782883985717-5809/chat-history.json": {
+          "exists": true,
+          "sizeBytes": 163
+        },
+        "generated/1782883985717-5809/metadata.json": {
+          "exists": true,
+          "sizeBytes": 1417
+        },
+        "generated/1782883985717-5809/model.glb": {
+          "exists": false,
+          "sizeBytes": 0,
+          "isGlb": false
+        }
+      },
+      "worksIndexEntry": {
+        "sessionId": "1782883985717-5809",
+        "status": "pet_spawned",
+        "style": "guofeng",
+        "hasAvatarPath": true,
+        "hasPreviewPath": true,
+        "hasPetPath": true,
+        "hasGlbPath": false
+      },
+      "lastSessionId": "1782883985717-5809"
+    },
+    {
+      "loopId": 89,
+      "scenario": "随机图19_物品玩具WebP格式_trendy全链路",
+      "overallResult": "PASS",
+      "totalDurationMs": 3731,
+      "stepResults": [
+        {
+          "stepOrder": 1,
+          "toolName": "q3d_upload_photo",
+          "success": true,
+          "durationMs": 40,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883989279-6194\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883989279-6194\\\\original.webp\",\n  \"style\": \"trendy\",\n  \"mess",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 2,
+          "toolName": "q3d_generate_avatar",
+          "success": true,
+          "durationMs": 437,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883989279-6194\\\\avatar.png\",\n  \"style\": \"trendy\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 3,
+          "toolName": "q3d_generate_3d_model",
+          "success": true,
+          "durationMs": 3016,
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883989279-6194\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 4,
+          "toolName": "q3d_create_3d_preview",
+          "success": true,
+          "durationMs": 38,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883989279-6194\\\\preview-3d.html\",\n  \"sessionId\": \"1782883989279-6194\",\n  \"message\": \"3D 预览页面",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 5,
+          "toolName": "q3d_spawn_pet",
+          "success": true,
+          "durationMs": 44,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883989279-6194\\\\pet.html\",\n  \"sessionId\": \"1782883989279-6194\",\n  \"name\": \"玩具19\",\n  \"personality\"",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 6,
+          "toolName": "q3d_chat_with_pet",
+          "success": true,
+          "durationMs": 145,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"嘻嘻，我一直在等着你呢~ [MOCK]\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782883989279-6194\",\n  \"historyLength\": 2,\n  \"message\": \"嘻嘻，我一直在等着你呢~ [MOCK]\"\n}",
+          "errorCode": null
+        }
+      ],
+      "artifactsVerified": {
+        "uploads/1782883989279-6194/original.webp": {
+          "exists": true,
+          "sizeBytes": 10704
+        },
+        "generated/1782883989279-6194/avatar.png": {
+          "exists": true,
+          "sizeBytes": 69,
+          "isPng": true
+        },
+        "generated/1782883989279-6194/prompt-check": {
+          "hasStyleKeyword": true,
+          "hasCustomPrompt": true,
+          "lengthOk": true,
+          "noPlaceholder": true,
+          "revisedPromptLength": 568,
+          "style": "trendy"
+        },
+        "generated/1782883989279-6194/preview-3d.html": {
+          "exists": true,
+          "sizeBytes": 10919
+        },
+        "generated/1782883989279-6194/pet.html": {
+          "exists": true,
+          "sizeBytes": 27040
+        },
+        "generated/1782883989279-6194/chat-history.json": {
+          "exists": true,
+          "sizeBytes": 158
+        },
+        "generated/1782883989279-6194/metadata.json": {
+          "exists": true,
+          "sizeBytes": 1424
+        },
+        "generated/1782883989279-6194/model.glb": {
+          "exists": false,
+          "sizeBytes": 0,
+          "isGlb": false
+        }
+      },
+      "worksIndexEntry": {
+        "sessionId": "1782883989279-6194",
+        "status": "pet_spawned",
+        "style": "trendy",
+        "hasAvatarPath": true,
+        "hasPreviewPath": true,
+        "hasPetPath": true,
+        "hasGlbPath": false
+      },
+      "lastSessionId": "1782883989279-6194"
+    },
+    {
+      "loopId": 90,
+      "scenario": "随机图20_抽象艺术高分辨率PNG_simple全链路",
+      "overallResult": "PASS",
+      "totalDurationMs": 3662,
+      "stepResults": [
+        {
+          "stepOrder": 1,
+          "toolName": "q3d_upload_photo",
+          "success": true,
+          "durationMs": 37,
+          "responseSummary": "{\n  \"success\": true,\n  \"uploadId\": \"1782883993010-0416\",\n  \"savedPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\uploads-test-X\\\\1782883993010-0416\\\\original.png\",\n  \"style\": \"simple\",\n  \"messa",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 2,
+          "toolName": "q3d_generate_avatar",
+          "success": true,
+          "durationMs": 448,
+          "responseSummary": "{\n  \"success\": true,\n  \"avatarPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883993010-0416\\\\avatar.png\",\n  \"style\": \"simple\",\n  \"metadataPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_M",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 3,
+          "toolName": "q3d_generate_3d_model",
+          "success": true,
+          "durationMs": 3013,
+          "responseSummary": "{\"success\":true,\"message\":\"[MOCK] 3D 模型生成成功（Provider: none）\",\"glbPath\":\"mock://local/model.glb\",\"provider\":\"none\",\"sessionId\":\"1782883993010-0416\",\"estimatedTime\":\"~30-60s（真实 API）\"}",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 4,
+          "toolName": "q3d_create_3d_preview",
+          "success": true,
+          "durationMs": 40,
+          "responseSummary": "{\n  \"success\": true,\n  \"previewPath\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883993010-0416\\\\preview-3d.html\",\n  \"sessionId\": \"1782883993010-0416\",\n  \"message\": \"3D 预览页面",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 5,
+          "toolName": "q3d_spawn_pet",
+          "success": true,
+          "durationMs": 50,
+          "responseSummary": "{\n  \"success\": true,\n  \"petUrl\": \"D:\\\\Trae CN\\\\Q3D_Dream_Machine\\\\.test-sandbox\\\\generated-test-X\\\\1782883993010-0416\\\\pet.html\",\n  \"sessionId\": \"1782883993010-0416\",\n  \"name\": \"抽象20\",\n  \"personality\"",
+          "errorCode": null
+        },
+        {
+          "stepOrder": 6,
+          "toolName": "q3d_chat_with_pet",
+          "success": true,
+          "durationMs": 64,
+          "responseSummary": "{\n  \"success\": true,\n  \"reply\": \"嘻嘻，我一直在等着你呢~ [MOCK]\",\n  \"emotion\": \"happy\",\n  \"sessionId\": \"1782883993010-0416\",\n  \"historyLength\": 2,\n  \"message\": \"嘻嘻，我一直在等着你呢~ [MOCK]\"\n}",
+          "errorCode": null
+        }
+      ],
+      "artifactsVerified": {
+        "uploads/1782883993010-0416/original.png": {
+          "exists": true,
+          "sizeBytes": 1254713
+        },
+        "generated/1782883993010-0416/avatar.png": {
+          "exists": true,
+          "sizeBytes": 69,
+          "isPng": true
+        },
+        "generated/1782883993010-0416/prompt-check": {
+          "hasStyleKeyword": true,
+          "hasCustomPrompt": true,
+          "lengthOk": true,
+          "noPlaceholder": true,
+          "revisedPromptLength": 547,
+          "style": "simple"
+        },
+        "generated/1782883993010-0416/preview-3d.html": {
+          "exists": true,
+          "sizeBytes": 10919
+        },
+        "generated/1782883993010-0416/pet.html": {
+          "exists": true,
+          "sizeBytes": 27040
+        },
+        "generated/1782883993010-0416/chat-history.json": {
+          "exists": true,
+          "sizeBytes": 172
+        },
+        "generated/1782883993010-0416/metadata.json": {
+          "exists": true,
+          "sizeBytes": 1370
+        },
+        "generated/1782883993010-0416/model.glb": {
+          "exists": false,
+          "sizeBytes": 0,
+          "isGlb": false
+        }
+      },
+      "worksIndexEntry": {
+        "sessionId": "1782883993010-0416",
+        "status": "pet_spawned",
+        "style": "simple",
+        "hasAvatarPath": true,
+        "hasPreviewPath": true,
+        "hasPetPath": true,
+        "hasGlbPath": false
+      },
+      "lastSessionId": "1782883993010-0416"
     }
   ]
 }

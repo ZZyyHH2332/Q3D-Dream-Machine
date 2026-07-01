@@ -30,6 +30,40 @@
       pointer-events: none;
       user-select: none;
     }
+    .mood-bar {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      padding: 8px 16px;
+      border-radius: 9999px;
+      box-shadow: 0 4px 20px rgba(255,143,171,0.15);
+      display: flex;
+      gap: 6px;
+      z-index: 100;
+    }
+    .mood-btn {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 9999px;
+      background: #FFF0F5;
+      color: #FF6B9D;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .mood-btn:hover {
+      background: #FF8FAB;
+      color: white;
+      transform: scale(1.05);
+    }
+    .mood-btn.active {
+      background: linear-gradient(135deg, #FF8FAB, #FFB7C5);
+      color: white;
+    }
     .loading {
       position: fixed;
       top: 50%;
@@ -65,6 +99,17 @@
   <div id="loading" class="loading">加载 3D 场景中...</div>
   <div id="canvas-container"></div>
   <div class="overlay">🖱️ 拖拽旋转查看不同角度</div>
+  <div class="mood-bar" id="moodBar">
+    <button class="mood-btn active" data-mood="idle">平静</button>
+    <button class="mood-btn" data-mood="happy">开心</button>
+    <button class="mood-btn" data-mood="excited">兴奋</button>
+    <button class="mood-btn" data-mood="sleeping">困倦</button>
+    <button class="mood-btn" data-mood="curious">好奇</button>
+    <button class="mood-btn" data-mood="sad">难过</button>
+    <button class="mood-btn" data-mood="love">喜爱</button>
+    <button class="mood-btn" data-mood="climbing">攀爬</button>
+    <button class="mood-btn" data-mood="crawling_upside">倒挂</button>
+  </div>
 
   <script type="module">
     import * as THREE from 'three';
@@ -76,10 +121,13 @@
     import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
     import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+    import { createBonesCharacter, AVAILABLE_MOODS } from './js/character-bones.js';
 
     const params = new URLSearchParams(location.search);
     const avatarPath = params.get('avatar') || null;
     const glbPath = params.get('model') || null;
+    const mood = params.get('mood') || 'idle';
+    const useBones = params.get('bones') !== 'false'; // 默认启用骨骼角色
 
     // Toon gradient helper
     function createToonGradientMap(levels) {
@@ -185,6 +233,22 @@
       character.add(rightLeg);
     }
 
+    // Build bones character (new skeletal animation system)
+    let bonesChar = null;
+    function buildBonesCharacter(avatarTexture) {
+      try {
+        bonesChar = createBonesCharacter(THREE, avatarTexture, { gradientMap });
+        character.add(bonesChar.group);
+        bonesChar.setMood(mood);
+        // 更新 outline 选中对象
+        outlinePass.selectedObjects = [bonesChar.group];
+        return true;
+      } catch (e) {
+        console.warn('Bones character failed, falling back to geometric:', e.message);
+        return false;
+      }
+    }
+
     // Ground shadow
     const groundGeo = new THREE.CircleGeometry(2, 64);
     const groundMat = new THREE.MeshToonMaterial({ color: 0xFFFFFF, gradientMap });
@@ -260,25 +324,46 @@
         character.add(model);
         hideLoading();
       }, undefined, () => {
-        // GLB load failed, fallback to geometric character
-        if (avatarPath) {
-          const textureLoader = new THREE.TextureLoader();
-          const texture = textureLoader.load(avatarPath, hideLoading, undefined, hideLoading);
-          texture.colorSpace = THREE.SRGBColorSpace;
-          buildGeometricCharacter(texture);
-        } else {
-          buildGeometricCharacter(null);
-          hideLoading();
-        }
+        // GLB load failed, fallback to bones character or geometric
+        buildCharacterWithFallback();
       });
     } else {
-      // No model param, build geometric character (with optional avatar texture)
+      // No model param, build bones character (with optional avatar texture)
+      buildCharacterWithFallback();
+    }
+
+    function buildCharacterWithFallback() {
       if (avatarPath) {
         const textureLoader = new THREE.TextureLoader();
-        const texture = textureLoader.load(avatarPath, hideLoading, undefined, hideLoading);
-        texture.colorSpace = THREE.SRGBColorSpace;
-        buildGeometricCharacter(texture);
+        const texture = textureLoader.load(
+          avatarPath,
+          () => {
+            texture.colorSpace = THREE.SRGBColorSpace;
+            // 优先尝试骨骼角色
+            if (useBones && buildBonesCharacter(texture)) {
+              hideLoading();
+              return;
+            }
+            // 降级到几何角色
+            buildGeometricCharacter(texture);
+            hideLoading();
+          },
+          undefined,
+          () => {
+            // 纹理加载失败
+            if (useBones && buildBonesCharacter(null)) {
+              hideLoading();
+              return;
+            }
+            buildGeometricCharacter(null);
+            hideLoading();
+          }
+        );
       } else {
+        if (useBones && buildBonesCharacter(null)) {
+          hideLoading();
+          return;
+        }
         buildGeometricCharacter(null);
         hideLoading();
       }
@@ -288,10 +373,17 @@
     function animate() {
       requestAnimationFrame(animate);
 
+      // 骨骼角色动画（如果存在）
+      if (bonesChar) {
+        bonesChar.update();
+      }
+
       character.rotation.y += 0.005;
 
-      // Bobbing animation
-      character.position.y = Math.sin(Date.now() * 0.002) * 0.05;
+      // Bobbing animation (仅几何角色使用，骨骼角色有自己的动画)
+      if (!bonesChar) {
+        character.position.y = Math.sin(Date.now() * 0.002) * 0.05;
+      }
 
       // Particle float
       particles.rotation.y += 0.001;
@@ -309,6 +401,29 @@
       composer.setSize(window.innerWidth, window.innerHeight);
       fxaaPass.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight);
     });
+
+    // Mood switcher
+    const moodButtons = document.querySelectorAll('.mood-btn');
+    moodButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const moodName = btn.dataset.mood;
+        moodButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (bonesChar) {
+          bonesChar.setMood(moodName);
+        }
+      });
+    });
+
+    // 暴露 setMood 到全局，方便外部调用
+    window.setCharacterMood = function(moodName) {
+      if (bonesChar) {
+        bonesChar.setMood(moodName);
+        moodButtons.forEach(b => {
+          b.classList.toggle('active', b.dataset.mood === moodName);
+        });
+      }
+    };
   </script>
 </body>
 </html>

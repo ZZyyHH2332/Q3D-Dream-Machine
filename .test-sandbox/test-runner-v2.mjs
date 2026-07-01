@@ -124,10 +124,18 @@ function isGlb(filePath) {
 // Shared sample image path
 const sampleImage = path.join(__dirname, "test-data", "sample-portrait.jpg");
 
-// Random test images directory (Loop 71-80: 10-image random full-chain test)
+// Random test images directory (Loop 71-90: 20-image random full-chain test)
+// 支持 JPG/PNG/WebP 多种格式，按文件名中的数字排序
 const randomImageDir = path.join(__dirname, "test-data", "random");
 const randomImages = fs.existsSync(randomImageDir)
-  ? fs.readdirSync(randomImageDir).filter(f => /^img-\d{2}\./.test(f)).sort().map(f => path.join(randomImageDir, f))
+  ? fs.readdirSync(randomImageDir)
+      .filter(f => /^img-\d{2}\.(jpg|jpeg|png|webp)$/i.test(f))
+      .sort((a, b) => {
+        const numA = parseInt(a.match(/img-(\d+)/)?.[1] || "0");
+        const numB = parseInt(b.match(/img-(\d+)/)?.[1] || "0");
+        return numA - numB;
+      })
+      .map(f => path.join(randomImageDir, f))
   : [];
 
 // ===== Scenarios: 80 loops partitioned by Agent =====
@@ -636,6 +644,88 @@ const scenarios = {
     { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "随机10", personality: "温婉优雅" } },
     { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "随机图10全链路" } },
     { tool: "q3d_generate_3d_model", args: { avatarPath: "nonexistent/no-avatar-error.png" }, expectError: true },
+  ]},
+
+  // ===== Loop 81-90: 第二批10张多样化图片全链路测试 (新增: 卡通/素描/3D/动物/风景/物品等) =====
+  81: { name: "随机图11_卡通PNG_trendy全链路", skip: !randomImages[10], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[10], style: "trendy" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "trendy" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "卡通11", personality: "活泼可爱" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "卡通PNG格式测试" } },
+  ]},
+  82: { name: "随机图12_素描竖版_simple全链路", skip: !randomImages[11], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[11], style: "simple" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "simple" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "素描12", personality: "安静内向" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "素描风格测试" } },
+  ]},
+  83: { name: "随机图13_3D渲染PNG_kawaii全链路", skip: !randomImages[12], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[12], style: "kawaii" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "kawaii" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "3D13", personality: "活泼可爱" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "3D渲染风格测试" } },
+  ]},
+  84: { name: "随机图14_全身竖版_guofeng全链路", skip: !randomImages[13], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[13], style: "guofeng" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "guofeng" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "全身14", personality: "温婉优雅" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "全身照竖版测试" } },
+  ]},
+  85: { name: "随机图15_多人合影横版_trendy全链路", skip: !randomImages[14], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[14], style: "trendy" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "trendy" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "合影15", personality: "酷炫个性" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "多人合影测试" } },
+  ]},
+  86: { name: "随机图16_动物猫_simple全链路", skip: !randomImages[15], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[15], style: "simple" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "simple" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "猫咪16", personality: "安静内向" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "动物猫测试" } },
+  ]},
+  87: { name: "随机图17_动物狗卡通PNG_kawaii全链路", skip: !randomImages[16], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[16], style: "kawaii" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "kawaii" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "狗狗17", personality: "活泼可爱" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "动物狗卡通测试" } },
+  ]},
+  88: { name: "随机图18_风景横版169_guofeng全链路", skip: !randomImages[17], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[17], style: "guofeng" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "guofeng" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "风景18", personality: "温婉优雅" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "风景照横版测试" } },
+  ]},
+  89: { name: "随机图19_物品玩具WebP格式_trendy全链路", skip: !randomImages[18], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[18], style: "trendy" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "trendy" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "玩具19", personality: "酷炫个性" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "WebP格式测试" } },
+  ]},
+  90: { name: "随机图20_抽象艺术高分辨率PNG_simple全链路", skip: !randomImages[19], steps: [
+    { tool: "q3d_upload_photo", args: { imagePath: randomImages[19], style: "simple" } },
+    { tool: "q3d_generate_avatar", args: { uploadId: "@last.sessionId", style: "simple" } },
+    { tool: "q3d_generate_3d_model", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_create_3d_preview", args: { sessionId: "@last.sessionId" } },
+    { tool: "q3d_spawn_pet", args: { sessionId: "@last.sessionId", name: "抽象20", personality: "安静内向" } },
+    { tool: "q3d_chat_with_pet", args: { sessionId: "@last.sessionId", message: "高分辨率抽象艺术测试" } },
   ]},
 };
 

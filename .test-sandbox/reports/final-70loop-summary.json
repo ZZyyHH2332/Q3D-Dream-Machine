@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-06-30T06:49:01.475Z",
-  "totalLoops": 80,
-  "totalPass": 80,
+  "timestamp": "2026-07-01T05:33:16.701Z",
+  "totalLoops": 90,
+  "totalPass": 90,
   "totalFail": 0,
-  "totalDurationMs": 36051,
+  "totalDurationMs": 73782,
   "agents": [
     {
       "agentId": "A",
       "pass": 40,
       "fail": 0,
-      "durationMs": 33250,
+      "durationMs": 39454,
       "loops": [
         {
           "loopId": 1,
@@ -217,7 +217,7 @@
       "agentId": "B",
       "pass": 20,
       "fail": 0,
-      "durationMs": 16177,
+      "durationMs": 20281,
       "loops": [
         {
           "loopId": 41,
@@ -325,7 +325,7 @@
       "agentId": "C",
       "pass": 10,
       "fail": 0,
-      "durationMs": 12187,
+      "durationMs": 12984,
       "loops": [
         {
           "loopId": 61,
@@ -381,9 +381,9 @@
     },
     {
       "agentId": "X",
-      "pass": 10,
+      "pass": 20,
       "fail": 0,
-      "durationMs": 34758,
+      "durationMs": 72939,
       "loops": [
         {
           "loopId": 71,
@@ -434,6 +434,56 @@
           "loopId": 80,
           "result": "PASS",
           "scenario": "随机图10_guofeng全链路"
+        },
+        {
+          "loopId": 81,
+          "result": "PASS",
+          "scenario": "随机图11_卡通PNG_trendy全链路"
+        },
+        {
+          "loopId": 82,
+          "result": "PASS",
+          "scenario": "随机图12_素描竖版_simple全链路"
+        },
+        {
+          "loopId": 83,
+          "result": "PASS",
+          "scenario": "随机图13_3D渲染PNG_kawaii全链路"
+        },
+        {
+          "loopId": 84,
+          "result": "PASS",
+          "scenario": "随机图14_全身竖版_guofeng全链路"
+        },
+        {
+          "loopId": 85,
+          "result": "PASS",
+          "scenario": "随机图15_多人合影横版_trendy全链路"
+        },
+        {
+          "loopId": 86,
+          "result": "PASS",
+          "scenario": "随机图16_动物猫_simple全链路"
+        },
+        {
+          "loopId": 87,
+          "result": "PASS",
+          "scenario": "随机图17_动物狗卡通PNG_kawaii全链路"
+        },
+        {
+          "loopId": 88,
+          "result": "PASS",
+          "scenario": "随机图18_风景横版169_guofeng全链路"
+        },
+        {
+          "loopId": 89,
+          "result": "PASS",
+          "scenario": "随机图19_物品玩具WebP格式_trendy全链路"
+        },
+        {
+          "loopId": 90,
+          "result": "PASS",
+          "scenario": "随机图20_抽象艺术高分辨率PNG_simple全链路"
         }
       ]
     }

@@ -21,7 +21,7 @@ const agents = [
   { id: "A", start: 1, end: 40, desc: "效果测试" },
   { id: "B", start: 41, end: 60, desc: "全流程测试" },
   { id: "C", start: 61, end: 70, desc: "全功能测试" },
-  { id: "X", start: 71, end: 80, desc: "10图随机批量测试" },
+  { id: "X", start: 71, end: 90, desc: "20图随机批量测试" },
 ];
 
 async function runAgent(agent) {
@@ -64,11 +64,11 @@ async function runAgent(agent) {
   });
 }
 
-console.log("========== Q3D 80 Loop 多Agent集群测试启动 ==========");
+console.log("========== Q3D 90 Loop 多Agent集群测试启动 ==========");
 console.log(`Agent A: Loop 1-40  (效果测试)`);
 console.log(`Agent B: Loop 41-60 (全流程测试)`);
 console.log(`Agent C: Loop 61-70 (全功能测试)`);
-console.log(`Agent X: Loop 71-80 (10图随机批量测试)`);
+console.log(`Agent X: Loop 71-90 (20图随机批量测试)`);
 console.log("=====================================================\n");
 
 // Run all agents in parallel

@@ -10,6 +10,7 @@ export interface Q3DConfig {
     uploadsDir: string;
     worksIndexPath: string;
     testMode: boolean;
+    defaultStyle: string;
     provider3D: Provider3D;
     hunyuanApiUrl: string;
     api302Key: string | undefined;
