@@ -23,12 +23,16 @@ export interface Provider3D {
 
 // Auto-detect and select the best available provider
 export async function resolveProvider(): Promise<Provider3D | null> {
+  const { soapLocalProvider } = await import("./soap-local.js");
   const { hunyuanProvider } = await import("./hunyuan.js");
+  const { sf3dLocalProvider } = await import("./sf3d-local.js");
   const { provider302AI } = await import("./302ai.js");
   const { tripoProvider } = await import("./tripo.js");
 
   const providerMap: Record<string, Provider3D> = {
+    soap: soapLocalProvider,
     hunyuan: hunyuanProvider,
+    sf3d: sf3dLocalProvider,
     "302ai": provider302AI,
     tripo: tripoProvider,
   };
@@ -44,7 +48,18 @@ export async function resolveProvider(): Promise<Provider3D | null> {
   }
 
   // Auto mode: try in priority order
-  const priority = [hunyuanProvider, provider302AI, tripoProvider];
+  // 1. SOAP 本地（最佳：带骨骼可动画）
+  // 2. Hunyuan3D 本地（高质量几何）
+  // 3. SF3D 本地（超快速 + PBR 材质）
+  // 4. 302AI 云（SF3D 云端版本）
+  // 5. Tripo 云（保底）
+  const priority = [
+    soapLocalProvider,
+    hunyuanProvider,
+    sf3dLocalProvider,
+    provider302AI,
+    tripoProvider,
+  ];
   for (const p of priority) {
     if (await p.isAvailable()) {
       return p;

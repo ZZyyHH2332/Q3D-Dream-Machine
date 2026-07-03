@@ -11,12 +11,13 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4",
+    "dotenv": "^16.4.0",
     "openai": "^4.85.0",
-    "zod": "^3.24.0",
-    "dotenv": "^16.4.0"
+    "zod": "^3.24.0"
   },
   "devDependencies": {
     "@types/node": "^20.17.0",
+    "sharp": "^0.35.2",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0"
   },

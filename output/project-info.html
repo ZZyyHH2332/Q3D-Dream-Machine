@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q3D 形象造梦机 - 项目总览</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: linear-gradient(135deg, #0a0e1a 0%, #16213e 50%, #0f3460 100%);
+    color: #f0f0f5;
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ── Header ── */
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .header h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #60a5fa 0%, #00D4FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+
+  .header .subtitle {
+    font-size: 1rem;
+    color: rgba(240, 240, 245, 0.5);
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    margin-bottom: 20px;
+  }
+
+  .test-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.25);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 0.82rem;
+    color: #4ade80;
+    font-weight: 500;
+  }
+
+  .test-badge .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+  }
+
+  /* ── Glass Card ── */
+  .glass {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .glass-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(240, 240, 245, 0.4);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .glass-label .label-icon {
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(96, 165, 250, 0.15);
+    border-radius: 6px;
+    font-size: 0.72rem;
+    color: #60a5fa;
+  }
+
+  /* ── Config Grid ── */
+  .config-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .config-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .config-item .key {
+    font-size: 0.75rem;
+    color: rgba(240, 240, 245, 0.35);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  .config-item .value {
+    font-size: 0.92rem;
+    color: #f0f0f5;
+    font-weight: 500;
+  }
+
+  .config-item .value.accent {
+    color: #00D4FF;
+  }
+
+  .config-item .value .tag {
+    display: inline-block;
+    background: rgba(96, 165, 250, 0.12);
+    border: 1px solid rgba(96, 165, 250, 0.2);
+    border-radius: 6px;
+    padding: 1px 8px;
+    font-size: 0.8rem;
+    margin: 0 2px;
+  }
+
+  /* ── Fallback Chain ── */
+  .fallback-chain {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .fallback-label {
+    font-size: 0.75rem;
+    color: rgba(240, 240, 245, 0.35);
+    font-weight: 500;
+    margin-right: 4px;
+  }
+
+  .fallback-step {
+    background: rgba(96, 165, 250, 0.1);
+    border: 1px solid rgba(96, 165, 250, 0.18);
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    color: #60a5fa;
+    font-weight: 500;
+  }
+
+  .fallback-arrow {
+    color: rgba(240, 240, 245, 0.2);
+    font-size: 0.85rem;
+  }
+
+  /* ── Provider Cards ── */
+  .provider-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+
+  .provider-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .provider-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .provider-name {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #f0f0f5;
+  }
+
+  .provider-badge {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 3px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+  }
+
+  .provider-badge.green {
+    background: rgba(74, 222, 128, 0.12);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.2);
+  }
+
+  .provider-badge.orange {
+    background: rgba(251, 191, 36, 0.12);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.2);
+  }
+
+  .provider-priority {
+    font-size: 0.72rem;
+    color: rgba(240, 240, 245, 0.3);
+  }
+
+  .provider-desc {
+    font-size: 0.78rem;
+    color: rgba(240, 240, 245, 0.55);
+    line-height: 1.5;
+  }
+
+  /* ── Feature Grid ── */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .feature-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 0.3s ease, background 0.3s ease;
+  }
+
+  .feature-card:hover {
+    border-color: rgba(96, 165, 250, 0.25);
+    background: rgba(96, 165, 250, 0.04);
+  }
+
+  .feature-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .feature-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #f0f0f5;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .feature-title .num {
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.2), rgba(0, 212, 255, 0.2));
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #00D4FF;
+  }
+
+  .feature-desc {
+    font-size: 0.8rem;
+    color: rgba(240, 240, 245, 0.5);
+    line-height: 1.5;
+  }
+
+  .feature-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .pill {
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+
+  .pill.blue {
+    background: rgba(96, 165, 250, 0.1);
+    border: 1px solid rgba(96, 165, 250, 0.18);
+    color: #60a5fa;
+  }
+
+  .pill.cyan {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.18);
+    color: #00D4FF;
+  }
+
+  .pill.purple {
+    background: rgba(168, 85, 247, 0.1);
+    border: 1px solid rgba(168, 85, 247, 0.18);
+    color: #a855f7;
+  }
+
+  .pill.pink {
+    background: rgba(236, 72, 153, 0.1);
+    border: 1px solid rgba(236, 72, 153, 0.18);
+    color: #ec4899;
+  }
+
+  .pill.green {
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.18);
+    color: #4ade80;
+  }
+
+  /* ── MCP Tools ── */
+  .mcp-categories {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .mcp-category {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mcp-cat-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: rgba(240, 240, 245, 0.7);
+  }
+
+  .mcp-cat-header .cat-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .mcp-cat-header .cat-count {
+    font-size: 0.68rem;
+    color: rgba(240, 240, 245, 0.3);
+    font-weight: 400;
+  }
+
+  .mcp-tools-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tool-pill {
+    font-family: 'DM Mono', 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 0.72rem;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(240, 240, 245, 0.7);
+    transition: all 0.2s ease;
+    cursor: default;
+  }
+
+  .tool-pill:hover {
+    background: rgba(96, 165, 250, 0.1);
+    border-color: rgba(96, 165, 250, 0.2);
+    color: #60a5fa;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 0.75rem;
+    color: rgba(240, 240, 245, 0.2);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .container { padding: 32px 16px 60px; }
+    .header h1 { font-size: 1.6rem; }
+    .config-grid { grid-template-columns: 1fr; }
+    .provider-row { grid-template-columns: 1fr; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .feature-card:last-child:nth-child(odd) { grid-column: auto; }
+    .mcp-categories { grid-template-columns: 1fr; }
+  }
+
+  /* ── Glow decorations ── */
+  .glow-tl {
+    position: fixed;
+    top: -120px;
+    left: -120px;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(96, 165, 250, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .glow-br {
+    position: fixed;
+    bottom: -100px;
+    right: -100px;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { position: relative; z-index: 1; }
+</style>
+</head>
+<body>
+
+<div class="glow-tl"></div>
+<div class="glow-br"></div>
+
+<div class="container">
+
+  <!-- ═══ Header ═══ -->
+  <header class="header">
+    <h1>Q3D 形象造梦机 v1.2.0</h1>
+    <p class="subtitle">项目总览 &middot; Project Info Dashboard</p>
+    <span class="test-badge">
+      <span class="dot"></span>
+      Backend Test
+    </span>
+  </header>
+
+  <!-- ═══ Config Panel ═══ -->
+  <section class="glass">
+    <div class="glass-label">
+      <span class="label-icon">&#9881;</span>
+      项目配置
+    </div>
+    <div class="config-grid">
+      <div class="config-item">
+        <span class="key">项目名称</span>
+        <span class="value">Q3D 形象造梦机</span>
+      </div>
+      <div class="config-item">
+        <span class="key">版本</span>
+        <span class="value accent">v1.2.0</span>
+      </div>
+      <div class="config-item">
+        <span class="key">输出目录</span>
+        <span class="value">./output/</span>
+      </div>
+      <div class="config-item">
+        <span class="key">默认风格</span>
+        <span class="value">kawaii<span class="tag">软萌大头</span></span>
+      </div>
+      <div class="config-item">
+        <span class="key">支持风格</span>
+        <span class="value">4 种 <span class="tag">kawaii</span><span class="tag">guofeng</span><span class="tag">trendy</span><span class="tag">simple</span></span>
+      </div>
+      <div class="config-item">
+        <span class="key">最大上传</span>
+        <span class="value">4MB</span>
+      </div>
+      <div class="config-item">
+        <span class="key">图片格式</span>
+        <span class="value"><span class="tag">png</span><span class="tag">jpg</span><span class="tag">jpeg</span><span class="tag">webp</span></span>
+      </div>
+      <div class="config-item">
+        <span class="key">MCP 工具</span>
+        <span class="value accent">15 个</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Provider Status Panel ═══ -->
+  <section class="glass">
+    <div class="glass-label">
+      <span class="label-icon">&#9889;</span>
+      AI Provider 状态
+    </div>
+    <div class="fallback-chain">
+      <span class="fallback-label">Fallback Chain:</span>
+      <span class="fallback-step">TRAE Native</span>
+      <span class="fallback-arrow">&rarr;</span>
+      <span class="fallback-step">External API</span>
+      <span class="fallback-arrow">&rarr;</span>
+      <span class="fallback-step">Mock</span>
+    </div>
+    <div class="provider-row">
+      <div class="provider-card">
+        <div class="provider-header">
+          <span class="provider-name">TRAE Native</span>
+          <span class="provider-badge green">available</span>
+        </div>
+        <span class="provider-priority">priority: 0</span>
+        <p class="provider-desc">TRAE 内置 Vision + GenerateImage，零配置</p>
+      </div>
+      <div class="provider-card">
+        <div class="provider-header">
+          <span class="provider-name">External API</span>
+          <span class="provider-badge orange">not_configured</span>
+        </div>
+        <span class="provider-priority">priority: 1</span>
+        <p class="provider-desc">未配置（需设置 Q3D_API_KEY 和 Q3D_API_BASE）</p>
+      </div>
+      <div class="provider-card">
+        <div class="provider-header">
+          <span class="provider-name">Mock</span>
+          <span class="provider-badge green">available</span>
+        </div>
+        <span class="provider-priority">priority: 2</span>
+        <p class="provider-desc">本地模拟数据（测试/演示用）</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Features Panel ═══ -->
+  <section class="glass">
+    <div class="glass-label">
+      <span class="label-icon">&#10024;</span>
+      功能模块
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <span class="feature-title"><span class="num">1</span> AI 形象生成</span>
+        <p class="feature-desc">上传照片生成 4 种风格的 Q 版形象</p>
+        <div class="feature-pills">
+          <span class="pill blue">kawaii</span>
+          <span class="pill purple">guofeng</span>
+          <span class="pill pink">trendy</span>
+          <span class="pill cyan">simple</span>
+        </div>
+      </div>
+      <div class="feature-card">
+        <span class="feature-title"><span class="num">2</span> 3D 骨骼动画预览</span>
+        <p class="feature-desc">Three.js 真 3D 预览，支持 9 种动画</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-title"><span class="num">3</span> 桌面宠物</span>
+        <p class="feature-desc">PiP 置顶窗口，支持 AI 对话和养成系统</p>
+        <div class="feature-pills">
+          <span class="pill cyan">PiP 置顶</span>
+          <span class="pill green">AI 对话</span>
+          <span class="pill pink">养成系统</span>
+        </div>
+      </div>
+      <div class="feature-card">
+        <span class="feature-title"><span class="num">4</span> 作品画廊</span>
+        <p class="feature-desc">所有生成作品自动收录到作品展示页</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-title"><span class="num">5</span> Dream Lattice</span>
+        <p class="feature-desc">p5.js 粒子升腾艺术，4 种风格色板</p>
+        <div class="feature-pills">
+          <span class="pill blue">kawaii</span>
+          <span class="pill purple">guofeng</span>
+          <span class="pill pink">trendy</span>
+          <span class="pill cyan">simple</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ MCP Tools Panel ═══ -->
+  <section class="glass">
+    <div class="glass-label">
+      <span class="label-icon">&#128295;</span>
+      MCP 工具列表 (15)
+    </div>
+    <div class="mcp-categories">
+      <div class="mcp-category">
+        <div class="mcp-cat-header">
+          <span class="cat-dot" style="background:#60a5fa"></span>
+          核心 <span class="cat-count">(5)</span>
+        </div>
+        <div class="mcp-tools-list">
+          <span class="tool-pill">health_check</span>
+          <span class="tool-pill">upload_photo</span>
+          <span class="tool-pill">generate_avatar</span>
+          <span class="tool-pill">save_avatar</span>
+          <span class="tool-pill">regenerate_avatar</span>
+        </div>
+      </div>
+      <div class="mcp-category">
+        <div class="mcp-cat-header">
+          <span class="cat-dot" style="background:#00D4FF"></span>
+          3D <span class="cat-count">(3)</span>
+        </div>
+        <div class="mcp-tools-list">
+          <span class="tool-pill">generate_3d_model</span>
+          <span class="tool-pill">create_3d_preview</span>
+          <span class="tool-pill">create_bones_preview</span>
+        </div>
+      </div>
+      <div class="mcp-category">
+        <div class="mcp-cat-header">
+          <span class="cat-dot" style="background:#a855f7"></span>
+          宠物 <span class="cat-count">(4)</span>
+        </div>
+        <div class="mcp-tools-list">
+          <span class="tool-pill">spawn_pet</span>
+          <span class="tool-pill">chat_with_pet</span>
+          <span class="tool-pill">control_mood</span>
+          <span class="tool-pill">pet_care</span>
+        </div>
+      </div>
+      <div class="mcp-category">
+        <div class="mcp-cat-header">
+          <span class="cat-dot" style="background:#4ade80"></span>
+          工具 <span class="cat-count">(3)</span>
+        </div>
+        <div class="mcp-tools-list">
+          <span class="tool-pill">manage_gallery</span>
+          <span class="tool-pill">generate_dream_lattice</span>
+          <span class="tool-pill">get_project_info</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    Q3D Dream Machine &middot; Generated by q3d_get_project_info &middot; v1.2.0
+  </footer>
+
+</div>
+
+</body>
+</html>

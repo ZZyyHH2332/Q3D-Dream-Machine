@@ -31,6 +31,8 @@ function getConfig() {
         hunyuanApiUrl: process.env.Q3D_HUNYUAN_API_URL || "http://localhost:8080",
         api302Key: process.env.Q3D_302AI_API_KEY || undefined,
         tripoApiKey: process.env.Q3D_TRIPO_API_KEY || undefined,
+        sf3dLocalUrl: process.env.Q3D_SF3D_LOCAL_URL || "http://localhost:8081",
+        soapLocalUrl: process.env.Q3D_SOAP_LOCAL_URL || "http://localhost:8082",
     };
 }
 // Dynamic config: re-reads process.env on every property access

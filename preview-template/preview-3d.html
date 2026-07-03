@@ -85,6 +85,18 @@
       animation: spin 1s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+    .quality-badge {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      color: #888;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
   </style>
   <script type="importmap">
   {
@@ -99,6 +111,7 @@
   <div id="loading" class="loading">加载 3D 场景中...</div>
   <div id="canvas-container"></div>
   <div class="overlay">🖱️ 拖拽旋转查看不同角度</div>
+  <div class="quality-badge" id="qualityBadge">PBR + HDRI + ACES</div>
   <div class="mood-bar" id="moodBar">
     <button class="mood-btn active" data-mood="idle">平静</button>
     <button class="mood-btn" data-mood="happy">开心</button>
@@ -117,19 +130,97 @@
     import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
     import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
     import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+    import { SAOPass } from 'three/addons/postprocessing/SAOPass.js';
     import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
     import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
     import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+    import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
     import { createBonesCharacter, AVAILABLE_MOODS } from './js/character-bones.js';
+    import { createGLBAnimator } from './js/character-glb-animator.js';
 
     const params = new URLSearchParams(location.search);
     const avatarPath = params.get('avatar') || null;
     const glbPath = params.get('model') || null;
     const mood = params.get('mood') || 'idle';
-    const useBones = params.get('bones') !== 'false'; // 默认启用骨骼角色
+    const useBones = params.get('bones') !== 'false';
 
-    // Toon gradient helper
+    // ========== RENDERER (PBR-grade) ==========
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      powerPreference: 'high-performance',
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.2;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+    // ========== SCENE ==========
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xFFF5F7);
+    scene.fog = new THREE.Fog(0xFFF5F7, 10, 25);
+
+    // ========== HDRI ENVIRONMENT MAP (RoomEnvironment) ==========
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+    pmremGenerator.compileEquirectangularShader();
+    const roomEnv = new RoomEnvironment();
+    const envTexture = pmremGenerator.fromScene(roomEnv, 0.04).texture;
+    scene.environment = envTexture;
+    roomEnv.dispose();
+
+    // ========== CAMERA ==========
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(3, 2, 4);
+
+    // ========== CONTROLS ==========
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.minDistance = 2;
+    controls.maxDistance = 10;
+    controls.target.set(0, 0.5, 0);
+
+    // ========== LIGHTING (Studio-grade) ==========
+    // Key light (warm, strong)
+    const keyLight = new THREE.DirectionalLight(0xFFF5E6, 1.2);
+    keyLight.position.set(5, 8, 5);
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.width = 2048;
+    keyLight.shadow.mapSize.height = 2048;
+    keyLight.shadow.camera.near = 0.5;
+    keyLight.shadow.camera.far = 20;
+    keyLight.shadow.camera.left = -5;
+    keyLight.shadow.camera.right = 5;
+    keyLight.shadow.camera.top = 5;
+    keyLight.shadow.camera.bottom = -5;
+    keyLight.shadow.bias = -0.0005;
+    keyLight.shadow.normalBias = 0.02;
+    scene.add(keyLight);
+
+    // Fill light (cool, soft)
+    const fillLight = new THREE.DirectionalLight(0xE6F0FF, 0.4);
+    fillLight.position.set(-4, 3, -3);
+    scene.add(fillLight);
+
+    // Rim light (accent)
+    const rimLight = new THREE.DirectionalLight(0xFFB7C5, 0.5);
+    rimLight.position.set(-2, 4, 5);
+    scene.add(rimLight);
+
+    // Ambient (reduced — environment map provides base illumination)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+    scene.add(ambientLight);
+
+    // ========== CHARACTER GROUP ==========
+    const character = new THREE.Group();
+    scene.add(character);
+
+    // ========== TOON GRADIENT (for geometric fallback) ==========
     function createToonGradientMap(levels) {
       const data = new Uint8Array(levels);
       for (let i = 0; i < levels; i++) {
@@ -143,51 +234,85 @@
     }
     const gradientMap = createToonGradientMap(3);
 
-    // Scene setup
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xFFF5F7);
-    scene.fog = new THREE.Fog(0xFFF5F7, 8, 20);
+    // ========== GROUND (PBR) ==========
+    const groundGeo = new THREE.CircleGeometry(3, 64);
+    const groundMat = new THREE.MeshStandardMaterial({
+      color: 0xFFFFFF,
+      roughness: 0.8,
+      metalness: 0.0,
+      envMapIntensity: 0.3,
+    });
+    const ground = new THREE.Mesh(groundGeo, groundMat);
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -0.7;
+    ground.receiveShadow = true;
+    scene.add(ground);
 
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.set(3, 2, 4);
+    // ========== FLOATING PARTICLES ==========
+    const particlesGeo = new THREE.BufferGeometry();
+    const particleCount = 40;
+    const posArray = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount * 3; i++) {
+      posArray[i] = (Math.random() - 0.5) * 8;
+    }
+    particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    const particlesMat = new THREE.PointsMaterial({
+      size: 0.04,
+      color: 0xFF8FAB,
+      transparent: true,
+      opacity: 0.5,
+      sizeAttenuation: true,
+    });
+    const particles = new THREE.Points(particlesGeo, particlesMat);
+    scene.add(particles);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.SoftShadowMap;
-    document.getElementById('canvas-container').appendChild(renderer.domElement);
+    // ========== POST-PROCESSING PIPELINE ==========
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
 
-    // Controls
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.minDistance = 2;
-    controls.maxDistance = 10;
-    controls.target.set(0, 0.5, 0);
+    // SAO (Screen Space Ambient Occlusion) — adds depth
+    const saoPass = new SAOPass(scene, camera, false, true);
+    saoPass.params.saoBias = 0.5;
+    saoPass.params.saoIntensity = 0.015;
+    saoPass.params.saoScale = 4;
+    saoPass.params.saoKernelRadius = 30;
+    saoPass.params.saoMinResolution = 0;
+    saoPass.params.saoBlur = true;
+    saoPass.params.saoBlurRadius = 4;
+    saoPass.params.saoBlurStdDev = 3;
+    saoPass.params.saoBlurDepthCutoff = 0.01;
+    composer.addPass(saoPass);
 
-    // Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambientLight);
+    // Outline (character silhouette)
+    const outlinePass = new OutlinePass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      scene, camera
+    );
+    outlinePass.edgeStrength = 2.5;
+    outlinePass.edgeGlow = 0.8;
+    outlinePass.edgeThickness = 1.0;
+    outlinePass.pulsePeriod = 0;
+    outlinePass.visibleEdgeColor.set(0x444444);
+    outlinePass.hiddenEdgeColor.set(0x444444);
+    outlinePass.selectedObjects = [character];
+    composer.addPass(outlinePass);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    dirLight.position.set(5, 8, 5);
-    dirLight.castShadow = true;
-    dirLight.shadow.mapSize.width = 1024;
-    dirLight.shadow.mapSize.height = 1024;
-    scene.add(dirLight);
+    // Bloom (subtle glow)
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      0.15,  // strength
+      0.4,   // radius
+      0.85   // threshold
+    );
+    composer.addPass(bloomPass);
 
-    const fillLight = new THREE.DirectionalLight(0xFFB7C5, 0.3);
-    fillLight.position.set(-3, 2, -3);
-    scene.add(fillLight);
+    // FXAA (anti-aliasing)
+    const fxaaPass = new ShaderPass(FXAAShader);
+    fxaaPass.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight);
+    composer.addPass(fxaaPass);
 
-    // Character group
-    const character = new THREE.Group();
-    scene.add(character);
-
-    // Build geometric character (fallback / default)
+    // ========== GEOMETRIC CHARACTER (fallback) ==========
     function buildGeometricCharacter(avatarTexture) {
-      // Head (sphere)
       let headMaterial;
       if (avatarTexture) {
         headMaterial = new THREE.MeshToonMaterial({ map: avatarTexture, gradientMap });
@@ -200,7 +325,6 @@
       head.castShadow = true;
       character.add(head);
 
-      // Body (cylinder)
       const bodyGeo = new THREE.CylinderGeometry(0.6, 0.7, 1.2, 32);
       const bodyMat = new THREE.MeshToonMaterial({ color: 0xA8E6CF, gradientMap });
       const body = new THREE.Mesh(bodyGeo, bodyMat);
@@ -208,7 +332,6 @@
       body.castShadow = true;
       character.add(body);
 
-      // Arms (spheres)
       const armGeo = new THREE.SphereGeometry(0.25, 16, 16);
       const armMat = new THREE.MeshToonMaterial({ color: 0xFFD93D, gradientMap });
       const leftArm = new THREE.Mesh(armGeo, armMat);
@@ -220,7 +343,6 @@
       rightArm.castShadow = true;
       character.add(rightArm);
 
-      // Legs (cylinders)
       const legGeo = new THREE.CylinderGeometry(0.2, 0.22, 0.5, 16);
       const legMat = new THREE.MeshToonMaterial({ color: 0xB4D7F0, gradientMap });
       const leftLeg = new THREE.Mesh(legGeo, legMat);
@@ -233,14 +355,13 @@
       character.add(rightLeg);
     }
 
-    // Build bones character (new skeletal animation system)
+    // ========== BONES CHARACTER ==========
     let bonesChar = null;
     function buildBonesCharacter(avatarTexture) {
       try {
         bonesChar = createBonesCharacter(THREE, avatarTexture, { gradientMap });
         character.add(bonesChar.group);
         bonesChar.setMood(mood);
-        // 更新 outline 选中对象
         outlinePass.selectedObjects = [bonesChar.group];
         return true;
       } catch (e) {
@@ -249,86 +370,72 @@
       }
     }
 
-    // Ground shadow
-    const groundGeo = new THREE.CircleGeometry(2, 64);
-    const groundMat = new THREE.MeshToonMaterial({ color: 0xFFFFFF, gradientMap });
-    const ground = new THREE.Mesh(groundGeo, groundMat);
-    ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -0.7;
-    ground.receiveShadow = true;
-    scene.add(ground);
+    // ========== GLB MODEL LOADING (PBR pipeline + GLB Animator) ==========
+    let glbAnimator = null;
 
-    // Floating particles
-    const particlesGeo = new THREE.BufferGeometry();
-    const particleCount = 30;
-    const posArray = new Float32Array(particleCount * 3);
-    for (let i = 0; i < particleCount * 3; i++) {
-      posArray[i] = (Math.random() - 0.5) * 8;
-    }
-    particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-    const particlesMat = new THREE.PointsMaterial({
-      size: 0.05,
-      color: 0xFF8FAB,
-      transparent: true,
-      opacity: 0.6,
-    });
-    const particles = new THREE.Points(particlesGeo, particlesMat);
-    scene.add(particles);
-
-    // Post-processing
-    const composer = new EffectComposer(renderer);
-    composer.addPass(new RenderPass(scene, camera));
-
-    const outlinePass = new OutlinePass(
-      new THREE.Vector2(window.innerWidth, window.innerHeight),
-      scene, camera
-    );
-    outlinePass.edgeStrength = 3.0;
-    outlinePass.edgeGlow = 1.0;
-    outlinePass.edgeThickness = 1.0;
-    outlinePass.pulsePeriod = 0;
-    outlinePass.visibleEdgeColor.set(0x333333);
-    outlinePass.hiddenEdgeColor.set(0x333333);
-    outlinePass.selectedObjects = [character];
-    composer.addPass(outlinePass);
-
-    const fxaaPass = new ShaderPass(FXAAShader);
-    fxaaPass.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight);
-    composer.addPass(fxaaPass);
-
-    // Hide loading helper
-    function hideLoading() {
-      document.getElementById('loading').style.display = 'none';
-    }
-
-    // GLB model loading with fallback
-    if (glbPath) {
+    function loadGLBModel(url) {
       const dracoLoader = new DRACOLoader();
       dracoLoader.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/');
       const gltfLoader = new GLTFLoader();
       gltfLoader.setDRACOLoader(dracoLoader);
 
-      gltfLoader.load(glbPath, (gltf) => {
+      gltfLoader.load(url, (gltf) => {
         const model = gltf.scene;
-        // Auto-scale model to fit
+
+        // Enhance PBR materials for environment lighting
+        model.traverse((child) => {
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+            if (child.material) {
+              if (child.material.isMeshStandardMaterial || child.material.isMeshPhysicalMaterial) {
+                child.material.envMapIntensity = 1.0;
+                child.material.needsUpdate = true;
+              }
+            }
+          }
+        });
+
+        // Auto-scale to fit viewport
         const box = new THREE.Box3().setFromObject(model);
         const size = box.getSize(new THREE.Vector3());
         const maxDim = Math.max(size.x, size.y, size.z);
         const scale = 2.0 / maxDim;
         model.scale.setScalar(scale);
+
         // Center the model
         const scaledBox = new THREE.Box3().setFromObject(model);
         const center = scaledBox.getCenter(new THREE.Vector3());
         model.position.sub(center);
         model.position.y += 0.5;
-        character.add(model);
+
+        // Create GLB animator (auto-segments parts for animation)
+        glbAnimator = createGLBAnimator(THREE, model);
+        character.add(glbAnimator.group);
+        glbAnimator.setMood(mood);
+        outlinePass.selectedObjects = [glbAnimator.group];
+
+        // Update quality badge
+        const segLabel = glbAnimator.isSegmented ? 'Segmented' : 'Whole';
+        const badge = document.getElementById('qualityBadge');
+        if (badge) badge.textContent = `PBR + HDRI + ACES | GLB ${segLabel}`;
+
         hideLoading();
       }, undefined, () => {
-        // GLB load failed, fallback to bones character or geometric
+        // GLB load failed, fallback
         buildCharacterWithFallback();
       });
+    }
+
+    // ========== LOADING ==========
+    function hideLoading() {
+      document.getElementById('loading').style.display = 'none';
+    }
+
+    // ========== MAIN ENTRY ==========
+    if (glbPath) {
+      loadGLBModel(glbPath);
     } else {
-      // No model param, build bones character (with optional avatar texture)
       buildCharacterWithFallback();
     }
 
@@ -339,18 +446,15 @@
           avatarPath,
           () => {
             texture.colorSpace = THREE.SRGBColorSpace;
-            // 优先尝试骨骼角色
             if (useBones && buildBonesCharacter(texture)) {
               hideLoading();
               return;
             }
-            // 降级到几何角色
             buildGeometricCharacter(texture);
             hideLoading();
           },
           undefined,
           () => {
-            // 纹理加载失败
             if (useBones && buildBonesCharacter(null)) {
               hideLoading();
               return;
@@ -369,23 +473,23 @@
       }
     }
 
-    // Animation
+    // ========== ANIMATION LOOP ==========
     function animate() {
       requestAnimationFrame(animate);
 
-      // 骨骼角色动画（如果存在）
       if (bonesChar) {
         bonesChar.update();
+      }
+      if (glbAnimator) {
+        glbAnimator.update();
       }
 
       character.rotation.y += 0.005;
 
-      // Bobbing animation (仅几何角色使用，骨骼角色有自己的动画)
-      if (!bonesChar) {
+      if (!bonesChar && !glbAnimator) {
         character.position.y = Math.sin(Date.now() * 0.002) * 0.05;
       }
 
-      // Particle float
       particles.rotation.y += 0.001;
 
       controls.update();
@@ -393,7 +497,7 @@
     }
     animate();
 
-    // Resize
+    // ========== RESIZE ==========
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
@@ -402,27 +506,28 @@
       fxaaPass.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight);
     });
 
-    // Mood switcher
+    // ========== MOOD SWITCHER ==========
     const moodButtons = document.querySelectorAll('.mood-btn');
     moodButtons.forEach(btn => {
       btn.addEventListener('click', () => {
         const moodName = btn.dataset.mood;
         moodButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        if (bonesChar) {
-          bonesChar.setMood(moodName);
-        }
+        if (bonesChar) bonesChar.setMood(moodName);
+        if (glbAnimator) glbAnimator.setMood(moodName);
       });
     });
 
-    // 暴露 setMood 到全局，方便外部调用
     window.setCharacterMood = function(moodName) {
       if (bonesChar) {
         bonesChar.setMood(moodName);
-        moodButtons.forEach(b => {
-          b.classList.toggle('active', b.dataset.mood === moodName);
-        });
       }
+      if (glbAnimator) {
+        glbAnimator.setMood(moodName);
+      }
+      moodButtons.forEach(b => {
+        b.classList.toggle('active', b.dataset.mood === moodName);
+      });
     };
   </script>
 </body>

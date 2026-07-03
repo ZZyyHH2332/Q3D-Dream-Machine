@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D 模型预览 - Q3D Dream Machine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  width: 100%; height: 100%; overflow: hidden;
+  font-family: 'DM Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: #0a0e1a; color: #f0f0f5;
+}
+.app { display: flex; width: 100%; height: 100%; }
+
+/* Left Panel */
+.left-panel {
+  width: 280px; min-width: 280px; height: 100vh; overflow-y: auto;
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255,255,255,0.1);
+  padding: 24px;
+  display: flex; flex-direction: column; gap: 20px;
+  scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+.left-panel::-webkit-scrollbar { width: 4px; }
+.left-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+.panel-title {
+  font-size: 18px; font-weight: 700; letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #60a5fa, #00D4FF);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.section-label {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  color: rgba(240,240,245,0.45); letter-spacing: 1.5px; margin-bottom: 8px;
+}
+.glass-card {
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px; padding: 16px;
+}
+
+/* Avatar Selector */
+.avatar-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.avatar-item {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  cursor: pointer; padding: 8px 4px; border-radius: 12px;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+.avatar-item:hover { background: rgba(255,255,255,0.05); }
+.avatar-item.active {
+  border-color: #60a5fa;
+  box-shadow: 0 0 12px rgba(96,165,250,0.4), inset 0 0 8px rgba(96,165,250,0.1);
+}
+.avatar-thumb {
+  width: 60px; height: 60px; border-radius: 50%; overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.04);
+}
+.avatar-thumb img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.avatar-label {
+  font-size: 11px; color: rgba(240,240,245,0.7); font-weight: 500;
+}
+
+/* Legend Table */
+.legend-table {
+  width: 100%; border-collapse: collapse; font-size: 11px;
+}
+.legend-table th {
+  text-align: left; padding: 4px 6px; color: rgba(240,240,245,0.5);
+  border-bottom: 1px solid rgba(255,255,255,0.08); font-weight: 500;
+}
+.legend-table td {
+  padding: 3px 6px; color: rgba(240,240,245,0.75);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.legend-table td:last-child { color: rgba(240,240,245,0.45); font-size: 10px; }
+
+/* Animation Controls */
+.ctrl-btn {
+  width: 100%; padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04); color: #f0f0f5; font-size: 12px;
+  font-family: inherit; cursor: pointer; transition: all 0.25s ease;
+  display: flex; align-items: center; gap: 8px;
+}
+.ctrl-btn:hover { background: rgba(255,255,255,0.08); }
+.ctrl-btn.active {
+  background: rgba(96,165,250,0.15); border-color: #60a5fa;
+  color: #60a5fa;
+}
+.ctrl-btn .indicator {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255,255,255,0.2); margin-left: auto;
+  transition: all 0.25s ease;
+}
+.ctrl-btn.active .indicator {
+  background: #60a5fa; box-shadow: 0 0 6px #60a5fa;
+}
+
+/* Export Info */
+.export-info {
+  font-size: 11px; color: rgba(240,240,245,0.4); line-height: 1.7;
+  font-family: 'DM Sans', monospace;
+}
+.export-info span { color: rgba(240,240,245,0.65); }
+
+/* Right Canvas */
+.right-canvas {
+  flex: 1; height: 100vh; position: relative; overflow: hidden;
+}
+.right-canvas canvas { display: block; }
+.canvas-overlay {
+  position: absolute; top: 16px; right: 16px;
+  font-size: 11px; color: rgba(240,240,245,0.3);
+  pointer-events: none;
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Left Panel -->
+  <div class="left-panel">
+    <div class="panel-title">3D 模型预览</div>
+
+    <!-- Avatar Selector -->
+    <div class="section-label">选择风格</div>
+    <div class="avatar-grid">
+      <div class="avatar-item active" data-style="kawaii" onclick="switchStyle('kawaii', this)">
+        <div class="avatar-thumb"><img src="./3d-ready-kawaii.jpg" alt="软萌大头"></div>
+        <span class="avatar-label">软萌大头</span>
+      </div>
+      <div class="avatar-item" data-style="guofeng" onclick="switchStyle('guofeng', this)">
+        <div class="avatar-thumb"><img src="./3d-ready-guofeng.jpg" alt="国风Q版"></div>
+        <span class="avatar-label">国风Q版</span>
+      </div>
+      <div class="avatar-item" data-style="trendy" onclick="switchStyle('trendy', this)">
+        <div class="avatar-thumb"><img src="./3d-ready-trendy.jpg" alt="潮玩手办"></div>
+        <span class="avatar-label">潮玩手办</span>
+      </div>
+      <div class="avatar-item" data-style="simple" onclick="switchStyle('simple', this)">
+        <div class="avatar-thumb"><img src="./3d-ready-simple.jpg" alt="简约卡通"></div>
+        <span class="avatar-label">简约卡通</span>
+      </div>
+    </div>
+
+    <!-- Model Parts Legend -->
+    <div class="section-label">模型结构</div>
+    <div class="glass-card">
+      <table class="legend-table">
+        <thead><tr><th>部位</th><th>几何体</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>头部</td><td>球体 r=1.3</td><td>Q版大头</td></tr>
+          <tr><td>身体</td><td>圆柱 r=0.7 h=1.0</td><td>躯干</td></tr>
+          <tr><td>左手</td><td>球体 r=0.28</td><td>手掌</td></tr>
+          <tr><td>右手</td><td>球体 r=0.28</td><td>手掌</td></tr>
+          <tr><td>左脚</td><td>球体 r=0.25</td><td>脚</td></tr>
+          <tr><td>右脚</td><td>球体 r=0.25</td><td>脚</td></tr>
+          <tr><td>眼睛</td><td>球体 r=0.12 x2</td><td>眼白</td></tr>
+          <tr><td>瞳孔</td><td>球体 r=0.06 x2</td><td>瞳孔</td></tr>
+          <tr><td>鼻子</td><td>球体 r=0.04</td><td>鼻子</td></tr>
+          <tr><td>嘴巴</td><td>扁球 r=0.08</td><td>嘴</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Animation Controls -->
+    <div class="section-label">动画控制</div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <button class="ctrl-btn active" id="btn-rotate" onclick="toggleRotate()">
+        自动旋转 <span class="indicator"></span>
+      </button>
+      <button class="ctrl-btn active" id="btn-breath" onclick="toggleBreath()">
+        呼吸动画 <span class="indicator"></span>
+      </button>
+      <button class="ctrl-btn" id="btn-skeleton" onclick="toggleSkeleton()">
+        显示骨骼 <span class="indicator"></span>
+      </button>
+      <button class="ctrl-btn" id="btn-front" onclick="resetCamera()">
+        正面视角
+      </button>
+    </div>
+
+    <!-- Export Info -->
+    <div class="section-label">导出信息</div>
+    <div class="glass-card">
+      <div class="export-info">
+        输出格式: <span>GLB (GLTF Binary)</span><br>
+        顶点数: <span>~2,400</span><br>
+        面数: <span>~1,200</span><br>
+        骨骼: <span>12 个控制节点</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Canvas -->
+  <div class="right-canvas" id="canvas-container">
+    <div class="canvas-overlay">拖拽旋转 · 滚轮缩放</div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+// ========== Style Color Schemes ==========
+var STYLES = {
+  kawaii: {
+    head: 0xFFB6C1, body: 0xFF69B4, arms: 0xFFC0CB, legs: 0xFF69B4,
+    eyeWhite: 0xFFFFFF, pupil: 0x333333, mouth: 0xFF69B4
+  },
+  guofeng: {
+    head: 0xF5F0E0, body: 0x5B7B5F, arms: 0xDEB887, legs: 0x5B4A3F,
+    eyeWhite: 0xFFFFFF, pupil: 0x333333, mouth: 0xCC6666
+  },
+  trendy: {
+    head: 0x00D4FF, body: 0x1A1A2E, arms: 0xFFD700, legs: 0x1A1A2E,
+    eyeWhite: 0xFFFFFF, pupil: 0xFF6B6B, mouth: 0xFF6B6B
+  },
+  simple: {
+    head: 0x78909C, body: 0x37474F, arms: 0x90A4AE, legs: 0x37474F,
+    eyeWhite: 0xFFFFFF, pupil: 0x00BCD4, mouth: 0x00BCD4
+  }
+};
+
+var currentStyle = 'kawaii';
+var autoRotate = true;
+var breathingAnim = true;
+var showSkeleton = false;
+
+// ========== Three.js Setup ==========
+var container = document.getElementById('canvas-container');
+var scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0e1a);
+scene.fog = new THREE.Fog(0x0a0e1a, 8, 25);
+
+var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+camera.position.set(0, 2, 6);
+
+var renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(container.clientWidth, container.clientHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+container.insertBefore(renderer.domElement, container.firstChild);
+
+// ========== OrbitControls ==========
+var controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 3;
+controls.maxDistance = 15;
+controls.target.set(0, 2, 0);
+controls.update();
+
+// ========== Lighting ==========
+var ambientLight = new THREE.AmbientLight(0x404060, 0.6);
+scene.add(ambientLight);
+
+var dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+dirLight.position.set(3, 5, 4);
+dirLight.castShadow = true;
+scene.add(dirLight);
+
+var hemiLight = new THREE.HemisphereLight(0x606090, 0x202030, 0.3);
+scene.add(hemiLight);
+
+// ========== Ground Grid ==========
+var gridHelper = new THREE.GridHelper(20, 40, 0x1a2040, 0x111828);
+gridHelper.position.y = -0.8;
+scene.add(gridHelper);
+
+// ========== Character Group ==========
+var characterGroup = new THREE.Group();
+scene.add(characterGroup);
+
+// Joint positions for skeleton lines
+var joints = {
+  head: new THREE.Vector3(0, 2.8, 0),
+  bodyTop: new THREE.Vector3(0, 1.5, 0),
+  bodyBottom: new THREE.Vector3(0, 0.5, 0),
+  leftShoulder: new THREE.Vector3(-0.7, 1.4, 0),
+  rightShoulder: new THREE.Vector3(0.7, 1.4, 0),
+  leftHand: new THREE.Vector3(-1.0, 1.5, 0),
+  rightHand: new THREE.Vector3(1.0, 1.5, 0),
+  leftHip: new THREE.Vector3(-0.3, 0.5, 0),
+  rightHip: new THREE.Vector3(0.3, 0.5, 0),
+  leftFoot: new THREE.Vector3(-0.3, -0.3, 0),
+  rightFoot: new THREE.Vector3(0.3, -0.3, 0)
+};
+
+// Character mesh references
+var meshes = {};
+
+function buildCharacter(styleName) {
+  // Clear existing
+  while (characterGroup.children.length > 0) {
+    var child = characterGroup.children[0];
+    characterGroup.remove(child);
+    if (child.geometry) child.geometry.dispose();
+    if (child.material) child.material.dispose();
+  }
+
+  var s = STYLES[styleName];
+
+  // -- Head --
+  var headGeo = new THREE.SphereGeometry(1.3, 32, 32);
+  var headMat = new THREE.MeshPhongMaterial({ color: s.head, shininess: 30 });
+  var head = new THREE.Mesh(headGeo, headMat);
+  head.position.set(0, 2.8, 0);
+  head.castShadow = true;
+  characterGroup.add(head);
+  meshes.head = head;
+
+  // -- Body --
+  var bodyGeo = new THREE.CylinderGeometry(0.7, 0.6, 1.0, 24);
+  var bodyMat = new THREE.MeshPhongMaterial({ color: s.body, shininess: 20 });
+  var body = new THREE.Mesh(bodyGeo, bodyMat);
+  body.position.set(0, 1.0, 0);
+  body.castShadow = true;
+  characterGroup.add(body);
+  meshes.body = body;
+
+  // -- Upper Arms --
+  var upperArmGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.4, 8);
+  var armMat = new THREE.MeshPhongMaterial({ color: s.arms, shininess: 20 });
+
+  var leftUpperArm = new THREE.Mesh(upperArmGeo, armMat);
+  leftUpperArm.position.set(-0.85, 1.35, 0);
+  leftUpperArm.rotation.z = 0.4;
+  characterGroup.add(leftUpperArm);
+
+  var rightUpperArm = new THREE.Mesh(upperArmGeo, armMat);
+  rightUpperArm.position.set(0.85, 1.35, 0);
+  rightUpperArm.rotation.z = -0.4;
+  characterGroup.add(rightUpperArm);
+
+  // -- Hands --
+  var handGeo = new THREE.SphereGeometry(0.28, 16, 16);
+  var leftHand = new THREE.Mesh(handGeo, armMat);
+  leftHand.position.set(-1.0, 1.5, 0);
+  leftHand.castShadow = true;
+  characterGroup.add(leftHand);
+  meshes.leftHand = leftHand;
+
+  var rightHand = new THREE.Mesh(handGeo, armMat);
+  rightHand.position.set(1.0, 1.5, 0);
+  rightHand.castShadow = true;
+  characterGroup.add(rightHand);
+  meshes.rightHand = rightHand;
+
+  // -- Upper Legs --
+  var upperLegGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.5, 8);
+  var legMat = new THREE.MeshPhongMaterial({ color: s.legs, shininess: 20 });
+
+  var leftUpperLeg = new THREE.Mesh(upperLegGeo, legMat);
+  leftUpperLeg.position.set(-0.3, 0.25, 0);
+  characterGroup.add(leftUpperLeg);
+
+  var rightUpperLeg = new THREE.Mesh(upperLegGeo, legMat);
+  rightUpperLeg.position.set(0.3, 0.25, 0);
+  characterGroup.add(rightUpperLeg);
+
+  // -- Feet --
+  var footGeo = new THREE.SphereGeometry(0.25, 16, 16);
+  var leftFoot = new THREE.Mesh(footGeo, legMat);
+  leftFoot.position.set(-0.3, -0.3, 0);
+  leftFoot.castShadow = true;
+  characterGroup.add(leftFoot);
+  meshes.leftFoot = leftFoot;
+
+  var rightFoot = new THREE.Mesh(footGeo, legMat);
+  rightFoot.position.set(0.3, -0.3, 0);
+  rightFoot.castShadow = true;
+  characterGroup.add(rightFoot);
+  meshes.rightFoot = rightFoot;
+
+  // -- Eyes (white) --
+  var eyeGeo = new THREE.SphereGeometry(0.15, 16, 16);
+  var eyeMat = new THREE.MeshPhongMaterial({ color: s.eyeWhite, shininess: 80 });
+
+  var leftEye = new THREE.Mesh(eyeGeo, eyeMat);
+  leftEye.position.set(-0.35, 3.0, 1.15);
+  characterGroup.add(leftEye);
+  meshes.leftEye = leftEye;
+
+  var rightEye = new THREE.Mesh(eyeGeo, eyeMat);
+  rightEye.position.set(0.35, 3.0, 1.15);
+  characterGroup.add(rightEye);
+  meshes.rightEye = rightEye;
+
+  // -- Pupils --
+  var pupilGeo = new THREE.SphereGeometry(0.08, 12, 12);
+  var pupilMat = new THREE.MeshPhongMaterial({ color: s.pupil, shininess: 100 });
+
+  var leftPupil = new THREE.Mesh(pupilGeo, pupilMat);
+  leftPupil.position.set(-0.35, 3.0, 1.22);
+  characterGroup.add(leftPupil);
+  meshes.leftPupil = leftPupil;
+
+  var rightPupil = new THREE.Mesh(pupilGeo, pupilMat);
+  rightPupil.position.set(0.35, 3.0, 1.22);
+  characterGroup.add(rightPupil);
+  meshes.rightPupil = rightPupil;
+
+  // -- Nose --
+  var noseGeo = new THREE.SphereGeometry(0.05, 12, 12);
+  var noseMat = new THREE.MeshPhongMaterial({ color: s.head, shininess: 30 });
+  var nose = new THREE.Mesh(noseGeo, noseMat);
+  nose.position.set(0, 2.7, 1.2);
+  characterGroup.add(nose);
+
+  // -- Mouth --
+  var mouthGeo = new THREE.SphereGeometry(0.08, 12, 12);
+  var mouthMat = new THREE.MeshPhongMaterial({ color: s.mouth, shininess: 40 });
+  var mouth = new THREE.Mesh(mouthGeo, mouthMat);
+  mouth.position.set(0, 2.55, 1.15);
+  characterGroup.add(mouth);
+}
+
+// ========== Skeleton Lines ==========
+var skeletonGroup = new THREE.Group();
+scene.add(skeletonGroup);
+skeletonGroup.visible = false;
+
+var skeletonLines = [];
+function buildSkeletonLines() {
+  // Clear old lines
+  while (skeletonGroup.children.length > 0) {
+    skeletonGroup.remove(skeletonGroup.children[0]);
+  }
+  skeletonLines = [];
+
+  var pairs = [
+    [joints.head, joints.bodyTop],
+    [joints.bodyTop, joints.bodyBottom],
+    [joints.leftShoulder, joints.leftHand],
+    [joints.rightShoulder, joints.rightHand],
+    [joints.leftHip, joints.leftFoot],
+    [joints.rightHip, joints.rightFoot],
+    [joints.bodyTop, joints.leftShoulder],
+    [joints.bodyTop, joints.rightShoulder],
+    [joints.bodyBottom, joints.leftHip],
+    [joints.bodyBottom, joints.rightHip]
+  ];
+
+  var lineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
+
+  for (var i = 0; i < pairs.length; i++) {
+    var geo = new THREE.BufferGeometry().setFromPoints([pairs[i][0], pairs[i][1]]);
+    var line = new THREE.Line(geo, lineMat);
+    skeletonGroup.add(line);
+    skeletonLines.push(line);
+  }
+
+  // Joint dots
+  var dotGeo = new THREE.SphereGeometry(0.04, 8, 8);
+  var dotMat = new THREE.MeshBasicMaterial({ color: 0x00D4FF, transparent: true, opacity: 0.7 });
+  var keys = Object.keys(joints);
+  for (var j = 0; j < keys.length; j++) {
+    var dot = new THREE.Mesh(dotGeo, dotMat);
+    dot.position.copy(joints[keys[j]]);
+    skeletonGroup.add(dot);
+  }
+}
+
+// ========== Initialize ==========
+buildCharacter(currentStyle);
+buildSkeletonLines();
+
+// ========== UI Controls ==========
+function switchStyle(styleName, el) {
+  currentStyle = styleName;
+  // Update active thumbnail
+  var items = document.querySelectorAll('.avatar-item');
+  for (var i = 0; i < items.length; i++) {
+    items[i].classList.remove('active');
+  }
+  el.classList.add('active');
+  // Rebuild character
+  buildCharacter(styleName);
+}
+
+function toggleRotate() {
+  autoRotate = !autoRotate;
+  document.getElementById('btn-rotate').classList.toggle('active', autoRotate);
+}
+
+function toggleBreath() {
+  breathingAnim = !breathingAnim;
+  document.getElementById('btn-breath').classList.toggle('active', breathingAnim);
+}
+
+function toggleSkeleton() {
+  showSkeleton = !showSkeleton;
+  skeletonGroup.visible = showSkeleton;
+  document.getElementById('btn-skeleton').classList.toggle('active', showSkeleton);
+}
+
+function resetCamera() {
+  camera.position.set(0, 2, 6);
+  controls.target.set(0, 2, 0);
+  controls.update();
+}
+
+// ========== Animation Loop ==========
+var clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  var elapsed = clock.getElapsedTime();
+
+  // Auto rotate
+  if (autoRotate) {
+    characterGroup.rotation.y += 0.005;
+  }
+
+  // Breathing animation
+  if (breathingAnim) {
+    var breathScale = 1.0 + Math.sin(elapsed * 2.0) * 0.02;
+    characterGroup.scale.y = breathScale;
+  } else {
+    characterGroup.scale.y = 1.0;
+  }
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+// ========== Resize ==========
+window.addEventListener('resize', function() {
+  var w = container.clientWidth;
+  var h = container.clientHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+});
+</script>
+</body>
+</html>

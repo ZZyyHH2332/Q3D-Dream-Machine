@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q3D 形象造梦机 — 4 种风格对比</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'DM Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: linear-gradient(160deg, #0a0e1a, #111827, #0f172a);
+  color: #f0f0f5;
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+body::before {
+  content:''; position:fixed; inset:0;
+  background-image: linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 80px 80px; z-index:0; pointer-events:none;
+}
+h1 {
+  text-align:center; font-size: 2rem; font-weight:800;
+  background: linear-gradient(135deg, #60a5fa, #818cf8, #c084fc);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  letter-spacing: -0.02em; margin-bottom: 8px; position:relative; z-index:1;
+}
+p.subtitle { text-align:center; color:rgba(255,255,255,0.5); font-size:0.9rem; margin-bottom:36px; position:relative; z-index:1; }
+.grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+  max-width: 900px; margin: 0 auto; position: relative; z-index:1;
+}
+.card {
+  background: rgba(255,255,255,0.04); backdrop-filter: blur(40px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.08); border-radius: 20px;
+  overflow: hidden; transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.card:hover {
+  transform: translateY(-6px) scale(1.02);
+  border-color: rgba(0,122,255,0.3);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 40px rgba(0,122,255,0.06);
+}
+.card img { width:100%; aspect-ratio:1; object-fit:cover; display:block; }
+.card-info { padding: 14px 16px; }
+.card-name { font-size:0.95rem; font-weight:700; color:rgba(255,255,255,0.9); }
+.card-style { font-size:0.78rem; color:rgba(255,255,255,0.4); margin-top:2px; }
+.original-section { max-width: 900px; margin: 40px auto 0; position:relative; z-index:1; }
+.original-section h2 {
+  font-size: 1.3rem; font-weight:700; color:rgba(255,255,255,0.8);
+  margin-bottom: 16px; text-align:center;
+}
+.original-card {
+  background: rgba(255,255,255,0.04); backdrop-filter: blur(40px);
+  border: 1px solid rgba(255,255,255,0.08); border-radius: 20px;
+  overflow: hidden; max-width: 300px; margin: 0 auto;
+}
+.original-card img { width:100%; display:block; }
+.original-label { padding:12px 16px; text-align:center; font-size:0.85rem; color:rgba(255,255,255,0.5); }
+@media (max-width: 700px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+<h1>Q3D Avatar Style Comparison</h1>
+<p class="subtitle">4 种 Q 版风格对比 — 同一张照片的 4 种形象</p>
+<div class="grid">
+  <div class="card">
+    <img src="q3d-avatar-kawaii.jpg" alt="Kawaii">
+    <div class="card-info">
+      <div class="card-name">软萌大头</div>
+      <div class="card-style">Kawaii · 粉彩柔和 · 大眼圆脸</div>
+    </div>
+  </div>
+  <div class="card">
+    <img src="q3d-avatar-guofeng.jpg" alt="Guofeng">
+    <div class="card-info">
+      <div class="card-name">国风 Q 版</div>
+      <div class="card-style">Guofeng · 水墨清雅 · 汉服元素</div>
+    </div>
+  </div>
+  <div class="card">
+    <img src="q3d-avatar-trendy.jpg" alt="Trendy">
+    <div class="card-info">
+      <div class="card-name">潮玩手办</div>
+      <div class="card-style">Trendy · 霓虹撞色 · 盲盒质感</div>
+    </div>
+  </div>
+  <div class="card">
+    <img src="q3d-avatar-simple.jpg" alt="Simple">
+    <div class="card-info">
+      <div class="card-name">简约卡通</div>
+      <div class="card-style">Simple · 黑白几何 · 极简线条</div>
+    </div>
+  </div>
+</div>
+<div class="original-section">
+  <h2>原始照片</h2>
+  <div class="original-card">
+    <img src="q3d-test-photo.jpg" alt="Original Photo">
+    <div class="original-label">原始测试人像</div>
+  </div>
+</div>
+</body>
+</html>

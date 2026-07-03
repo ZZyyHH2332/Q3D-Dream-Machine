@@ -15,6 +15,8 @@ export interface Q3DConfig {
     hunyuanApiUrl: string;
     api302Key: string | undefined;
     tripoApiKey: string | undefined;
+    sf3dLocalUrl: string;
+    soapLocalUrl: string;
 }
 export declare const config: Q3DConfig;
 /**

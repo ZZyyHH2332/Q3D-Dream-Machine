@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q3D 3D Preview</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { overflow:hidden; background:#0a0e1a; font-family:'DM Sans','PingFang SC','Microsoft YaHei',sans-serif; color:#f0f0f5; }
+canvas { display:block; }
+.label {
+  position:fixed; bottom:24px; left:24px; z-index:10;
+  background:rgba(255,255,255,0.06); backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.1); border-radius:12px;
+  padding:10px 18px; color:rgba(255,255,255,0.7); font-size:0.82rem;
+}
+.label span { color:#60a5fa; font-weight:600; }
+.hint {
+  position:fixed; top:24px; left:50%; transform:translateX(-50%); z-index:10;
+  background:rgba(0,122,255,0.12); backdrop-filter:blur(16px);
+  border:1px solid rgba(0,122,255,0.2); border-radius:999px;
+  padding:8px 20px; color:#60a5fa; font-size:0.78rem;
+  animation: fadeIn 1s ease;
+}
+@keyframes fadeIn { from{opacity:0;transform:translateX(-50%) translateY(-10px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+</style>
+</head>
+<body>
+<div class="hint">拖拽旋转 · 滚轮缩放</div>
+<div class="label"><span>Q3D 3D Preview</span> · Kawaii Style</div>
+
+<script>
+/* ===== Scene Setup ===== */
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0e1a);
+scene.fog = new THREE.FogExp2(0x0a0e1a, 0.02);
+
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 100);
+camera.position.set(0, 2, 5);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+document.body.appendChild(renderer.domElement);
+
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.target.set(0, 1.2, 0);
+
+/* ===== Lighting ===== */
+const ambientLight = new THREE.AmbientLight(0x404060, 0.6);
+scene.add(ambientLight);
+const dirLight = new THREE.DirectionalLight(0x6090ff, 0.8);
+dirLight.position.set(3, 5, 4);
+dirLight.castShadow = true;
+scene.add(dirLight);
+const pointLight = new THREE.PointLight(0xbf5af2, 0.5, 10);
+pointLight.position.set(-2, 3, 2);
+scene.add(pointLight);
+
+/* ===== Ground ===== */
+const groundGeo = new THREE.CircleGeometry(4, 64);
+const groundMat = new THREE.MeshPhongMaterial({ color: 0x111827, transparent: true, opacity: 0.6 });
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.rotation.x = -Math.PI/2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+/* ===== Kawaii Character (Geometric) ===== */
+function createCharacter() {
+  const group = new THREE.Group();
+
+  // Head (large sphere)
+  const headGeo = new THREE.SphereGeometry(0.55, 32, 32);
+  const headMat = new THREE.MeshPhongMaterial({ color: 0xffdab9 });
+  const head = new THREE.Mesh(headGeo, headMat);
+  head.position.y = 2.1;
+  head.castShadow = true;
+  group.add(head);
+
+  // Eyes
+  const eyeGeo = new THREE.SphereGeometry(0.08, 16, 16);
+  const eyeMat = new THREE.MeshPhongMaterial({ color: 0x1d1d1f });
+  const leftEye = new THREE.Mesh(eyeGeo, eyeMat);
+  leftEye.position.set(-0.18, 2.15, 0.48);
+  group.add(leftEye);
+  const rightEye = new THREE.Mesh(eyeGeo, eyeMat);
+  rightEye.position.set(0.18, 2.15, 0.48);
+  group.add(rightEye);
+
+  // Eye highlights
+  const highlightGeo = new THREE.SphereGeometry(0.03, 8, 8);
+  const highlightMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  const lh = new THREE.Mesh(highlightGeo, highlightMat);
+  lh.position.set(-0.15, 2.18, 0.54);
+  group.add(lh);
+  const rh = new THREE.Mesh(highlightGeo, highlightMat);
+  rh.position.set(0.21, 2.18, 0.54);
+  group.add(rh);
+
+  // Mouth (smile arc)
+  const mouthGeo = new THREE.TorusGeometry(0.06, 0.012, 8, 16, Math.PI);
+  const mouthMat = new THREE.MeshPhongMaterial({ color: 0xff6b8a });
+  const mouth = new THREE.Mesh(mouthGeo, mouthMat);
+  mouth.position.set(0, 1.95, 0.5);
+  mouth.rotation.x = -0.2;
+  group.add(mouth);
+
+  // Blush
+  const blushGeo = new THREE.CircleGeometry(0.08, 16);
+  const blushMat = new THREE.MeshBasicMaterial({ color: 0xbf5af2, transparent: true, opacity: 0.3 });
+  const lb = new THREE.Mesh(blushGeo, blushMat);
+  lb.position.set(-0.35, 2.0, 0.42);
+  lb.lookAt(-0.35, 2.0, 1);
+  group.add(lb);
+  const rb = new THREE.Mesh(blushGeo, blushMat);
+  rb.position.set(0.35, 2.0, 0.42);
+  rb.lookAt(0.35, 2.0, 1);
+  group.add(rb);
+
+  // Hair
+  const hairGeo = new THREE.SphereGeometry(0.6, 32, 16, 0, Math.PI*2, 0, Math.PI*0.6);
+  const hairMat = new THREE.MeshPhongMaterial({ color: 0x1a1a2e });
+  const hair = new THREE.Mesh(hairGeo, hairMat);
+  hair.position.y = 2.15;
+  group.add(hair);
+
+  // Body (cylinder)
+  const bodyGeo = new THREE.CylinderGeometry(0.3, 0.35, 0.7, 16);
+  const bodyMat = new THREE.MeshPhongMaterial({ color: 0x007aff });
+  const body = new THREE.Mesh(bodyGeo, bodyMat);
+  body.position.y = 1.3;
+  body.castShadow = true;
+  group.add(body);
+
+  // Hands (small spheres)
+  const handGeo = new THREE.SphereGeometry(0.12, 16, 16);
+  const handMat = new THREE.MeshPhongMaterial({ color: 0xffdab9 });
+  const leftHand = new THREE.Mesh(handGeo, handMat);
+  leftHand.position.set(-0.5, 1.35, 0);
+  group.add(leftHand);
+  const rightHand = new THREE.Mesh(handGeo, handMat);
+  rightHand.position.set(0.5, 1.35, 0);
+  group.add(rightHand);
+
+  // Feet (small spheres)
+  const footGeo = new THREE.SphereGeometry(0.13, 16, 16);
+  const footMat = new THREE.MeshPhongMaterial({ color: 0x5e5ce6 });
+  const leftFoot = new THREE.Mesh(footGeo, footMat);
+  leftFoot.position.set(-0.15, 0.82, 0.05);
+  group.add(leftFoot);
+  const rightFoot = new THREE.Mesh(footGeo, footMat);
+  rightFoot.position.set(0.15, 0.82, 0.05);
+  group.add(rightFoot);
+
+  return group;
+}
+
+const character = createCharacter();
+scene.add(character);
+
+/* ===== Floating Particles ===== */
+const particleCount = 200;
+const particleGeo = new THREE.BufferGeometry();
+const positions = new Float32Array(particleCount * 3);
+const colors = new Float32Array(particleCount * 3);
+const particleColors = [
+  new THREE.Color(0x007aff), new THREE.Color(0xbf5af2),
+  new THREE.Color(0x5ac8fa), new THREE.Color(0x34c759)
+];
+for (let i = 0; i < particleCount; i++) {
+  positions[i*3]   = (Math.random()-0.5)*10;
+  positions[i*3+1] = Math.random()*6;
+  positions[i*3+2] = (Math.random()-0.5)*10;
+  const c = particleColors[Math.floor(Math.random()*particleColors.length)];
+  colors[i*3] = c.r; colors[i*3+1] = c.g; colors[i*3+2] = c.b;
+}
+particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+const particleMat = new THREE.PointsMaterial({ size: 0.03, vertexColors: true, transparent: true, opacity: 0.4 });
+const particles = new THREE.Points(particleGeo, particleMat);
+scene.add(particles);
+
+/* ===== Animation Loop ===== */
+function animate() {
+  requestAnimationFrame(animate);
+  character.rotation.y += 0.005;
+  character.position.y = Math.sin(Date.now()*0.002)*0.1;
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+/* ===== Resize ===== */
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>

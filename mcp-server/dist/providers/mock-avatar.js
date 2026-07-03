@@ -63,6 +63,24 @@ export const mockAvatarProvider = {
             overallVibe: "friendly",
         };
     },
+    async analyzePhotoWithModel(_imageBase64, model) {
+        await delay(50 + Math.random() * 100);
+        console.log(`[mock] analyzePhotoWithModel called with model: ${model}`);
+        return {
+            gender: "unknown",
+            ageRange: "20s",
+            hairStyle: "short black hair",
+            facialFeatures: "round face with bright eyes",
+            clothing: "casual wear",
+            expression: "smiling",
+            overallVibe: "friendly",
+        };
+    },
+    async optimizePromptWithModel(analysis, style, model) {
+        await delay(50 + Math.random() * 100);
+        console.log(`[mock] optimizePromptWithModel called with model: ${model}`);
+        return `A cute chibi character with ${analysis.facialFeatures}, ${analysis.hairStyle}, ${analysis.clothing}, ${analysis.expression}. Style: ${style}, Q-version, cartoon, anime. High quality, detailed, professional, masterpiece. 3D render, soft lighting, smooth skin. [MOCK OPTIMIZED]`;
+    },
     async generateAvatar(prompt, style) {
         await delay(100 + Math.random() * 200);
         const styleDesc = MOCK_STYLE_PROMPTS[style] || MOCK_STYLE_PROMPTS.kawaii;

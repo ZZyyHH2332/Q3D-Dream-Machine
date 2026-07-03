@@ -24,6 +24,18 @@ description: 生成 Q 版 3D 虚拟形象、上传照片创建卡通角色、桌
 
 - `imagePath`: 用户上传的照片文件路径（绝对路径）
 - `style`: 风格选择，可选 `kawaii`（软萌大头）/`guofeng`（国风Q版）/`trendy`（潮玩手办）/`simple`（简约卡通），默认 `kawaii`
+- `model`: Auto Mode 模型选择（可选），用于照片分析和 prompt 优化。可选值：
+  - `Doubao-Seed-2.1-Pro`（推荐，分析最详细）
+  - `Doubao-Seed-2.1-Turbo`（速度快，质量适中）
+  - `GLM-5.2`（代码能力强，prompt 优化好）
+  - `GLM-5`（稳定可靠）
+  - `DeepSeek-V4-Pro`（推理能力强）
+  - `DeepSeek-V4-Flash`（速度快）
+  - `Kimi-K2.7`（长上下文，适合复杂分析）
+  - `Qwen3.7-Plus`（多模态理解好）
+  - `MiniMax-M3`（工程能力强）
+  - `auto`（根据照片复杂度自动选择）
+- `optimizePrompt`: 是否使用 AI 模型优化图像生成 prompt（可选，默认 false）。设为 true 时，会先用模型生成更精准的英文 prompt 再生成图像
 
 ## 输出
 
@@ -40,6 +52,39 @@ description: 生成 Q 版 3D 虚拟形象、上传照片创建卡通角色、桌
    - 先调用 `q3d_upload_photo` 保存用户上传的照片
    - 再调用 `q3d_generate_avatar` 生成 Q 版形象（TRAE Native 模式下使用 GenerateImage 工具生成后用 `q3d_save_avatar` 保存）
 4. **展示结果**：向用户展示生成的图片路径，询问是否满意，提供后续选项。
+
+### 多模型协作流程（TRAE Auto Mode）
+
+当用户希望获得更高质量的 Q 版形象时，可以使用多模型协作模式：
+
+1. **选择模型**: 根据用户需求推荐合适的 Auto Mode 模型
+   - 追求最高质量 → `Doubao-Seed-2.1-Pro`
+   - 追求速度 → `Doubao-Seed-2.1-Turbo` 或 `DeepSeek-V4-Flash`
+   - 复杂照片需要详细分析 → `Kimi-K2.7`
+   - 希望 prompt 优化好 → `GLM-5.2`
+
+2. **模型分析照片**: 调用 `q3d_generate_avatar` 时传入 `model` 参数
+   - MCP Server 会返回 `NEED_VISION_ANALYSIS` 信号，附带指定模型的分析要求
+   - TRAE Agent 切换到指定模型（Auto Mode），分析照片
+   - 将分析结果作为 `photoAnalysis` 参数重新调用
+
+3. **优化 Prompt**（可选）: 设置 `optimizePrompt=true`
+   - MCP Server 会返回 `NEED_PROMPT_OPTIMIZATION` 信号，附带 prompt 优化模板
+   - TRAE Agent 使用指定模型按模板生成优化后的英文 prompt
+   - 将优化后的 prompt 作为 `customPrompt` 参数传入
+
+4. **生成图像**: 使用优化后的 prompt 调用 GenerateImage 工具
+   - 将生成的图片路径作为 `generatedImagePath` 参数传入
+
+完整调用示例：
+```
+q3d_generate_avatar(
+  uploadId="xxx",
+  style="kawaii",
+  model="Doubao-Seed-2.1-Pro",
+  optimizePrompt=true
+)
+```
 
 ## 后续操作选项
 
@@ -103,6 +148,8 @@ description: 生成 Q 版 3D 虚拟形象、上传照片创建卡通角色、桌
 - **API 调用失败**：如果返回 API 错误（超时、余额不足、内容审核拒绝），自动降级到下一个 Provider（TRAE Native → External API → Mock），并向用户说明情况。
 - **图片过大**：如果上传图片超过 4MB，建议用户压缩后再上传。
 - **生成不满意**：提供重新生成（换种子值）或切换风格选项。
+- **模型分析失败**：如果指定的 Auto Mode 模型分析不准确，建议切换到其他模型重试。推荐 `Doubao-Seed-2.1-Pro` 获得最详细的分析结果。
+- **Prompt 优化失败**：如果优化后的 prompt 生成效果不佳，可以设置 `optimizePrompt=false` 使用默认 prompt 构建逻辑。
 
 ## 示例对话
 

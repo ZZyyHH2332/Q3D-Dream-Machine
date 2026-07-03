@@ -14,7 +14,8 @@ import {
 } from "../providers/avatar-resolver.js";
 import { TraeCollabError } from "../providers/trae-native.js";
 import { TraeCollabSignal, PhotoAnalysis } from "../providers/types.js";
-import { buildTraeGeneratePrompt } from "../providers/trae-native.js";
+import { buildTraeGeneratePrompt, AUTO_MODE_MODELS } from "../providers/trae-native.js";
+import { enhanceFor3D, build3DReadyPrompt, THREE_D_NEGATIVE_PROMPT } from "../utils/prompt-3d-ready.js";
 
 // Style configuration for avatar generation
 const STYLE_CONFIG: Record<string, { name: string; label: string }> = {
@@ -101,7 +102,9 @@ export function registerGenerateAvatar(server: any): void {
     "q3d_generate_avatar",
     "根据上传的照片生成 Q 版 2D 形象。支持多种 AI Provider：" +
       "TRAE 原生（默认，使用内置 Vision + GenerateImage）、外部 API、Mock 模式。" +
-      "【TRAE 模式说明】如果你运行在 TRAE 环境中，可以先使用内置 Vision 分析照片，" +
+      "【多模型协作】支持指定 Auto Mode 模型（如 Doubao-Seed-2.1-Pro）进行更精准的照片分析，" +
+      "并可使用模型优化图像生成 prompt 以获得更高质量的 Q 版形象。" +
+      "【TRAE 模式说明】如果你运行在 TRAE 环境中，可以先使用内置 Vision 或指定模型分析照片，" +
       "将分析结果作为 photoAnalysis 参数传入；然后用 GenerateImage 工具生成图片，" +
       "将图片路径作为 generatedImagePath 参数传入，即可跳过 AI 调用步骤直接保存。",
     {
@@ -138,6 +141,31 @@ export function registerGenerateAvatar(server: any): void {
           "可选值：auto, trae, external, mock",
         enum: ["auto", "trae", "external", "mock"],
       },
+      model: {
+        type: "string",
+        description:
+          "【TRAE 模式可选】指定 Auto Mode 模型进行照片分析和 prompt 优化。" +
+          "可选值: Doubao-Seed-2.1-Pro（推荐，分析最详细）、Doubao-Seed-2.1-Turbo（速度快）、" +
+          "GLM-5.2（prompt 优化好）、GLM-5、DeepSeek-V4-Pro（推理强）、DeepSeek-V4-Flash（速度快）、" +
+          "Kimi-K2.7（长上下文）、Qwen3.7-Plus（多模态好）、MiniMax-M3、auto（自动选择）。" +
+          "指定后会使用对应模型进行更精准的照片分析。",
+        enum: AUTO_MODE_MODELS.map((m) => m.id),
+      },
+      optimizePrompt: {
+        type: "boolean",
+        description:
+          "【TRAE 模式可选】是否使用 AI 模型优化图像生成 prompt。" +
+          "设为 true 时，会先使用模型根据照片分析结果生成更精准的英文 prompt，" +
+          "再用优化后的 prompt 生成图像，通常能获得更好的生成效果。默认 false。",
+      },
+      for3D: {
+        type: "boolean",
+        description:
+          "【可选】是否生成 3D-ready 图像。设为 true 时，" +
+          "会自动增强 prompt 以生成更适合 3D 重建的 2D 图像：" +
+          "正面视角、纯色背景、全身可见、清晰轮廓、T-pose/A-pose。" +
+          "生成的图像将更适合 Hunyuan3D-2 等模型进行高质量 3D 重建。默认 false。",
+      },
     },
     async (args: {
       uploadId: string;
@@ -146,6 +174,9 @@ export function registerGenerateAvatar(server: any): void {
       photoAnalysis?: string;
       generatedImagePath?: string;
       imageProvider?: "auto" | "trae" | "external" | "mock";
+      model?: string;
+      optimizePrompt?: boolean;
+      for3D?: boolean;
     }) => {
       try {
         const {
@@ -155,6 +186,9 @@ export function registerGenerateAvatar(server: any): void {
           photoAnalysis: photoAnalysisStr,
           generatedImagePath,
           imageProvider = "auto",
+          model,
+          optimizePrompt = false,
+          for3D = false,
         } = args;
 
         // Check API configuration (skip in test mode / trae mode)
@@ -307,11 +341,39 @@ export function registerGenerateAvatar(server: any): void {
         let analysis: PhotoAnalysis;
         if (photoAnalysis) {
           analysis = photoAnalysis;
+        } else if (model && provider.analyzePhotoWithModel) {
+          // ---- 使用指定 Auto Mode 模型分析 ----
+          try {
+            analysis = await provider.analyzePhotoWithModel(base64, model);
+          } catch (err: any) {
+            if (err instanceof TraeCollabError &&
+                err.signal === TraeCollabSignal.NEED_VISION_ANALYSIS) {
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: JSON.stringify({
+                      success: false,
+                      signal: TraeCollabSignal.NEED_VISION_ANALYSIS,
+                      provider: provider.name,
+                      model: err.data.model,
+                      modelName: err.data.modelName,
+                      message: `请使用 TRAE Auto Mode 的 ${err.data.modelName || model} 模型分析照片，将结果作为 photoAnalysis 参数（JSON 字符串）重新调用。`,
+                      visionPrompt: err.data.visionPrompt,
+                      hint: `请在 TRAE 中切换到 ${err.data.modelName || model} 模型（Auto Mode），分析照片后调用 q3d_generate_avatar 并传入 photoAnalysis 和 model 参数。`,
+                    }),
+                  },
+                ],
+                isError: true,
+              };
+            }
+            throw err;
+          }
         } else {
+          // ---- 原有路径: 使用默认分析 ----
           try {
             analysis = await provider.analyzePhoto(base64);
           } catch (err: any) {
-            // TRAE 协作模式：需要 Vision 分析
             if (err instanceof TraeCollabError &&
                 err.signal === TraeCollabSignal.NEED_VISION_ANALYSIS) {
               return {
@@ -337,25 +399,87 @@ export function registerGenerateAvatar(server: any): void {
           }
         }
 
+        // Step 1.5: Prompt 优化（如果 optimizePrompt=true 且 provider 支持）
+        let optimizedPromptOverride: string | undefined = undefined;
+        if (optimizePrompt && provider.optimizePromptWithModel) {
+          const promptModel = model || "auto";
+          try {
+            optimizedPromptOverride = await provider.optimizePromptWithModel(
+              analysis,
+              style,
+              promptModel
+            );
+          } catch (err: any) {
+            if (err instanceof TraeCollabError &&
+                err.signal === TraeCollabSignal.NEED_PROMPT_OPTIMIZATION) {
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: JSON.stringify({
+                      success: false,
+                      signal: TraeCollabSignal.NEED_PROMPT_OPTIMIZATION,
+                      provider: provider.name,
+                      model: err.data.model,
+                      modelName: err.data.modelName,
+                      message: `请使用 TRAE Auto Mode 的 ${err.data.modelName || promptModel} 模型，根据照片分析结果生成优化后的图像生成 prompt。`,
+                      optimizePromptTemplate: err.data.promptTemplate,
+                      analysis: analysis,
+                      style: style,
+                      hint: `请使用 ${err.data.modelName || promptModel} 模型按照 optimizePromptTemplate 的要求生成 prompt，然后将生成的 prompt 作为 customPrompt 参数重新调用 q3d_generate_avatar。`,
+                    }),
+                  },
+                ],
+                isError: true,
+              };
+            }
+            throw err;
+          }
+        }
+
         // Step 2: 构建 prompt 并生成图像
         let imageUrl: string;
         let revisedPrompt: string;
 
         try {
-          // 直接使用 provider.generateAvatar，但需要 prompt
-          // 对于 TRAE provider，这会抛出 NEED_IMAGE_GENERATION 信号
-          // 对于 external/mock provider，这会返回真实结果
           const styleDesc = STYLE_CONFIG[style]?.name || "kawaii";
-          const result = await provider.generateAvatar(
-            buildTraeGeneratePrompt(style, analysis, customPrompt),
-            styleDesc
-          );
+
+          // 构建基础 prompt
+          let basePrompt = optimizedPromptOverride
+            ? optimizedPromptOverride
+            : buildTraeGeneratePrompt(style, analysis, customPrompt);
+
+          // 3D-ready 增强
+          let finalPrompt = basePrompt;
+          let negativePrompt: string | null = null;
+          if (for3D) {
+            const enhanced = enhanceFor3D(basePrompt, style, true);
+            finalPrompt = enhanced.prompt;
+            negativePrompt = enhanced.negative;
+            console.log(`[generate-avatar] 3D-ready prompt enhancement applied`);
+          }
+
+          const result = await provider.generateAvatar(finalPrompt, styleDesc);
           imageUrl = result.imageUrl;
           revisedPrompt = result.revisedPrompt;
         } catch (err: any) {
           // TRAE 协作模式：需要图像生成
           if (err instanceof TraeCollabError &&
               err.signal === TraeCollabSignal.NEED_IMAGE_GENERATION) {
+            // 构建给 TRAE Agent 的 prompt
+            let basePromptForAgent = optimizedPromptOverride
+              ? optimizedPromptOverride
+              : buildTraeGeneratePrompt(style, analysis, customPrompt);
+
+            // 3D-ready 增强
+            let imagePromptForAgent = basePromptForAgent;
+            let negativePrompt: string | null = null;
+            if (for3D) {
+              const enhanced = enhanceFor3D(basePromptForAgent, style, true);
+              imagePromptForAgent = enhanced.prompt;
+              negativePrompt = enhanced.negative;
+            }
+
             return {
               content: [
                 {
@@ -366,15 +490,15 @@ export function registerGenerateAvatar(server: any): void {
                     provider: provider.name,
                     message:
                       "请使用 TRAE GenerateImage 工具生成 Q 版头像，将生成的图片路径作为 generatedImagePath 参数重新调用。",
-                    imagePrompt: buildTraeGeneratePrompt(
-                      style,
-                      analysis,
-                      customPrompt
-                    ),
+                    imagePrompt: imagePromptForAgent,
+                    negativePrompt: negativePrompt,
                     imageSize: "1024x1024",
                     photoAnalysis: analysis,
+                    optimizedPrompt: optimizedPromptOverride || null,
+                    for3D: for3D || false,
                     hint:
-                      "生成图片后，调用 q3d_generate_avatar 时传入 generatedImagePath 和 photoAnalysis 参数即可保存。",
+                      "生成图片后，调用 q3d_generate_avatar 时传入 generatedImagePath 和 photoAnalysis 参数即可保存。" +
+                      (negativePrompt ? " 请使用 negativePrompt 排除不利于 3D 重建的元素。" : ""),
                   }),
                 },
               ],
@@ -399,6 +523,7 @@ export function registerGenerateAvatar(server: any): void {
           revisedPrompt,
           photoAnalysis: analysis,
           provider: provider.name,
+          for3D: for3D || false,
           generatedAt: new Date().toISOString(),
         };
         const metadataPath = path.join(outputDir, "metadata.json");

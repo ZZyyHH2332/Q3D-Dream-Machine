@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q3D Bones Preview</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { overflow:hidden; background:#0a0e1a; font-family:'DM Sans','PingFang SC','Microsoft YaHei',sans-serif; color:#f0f0f5; }
+canvas { display:block; }
+
+.label {
+  position:fixed; bottom:80px; left:24px; z-index:10;
+  background:rgba(255,255,255,0.06); backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.1); border-radius:12px;
+  padding:10px 18px; color:rgba(255,255,255,0.7); font-size:0.82rem;
+}
+.label span { color:#60a5fa; font-weight:600; }
+
+.hint {
+  position:fixed; top:24px; left:50%; transform:translateX(-50%); z-index:10;
+  background:rgba(0,122,255,0.12); backdrop-filter:blur(16px);
+  border:1px solid rgba(0,122,255,0.2); border-radius:999px;
+  padding:8px 20px; color:#60a5fa; font-size:0.78rem;
+  animation: fadeIn 1s ease;
+}
+@keyframes fadeIn { from{opacity:0;transform:translateX(-50%) translateY(-10px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+
+.anim-bar {
+  position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:10;
+  display:flex; gap:6px;
+  background:rgba(255,255,255,0.06); backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.1); border-radius:16px;
+  padding:8px 12px;
+}
+.anim-btn {
+  padding:6px 14px; border:none; border-radius:10px;
+  background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.6);
+  font-size:0.75rem; cursor:pointer; transition:all 0.25s ease;
+  font-family:inherit; letter-spacing:0.3px;
+}
+.anim-btn:hover {
+  background:rgba(96,165,250,0.15); color:#93c5fd;
+}
+.anim-btn.active {
+  background:rgba(0,122,255,0.35); color:#60a5fa;
+  box-shadow:0 0 12px rgba(0,122,255,0.3);
+}
+
+.anim-label {
+  position:fixed; top:70px; left:50%; transform:translateX(-50%); z-index:10;
+  background:rgba(96,165,250,0.12); backdrop-filter:blur(16px);
+  border:1px solid rgba(96,165,250,0.2); border-radius:999px;
+  padding:6px 18px; color:#93c5fd; font-size:0.8rem;
+  transition:opacity 0.3s;
+}
+</style>
+</head>
+<body>
+<div class="hint">拖拽旋转 · 滚轮缩放</div>
+<div class="anim-label" id="animLabel">Idle · 待机</div>
+<div class="label"><span>Q3D Bones Preview</span> · 9 Animations</div>
+
+<div class="anim-bar" id="animBar">
+  <button class="anim-btn active" data-anim="idle">idle</button>
+  <button class="anim-btn" data-anim="walk">walk</button>
+  <button class="anim-btn" data-anim="wave">wave</button>
+  <button class="anim-btn" data-anim="dance">dance</button>
+  <button class="anim-btn" data-anim="jump">jump</button>
+  <button class="anim-btn" data-anim="run">run</button>
+  <button class="anim-btn" data-anim="sit">sit</button>
+  <button class="anim-btn" data-anim="sleep">sleep</button>
+  <button class="anim-btn" data-anim="spin">spin</button>
+</div>
+
+<script>
+/* ===== Scene ===== */
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0e1a);
+scene.fog = new THREE.FogExp2(0x0a0e1a, 0.02);
+
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 100);
+camera.position.set(0, 2, 5);
+
+const renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+document.body.appendChild(renderer.domElement);
+
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.target.set(0, 1.2, 0);
+
+/* ===== Lights ===== */
+scene.add(new THREE.AmbientLight(0x404060, 0.6));
+const dirLight = new THREE.DirectionalLight(0x6090ff, 0.8);
+dirLight.position.set(3, 5, 4);
+dirLight.castShadow = true;
+scene.add(dirLight);
+const ptLight = new THREE.PointLight(0xbf5af2, 0.5, 10);
+ptLight.position.set(-2, 3, 2);
+scene.add(ptLight);
+
+/* ===== Ground ===== */
+const groundGeo = new THREE.CircleGeometry(4, 64);
+const groundMat = new THREE.MeshPhongMaterial({ color:0x111827, transparent:true, opacity:0.6 });
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.rotation.x = -Math.PI/2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+/* ===== Character with Bone Parts ===== */
+const charGroup = new THREE.Group();
+scene.add(charGroup);
+
+const parts = {};
+
+(function buildCharacter() {
+  const skinMat = new THREE.MeshPhongMaterial({ color:0xffdab9 });
+  const bodyMat = new THREE.MeshPhongMaterial({ color:0x007aff });
+  const footMat = new THREE.MeshPhongMaterial({ color:0x5e5ce6 });
+  const hairMat = new THREE.MeshPhongMaterial({ color:0x1a1a2e });
+  const eyeMat  = new THREE.MeshPhongMaterial({ color:0x1d1d1f });
+  const whiteMat = new THREE.MeshBasicMaterial({ color:0xffffff });
+  const mouthMat = new THREE.MeshPhongMaterial({ color:0xff6b8a });
+  const blushMat = new THREE.MeshBasicMaterial({ color:0xbf5af2, transparent:true, opacity:0.3 });
+
+  // Root pivot (for whole-body transforms like jump/sit)
+  parts.root = new THREE.Group();
+  parts.root.position.set(0, 0.9, 0);
+  charGroup.add(parts.root);
+
+  // Body
+  const bodyGeo = new THREE.CylinderGeometry(0.3, 0.35, 0.7, 16);
+  parts.body = new THREE.Mesh(bodyGeo, bodyMat);
+  parts.body.position.y = 0;
+  parts.body.castShadow = true;
+  parts.root.add(parts.body);
+
+  // Head pivot
+  parts.headPivot = new THREE.Group();
+  parts.headPivot.position.y = 0.55;
+  parts.root.add(parts.headPivot);
+
+  // Head mesh
+  const headGeo = new THREE.SphereGeometry(0.55, 32, 32);
+  parts.head = new THREE.Mesh(headGeo, skinMat);
+  parts.head.position.y = 0.55;
+  parts.head.castShadow = true;
+  parts.headPivot.add(parts.head);
+
+  // Eyes
+  const eyeGeo = new THREE.SphereGeometry(0.08, 16, 16);
+  parts.leftEye = new THREE.Mesh(eyeGeo, eyeMat);
+  parts.leftEye.position.set(-0.18, 0.6, 0.48);
+  parts.headPivot.add(parts.leftEye);
+  parts.rightEye = new THREE.Mesh(eyeGeo, eyeMat);
+  parts.rightEye.position.set(0.18, 0.6, 0.48);
+  parts.headPivot.add(parts.rightEye);
+
+  // Eye highlights
+  const hlGeo = new THREE.SphereGeometry(0.03, 8, 8);
+  const lhl = new THREE.Mesh(hlGeo, whiteMat);
+  lhl.position.set(-0.15, 0.63, 0.54);
+  parts.headPivot.add(lhl);
+  const rhl = new THREE.Mesh(hlGeo, whiteMat);
+  rhl.position.set(0.21, 0.63, 0.54);
+  parts.headPivot.add(rhl);
+
+  // Mouth
+  const mouthGeo = new THREE.TorusGeometry(0.06, 0.012, 8, 16, Math.PI);
+  parts.mouth = new THREE.Mesh(mouthGeo, mouthMat);
+  parts.mouth.position.set(0, 0.4, 0.5);
+  parts.mouth.rotation.x = -0.2;
+  parts.headPivot.add(parts.mouth);
+
+  // Blush
+  const blushGeo = new THREE.CircleGeometry(0.08, 16);
+  const lbl = new THREE.Mesh(blushGeo, blushMat);
+  lbl.position.set(-0.35, 0.45, 0.42);
+  lbl.lookAt(-0.35, 0.45, 1);
+  parts.headPivot.add(lbl);
+  const rbl = new THREE.Mesh(blushGeo, blushMat);
+  rbl.position.set(0.35, 0.45, 0.42);
+  rbl.lookAt(0.35, 0.45, 1);
+  parts.headPivot.add(rbl);
+
+  // Hair
+  const hairGeo = new THREE.SphereGeometry(0.6, 32, 16, 0, Math.PI*2, 0, Math.PI*0.6);
+  const hair = new THREE.Mesh(hairGeo, hairMat);
+  hair.position.y = 0.6;
+  parts.headPivot.add(hair);
+
+  // Left arm pivot
+  parts.leftArmPivot = new THREE.Group();
+  parts.leftArmPivot.position.set(-0.45, 0.15, 0);
+  parts.root.add(parts.leftArmPivot);
+  parts.leftArm = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), skinMat);
+  parts.leftArm.position.set(-0.15, 0, 0);
+  parts.leftArmPivot.add(parts.leftArm);
+
+  // Right arm pivot
+  parts.rightArmPivot = new THREE.Group();
+  parts.rightArmPivot.position.set(0.45, 0.15, 0);
+  parts.root.add(parts.rightArmPivot);
+  parts.rightArm = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), skinMat);
+  parts.rightArm.position.set(0.15, 0, 0);
+  parts.rightArmPivot.add(parts.rightArm);
+
+  // Left foot pivot
+  parts.leftFootPivot = new THREE.Group();
+  parts.leftFootPivot.position.set(-0.15, -0.4, 0);
+  parts.root.add(parts.leftFootPivot);
+  parts.leftFoot = new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 16), footMat);
+  parts.leftFoot.position.set(0, -0.15, 0.05);
+  parts.leftFootPivot.add(parts.leftFoot);
+
+  // Right foot pivot
+  parts.rightFootPivot = new THREE.Group();
+  parts.rightFootPivot.position.set(0.15, -0.4, 0);
+  parts.root.add(parts.rightFootPivot);
+  parts.rightFoot = new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 16), footMat);
+  parts.rightFoot.position.set(0, -0.15, 0.05);
+  parts.rightFootPivot.add(parts.rightFoot);
+})();
+
+/* ===== Animation Functions ===== */
+let currentAnim = 'idle';
+let animTime = 0;
+
+// Save base positions/rotations for reset
+const baseState = {};
+function saveBase() {
+  for (const key of ['root','body','headPivot','leftArmPivot','rightArmPivot','leftFootPivot','rightFootPivot']) {
+    baseState[key] = {
+      px: parts[key].position.x, py: parts[key].position.y, pz: parts[key].position.z,
+      rx: parts[key].rotation.x, ry: parts[key].rotation.y, rz: parts[key].rotation.z
+    };
+  }
+}
+saveBase();
+
+function resetParts() {
+  for (const [key, b] of Object.entries(baseState)) {
+    parts[key].position.set(b.px, b.py, b.pz);
+    parts[key].rotation.set(b.rx, b.ry, b.rz);
+  }
+  parts.root.scale.set(1, 1, 1);
+}
+
+const ANIM_FNS = {
+  idle(t) {
+    resetParts();
+    const breathe = Math.sin(t * Math.PI * 2 / 3) * 0.5 + 0.5;
+    parts.root.position.y = baseState.root.py + Math.sin(t * 2) * 0.05;
+    parts.body.position.y = breathe * 0.02;
+    parts.headPivot.rotation.x = breathe * 0.03 - 0.015;
+    parts.leftArmPivot.rotation.z = 0.15 + Math.sin(t * 2) * 0.04;
+    parts.rightArmPivot.rotation.z = -0.15 - Math.sin(t * 2) * 0.04;
+  },
+
+  walk(t) {
+    resetParts();
+    const cycle = t * 4;
+    const legSwing = Math.sin(cycle) * 0.4;
+    parts.leftFootPivot.rotation.x = legSwing;
+    parts.rightFootPivot.rotation.x = -legSwing;
+    parts.leftArmPivot.rotation.x = -legSwing * 0.6;
+    parts.rightArmPivot.rotation.x = legSwing * 0.6;
+    parts.body.rotation.z = Math.sin(cycle) * 0.03;
+    parts.root.position.y = baseState.root.py + Math.abs(Math.sin(cycle)) * 0.05;
+    parts.headPivot.rotation.z = Math.sin(cycle * 0.5) * 0.04;
+  },
+
+  wave(t) {
+    resetParts();
+    parts.root.position.y = baseState.root.py + Math.sin(t * 2) * 0.03;
+    parts.leftArmPivot.rotation.z = 0.15 + Math.sin(t * 2) * 0.04;
+    parts.rightArmPivot.rotation.z = -2.2;
+    parts.rightArmPivot.rotation.x = Math.sin(t * 8) * 0.3;
+    parts.headPivot.rotation.z = 0.08;
+    parts.headPivot.rotation.y = 0.1;
+  },
+
+  dance(t) {
+    resetParts();
+    const beat = t * 4;
+    parts.root.position.y = baseState.root.py + Math.abs(Math.sin(beat)) * 0.12;
+    parts.body.rotation.z = Math.sin(beat) * 0.15;
+    parts.headPivot.rotation.z = Math.sin(beat * 0.5) * 0.1;
+    parts.leftArmPivot.rotation.z = 0.5 + Math.sin(beat) * 0.8;
+    parts.rightArmPivot.rotation.z = -0.5 - Math.sin(beat + Math.PI * 0.5) * 0.8;
+    parts.leftFootPivot.rotation.x = Math.sin(beat * 2) * 0.2;
+    parts.rightFootPivot.rotation.x = Math.sin(beat * 2 + Math.PI) * 0.2;
+  },
+
+  jump(t) {
+    resetParts();
+    const cycle = t * 3;
+    const phase = cycle % 1;
+    const jumpHeight = Math.sin(phase * Math.PI) * 0.6;
+    parts.root.position.y = baseState.root.py + jumpHeight;
+    if (jumpHeight > 0.1) {
+      parts.leftArmPivot.rotation.z = -1.2;
+      parts.rightArmPivot.rotation.z = 1.2;
+      parts.leftFootPivot.rotation.x = 0.3;
+      parts.rightFootPivot.rotation.x = 0.3;
+    } else {
+      parts.leftArmPivot.rotation.z = 0.15;
+      parts.rightArmPivot.rotation.z = -0.15;
+      const squash = 1 + (1 - jumpHeight / 0.6) * 0.08;
+      parts.root.scale.set(squash, 2 - squash, squash);
+    }
+  },
+
+  run(t) {
+    resetParts();
+    const cycle = t * 8;
+    const legSwing = Math.sin(cycle) * 0.6;
+    parts.leftFootPivot.rotation.x = legSwing;
+    parts.rightFootPivot.rotation.x = -legSwing;
+    parts.leftArmPivot.rotation.x = -legSwing * 0.8;
+    parts.rightArmPivot.rotation.x = legSwing * 0.8;
+    parts.leftArmPivot.rotation.z = -0.3;
+    parts.rightArmPivot.rotation.z = 0.3;
+    parts.body.rotation.x = -0.12;
+    parts.body.rotation.z = Math.sin(cycle) * 0.05;
+    parts.root.position.y = baseState.root.py + Math.abs(Math.sin(cycle)) * 0.1;
+    parts.headPivot.rotation.z = Math.sin(cycle * 0.5) * 0.06;
+  },
+
+  sit(t) {
+    resetParts();
+    parts.root.position.y = baseState.root.py - 0.35;
+    parts.body.rotation.x = 0.1;
+    parts.headPivot.rotation.x = 0.05;
+    parts.leftFootPivot.rotation.x = -0.8;
+    parts.rightFootPivot.rotation.x = -0.8;
+    parts.leftArmPivot.rotation.z = 0.4;
+    parts.rightArmPivot.rotation.z = -0.4;
+    const breathe = Math.sin(t * 1.5) * 0.5 + 0.5;
+    parts.headPivot.position.y = baseState.headPivot.py + breathe * 0.01;
+  },
+
+  sleep(t) {
+    resetParts();
+    parts.root.position.y = baseState.root.py - 0.15;
+    parts.body.rotation.x = 0.15;
+    parts.headPivot.rotation.x = 0.3;
+    parts.headPivot.position.y = baseState.headPivot.py - 0.1;
+    parts.leftArmPivot.rotation.z = 0.5;
+    parts.rightArmPivot.rotation.z = -0.5;
+    parts.leftArmPivot.rotation.x = 0.15;
+    parts.rightArmPivot.rotation.x = 0.15;
+    parts.leftFootPivot.rotation.x = -0.2;
+    parts.rightFootPivot.rotation.x = -0.2;
+    const breathe = Math.sin(t * Math.PI / 2) * 0.5 + 0.5;
+    parts.body.position.y = breathe * 0.015;
+    // Hide eyes (scale down to simulate closed)
+    parts.leftEye.scale.y = 0.15;
+    parts.rightEye.scale.y = 0.15;
+  },
+
+  spin(t) {
+    resetParts();
+    parts.root.rotation.y = t * 6;
+    parts.root.position.y = baseState.root.py + Math.sin(t * 3) * 0.1;
+    parts.leftArmPivot.rotation.z = -0.8;
+    parts.rightArmPivot.rotation.z = 0.8;
+    parts.leftFootPivot.rotation.x = Math.sin(t * 6) * 0.2;
+    parts.rightFootPivot.rotation.x = Math.sin(t * 6 + Math.PI) * 0.2;
+    const stretch = 1 + Math.sin(t * 6) * 0.05;
+    parts.root.scale.set(stretch, 2 - stretch, stretch);
+  }
+};
+
+const ANIM_LABELS = {
+  idle:'Idle · 待机', walk:'Walk · 行走', wave:'Wave · 挥手',
+  dance:'Dance · 跳舞', jump:'Jump · 跳跃', run:'Run · 跑步',
+  sit:'Sit · 坐下', sleep:'Sleep · 休息', spin:'Spin · 旋转'
+};
+
+/* ===== Particles ===== */
+const pCount = 200;
+const pGeo = new THREE.BufferGeometry();
+const pPos = new Float32Array(pCount * 3);
+const pCol = new Float32Array(pCount * 3);
+const pColors = [new THREE.Color(0x007aff), new THREE.Color(0xbf5af2), new THREE.Color(0x5ac8fa), new THREE.Color(0x34c759)];
+for (let i = 0; i < pCount; i++) {
+  pPos[i*3]=(Math.random()-0.5)*10; pPos[i*3+1]=Math.random()*6; pPos[i*3+2]=(Math.random()-0.5)*10;
+  const c = pColors[Math.floor(Math.random()*pColors.length)];
+  pCol[i*3]=c.r; pCol[i*3+1]=c.g; pCol[i*3+2]=c.b;
+}
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+pGeo.setAttribute('color', new THREE.BufferAttribute(pCol, 3));
+const pMat = new THREE.PointsMaterial({ size:0.03, vertexColors:true, transparent:true, opacity:0.4 });
+const pts = new THREE.Points(pGeo, pMat);
+scene.add(pts);
+
+/* ===== Animate ===== */
+const clock = new THREE.Clock();
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  animTime += dt;
+
+  const fn = ANIM_FNS[currentAnim];
+  if (fn) fn(animTime);
+
+  // Slow auto-rotation (skip for spin which has its own rotation)
+  if (currentAnim !== 'spin') {
+    charGroup.rotation.y += 0.003;
+  }
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+/* ===== Resize ===== */
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+/* ===== Button Controls ===== */
+const btns = document.querySelectorAll('.anim-btn');
+const labelEl = document.getElementById('animLabel');
+
+btns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const anim = btn.dataset.anim;
+    if (!ANIM_FNS[anim]) return;
+    btns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentAnim = anim;
+    animTime = 0;
+    labelEl.textContent = ANIM_LABELS[anim] || anim;
+    // Reset eye scale when leaving sleep
+    if (anim !== 'sleep') {
+      parts.leftEye.scale.y = 1;
+      parts.rightEye.scale.y = 1;
+    }
+    // Reset charGroup rotation when leaving spin
+    if (anim !== 'spin') {
+      charGroup.rotation.y = 0;
+    }
+  });
+});
+</script>
+</body>
+</html>

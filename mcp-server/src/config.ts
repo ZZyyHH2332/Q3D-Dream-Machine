@@ -25,6 +25,8 @@ export interface Q3DConfig {
   hunyuanApiUrl: string;
   api302Key: string | undefined;
   tripoApiKey: string | undefined;
+  sf3dLocalUrl: string;
+  soapLocalUrl: string;
 }
 
 function getConfig(): Q3DConfig {
@@ -56,6 +58,8 @@ function getConfig(): Q3DConfig {
     hunyuanApiUrl: process.env.Q3D_HUNYUAN_API_URL || "http://localhost:8080",
     api302Key: process.env.Q3D_302AI_API_KEY || undefined,
     tripoApiKey: process.env.Q3D_TRIPO_API_KEY || undefined,
+    sf3dLocalUrl: process.env.Q3D_SF3D_LOCAL_URL || "http://localhost:8081",
+    soapLocalUrl: process.env.Q3D_SOAP_LOCAL_URL || "http://localhost:8082",
   };
 }
 

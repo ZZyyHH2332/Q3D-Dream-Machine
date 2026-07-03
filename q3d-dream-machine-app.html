@@ -307,6 +307,21 @@
   .threejs-btn:hover { background: rgba(0,122,255,0.5); color: #fff; }
   .threejs-btn.active { background: rgba(0,122,255,0.6); color: #fff; }
 
+  .mood-bar {
+    position: absolute; bottom: 42px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 4px; z-index: 2; padding: 4px 8px;
+    background: rgba(0,0,0,0.3); backdrop-filter: blur(8px);
+    border-radius: 20px;
+  }
+  .mood-btn {
+    width: 32px; height: 32px; border-radius: 50%; border: none;
+    background: rgba(255,255,255,0.1); cursor: pointer;
+    font-size: 1rem; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; opacity: 0.6;
+  }
+  .mood-btn:hover { opacity: 1; transform: scale(1.15); background: rgba(255,255,255,0.2); }
+  .mood-btn.active { opacity: 1; background: rgba(0,122,255,0.5); box-shadow: 0 0 8px rgba(0,122,255,0.4); }
+
   .preview-hint {
     text-align:center; margin-top:10px; font-size:0.8rem; color:rgba(255,255,255,0.35);
   }
@@ -984,8 +999,19 @@
         <button class="threejs-btn" id="threeRotate" title="自动旋转">↻</button>
         <button class="threejs-btn" id="threeScreenshot" title="截图">📷</button>
       </div>
+      <div class="mood-bar" id="moodBar">
+        <button class="mood-btn active" data-mood="idle" title="平静">😌</button>
+        <button class="mood-btn" data-mood="happy" title="开心">😄</button>
+        <button class="mood-btn" data-mood="excited" title="兴奋">🤩</button>
+        <button class="mood-btn" data-mood="sleeping" title="困倦">😴</button>
+        <button class="mood-btn" data-mood="curious" title="好奇">🤔</button>
+        <button class="mood-btn" data-mood="sad" title="难过">😢</button>
+        <button class="mood-btn" data-mood="love" title="喜爱">🥰</button>
+        <button class="mood-btn" data-mood="climbing" title="攀爬">🧗</button>
+        <button class="mood-btn" data-mood="crawling_upside" title="倒挂">🙃</button>
+      </div>
     </div>
-    <div class="preview-hint">拖拽旋转查看不同角度</div>
+    <div class="preview-hint">拖拽旋转查看不同角度 · 点击表情切换动画</div>
     <div class="preview-actions">
       <button class="action-btn primary" id="downloadGlbBtn" title="下载 3D 模型">
         <span>📦</span> 下载 GLB
@@ -1820,9 +1846,9 @@ function initThreeJS() {
     if (threeAutoRotate && threeCurrentModel) {
       threeCurrentModel.rotation.y += 0.005;
     }
-    // Character bobbing animation
-    if (threeCurrentModel && threeCurrentModel.type === 'Group') {
-      threeCurrentModel.position.y = Math.sin(Date.now() * 0.002) * 0.05;
+    // 骨骼动画更新
+    if (bonesChar) {
+      bonesChar.update();
     }
     threeControls.update();
     threeRenderer.render(threeScene, threeCamera);
@@ -2000,6 +2026,91 @@ const characterColors = {
   simple: { head: 0x5E5CE6, body: 0x8E8E93, arms: 0xAEAEB2, legs: 0x5856D6 }
 };
 
+// ===== 骨骼动画系统（内联自 character-bones.js v2）=====
+const BONES_AVAILABLE_MOODS = ['idle','happy','excited','sleeping','curious','sad','love','climbing','crawling_upside'];
+const BONES_MOOD_NAMES = { idle:'平静', happy:'开心', excited:'兴奋', sleeping:'困倦', curious:'好奇', sad:'难过', love:'喜爱', climbing:'攀爬', crawling_upside:'倒挂' };
+
+function createBonesCharacterApp(avatarTexture, colors, gradientMap) {
+  const cfg = { headRadius:0.55, bodyHeight:0.7, bodyTopRadius:0.35, bodyBottomRadius:0.42, armLength:0.45, armRadius:0.12, legLength:0.35, legRadius:0.14 };
+  const rootBone = new THREE.Bone(); rootBone.name = 'root';
+  const spineBone = new THREE.Bone(); spineBone.name = 'spine'; spineBone.position.y = cfg.bodyHeight/2; rootBone.add(spineBone);
+  const headBone = new THREE.Bone(); headBone.name = 'head'; headBone.position.y = cfg.bodyHeight/2 + cfg.headRadius*0.3; spineBone.add(headBone);
+  const leftArmBone = new THREE.Bone(); leftArmBone.name = 'leftArm'; leftArmBone.position.set(-cfg.bodyTopRadius-0.08, cfg.bodyHeight*0.6, 0); spineBone.add(leftArmBone);
+  const rightArmBone = new THREE.Bone(); rightArmBone.name = 'rightArm'; rightArmBone.position.set(cfg.bodyTopRadius+0.08, cfg.bodyHeight*0.6, 0); spineBone.add(rightArmBone);
+  const leftLegBone = new THREE.Bone(); leftLegBone.name = 'leftLeg'; leftLegBone.position.set(-cfg.bodyBottomRadius*0.4, -cfg.bodyHeight/2, 0); rootBone.add(leftLegBone);
+  const rightLegBone = new THREE.Bone(); rightLegBone.name = 'rightLeg'; rightLegBone.position.set(cfg.bodyBottomRadius*0.4, -cfg.bodyHeight/2, 0); rootBone.add(rightLegBone);
+  const bones = { root:rootBone, spine:spineBone, head:headBone, leftArm:leftArmBone, rightArm:rightArmBone, leftLeg:leftLegBone, rightLeg:rightLegBone };
+  const boneBase = {}; for (const n in bones) { const b=bones[n]; boneBase[n]={position:b.position.clone(), rotation:b.rotation.clone(), scale:b.scale.clone()}; }
+
+  const group = new THREE.Group(); group.add(rootBone);
+  function mat(color, map) {
+    if (gradientMap) return new THREE.MeshToonMaterial({ color, gradientMap, ...(map?{map}:{}), toneMapped: true });
+    return new THREE.MeshStandardMaterial({ color, roughness:0.5, metalness:0.1, ...(map?{map}:{}) });
+  }
+  // Head
+  const headMesh = new THREE.Mesh(new THREE.SphereGeometry(cfg.headRadius,32,32), avatarTexture ? mat(0xffffff,avatarTexture) : mat(colors.head||0xFF8FAB));
+  headMesh.castShadow = true; headBone.add(headMesh);
+  // Cheeks
+  const cheekMat = new THREE.MeshBasicMaterial({ color:0xFFB6C1, transparent:true, opacity:0.5 });
+  const lc=new THREE.Mesh(new THREE.SphereGeometry(0.12,16,16), cheekMat); lc.position.set(-0.25,-0.1,cfg.headRadius*0.85); headBone.add(lc);
+  const rc=new THREE.Mesh(new THREE.SphereGeometry(0.12,16,16), cheekMat.clone()); rc.position.set(0.25,-0.1,cfg.headRadius*0.85); headBone.add(rc);
+  // Eyes
+  const eyeMat = new THREE.MeshBasicMaterial({ color:0x333333 });
+  const le=new THREE.Mesh(new THREE.SphereGeometry(0.1,16,16), eyeMat); le.position.set(-0.22,0.08,cfg.headRadius*0.88); headBone.add(le);
+  const re=new THREE.Mesh(new THREE.SphereGeometry(0.1,16,16), eyeMat.clone()); re.position.set(0.22,0.08,cfg.headRadius*0.88); headBone.add(re);
+  // Eye shine
+  const shineMat = new THREE.MeshBasicMaterial({ color:0xffffff });
+  const ls=new THREE.Mesh(new THREE.SphereGeometry(0.035,8,8), shineMat); ls.position.set(-0.19,0.12,cfg.headRadius*0.96); headBone.add(ls);
+  const rs=new THREE.Mesh(new THREE.SphereGeometry(0.035,8,8), shineMat.clone()); rs.position.set(0.25,0.12,cfg.headRadius*0.96); headBone.add(rs);
+  // Body
+  const bodyMesh = new THREE.Mesh(new THREE.CylinderGeometry(cfg.bodyTopRadius,cfg.bodyBottomRadius,cfg.bodyHeight,24), mat(colors.body||0xA8E6CF));
+  bodyMesh.castShadow = true; spineBone.add(bodyMesh);
+  // Arms
+  const armGeo = new THREE.CapsuleGeometry(cfg.armRadius, cfg.armLength, 8, 16);
+  const armMat = mat(colors.arms||0xFFD93D);
+  const laMesh = new THREE.Mesh(armGeo, armMat); laMesh.rotation.z=Math.PI/2; laMesh.position.x=-cfg.armLength/2; laMesh.castShadow=true; leftArmBone.add(laMesh);
+  const raMesh = new THREE.Mesh(armGeo, armMat.clone()); raMesh.rotation.z=-Math.PI/2; raMesh.position.x=cfg.armLength/2; raMesh.castShadow=true; rightArmBone.add(raMesh);
+  // Legs
+  const legGeo = new THREE.CapsuleGeometry(cfg.legRadius, cfg.legLength, 8, 16);
+  const legMat = mat(colors.legs||0xB4D7F0);
+  const llMesh = new THREE.Mesh(legGeo, legMat); llMesh.position.y=-cfg.legLength/2; llMesh.castShadow=true; leftLegBone.add(llMesh);
+  const rlMesh = new THREE.Mesh(legGeo, legMat.clone()); rlMesh.position.y=-cfg.legLength/2; rlMesh.castShadow=true; rightLegBone.add(rlMesh);
+
+  // Animation state
+  let currentMood = 'idle', moodTime = 0, transitionTime = 0;
+  const TRANSITION = 0.3;
+  const prevState = {}; for (const n in bones) { const b=bones[n]; prevState[n]={position:b.position.clone(),rotation:b.rotation.clone(),scale:b.scale.clone()}; }
+  const targetState = {}; for (const n in bones) { targetState[n]={position:new THREE.Vector3(), rotation:new THREE.Euler(), scale:new THREE.Vector3()}; }
+  function reset() { for (const n in bones) { const b=bones[n], base=boneBase[n]; b.position.copy(base.position); b.rotation.copy(base.rotation); b.scale.copy(base.scale); } }
+  function saveTo(state) { for (const n in bones) { const b=bones[n]; state[n].position.copy(b.position); state[n].rotation.copy(b.rotation); state[n].scale.copy(b.scale); } }
+  function lerpState(from, to, t) { for (const n in bones) { const b=bones[n], f=from[n], v=to[n]; b.position.lerpVectors(f.position,v.position,t); b.rotation.x=f.rotation.x+(v.rotation.x-f.rotation.x)*t; b.rotation.y=f.rotation.y+(v.rotation.y-f.rotation.y)*t; b.rotation.z=f.rotation.z+(v.rotation.z-f.rotation.z)*t; b.scale.lerpVectors(f.scale,v.scale,t); } }
+
+  const anims = {
+    idle: (b,t)=>{ const br=Math.sin(t*Math.PI*2/3)*0.5+0.5; b.spine.position.y=br*0.03; b.spine.rotation.x=br*0.02-0.01; b.head.rotation.x=br*0.03-0.015; b.leftArm.rotation.z=0.3+Math.sin(t*2)*0.05; b.rightArm.rotation.z=-0.3-Math.sin(t*2)*0.05; },
+    happy: (b,t)=>{ const bn=Math.abs(Math.sin(t*Math.PI*4)); b.root.position.y=bn*0.15; b.head.rotation.z=Math.sin(t*6)*0.08; b.head.rotation.y=Math.sin(t*3)*0.1; const aw=Math.sin(t*Math.PI*6)*0.5+0.5; b.leftArm.rotation.z=0.3+aw*0.9; b.rightArm.rotation.z=-0.3-aw*0.9; b.spine.rotation.z=Math.sin(t*4)*0.03; },
+    excited: (b,t)=>{ const j=Math.abs(Math.sin(t*Math.PI*5)); b.root.position.y=j*0.25; const sq=1+j*0.05; b.root.scale.set(sq,2-sq,sq); b.head.scale.setScalar(1+j*0.08); const au=Math.sin(t*Math.PI*5)*0.3+0.7; b.leftArm.rotation.z=0.5+au*1.0; b.rightArm.rotation.z=-0.5-au*1.0; b.spine.rotation.z=Math.sin(t*6)*0.05; },
+    sleeping: (b,t)=>{ const br=Math.sin(t*Math.PI/2)*0.5+0.5; b.root.position.y=-0.05+br*0.02; b.root.rotation.z=Math.sin(t*0.5)*0.03; b.head.rotation.x=0.1+br*0.02; b.head.position.y=-0.05+br*0.01; b.leftArm.rotation.z=0.55+Math.sin(t*0.8)*0.05; b.rightArm.rotation.z=-0.55-Math.sin(t*0.8)*0.05; b.spine.rotation.x=0.08; },
+    curious: (b,t)=>{ const tc=t*1.5; b.head.rotation.z=Math.sin(tc)*0.2; b.head.position.x=Math.sin(tc)*0.05; b.head.position.y=0.04+Math.sin(tc*2)*0.02; b.spine.rotation.z=Math.sin(tc)*0.05; b.spine.rotation.x=0.05; b.leftArm.rotation.z=0.3+Math.sin(tc*1.3)*0.3; b.rightArm.rotation.z=-0.25; },
+    sad: (b,t)=>{ b.root.position.y=-0.05+Math.sin(t*0.8)*0.01; b.head.rotation.x=0.15; b.head.position.y=-0.05; b.spine.rotation.x=0.08; b.leftArm.rotation.z=0.7+Math.sin(t*8)*0.02; b.rightArm.rotation.z=-0.7-Math.sin(t*8+1)*0.02; b.root.rotation.z=Math.sin(t*10)*0.01; },
+    love: (b,t)=>{ const beat=(Math.sin(t*Math.PI*4)+1)/2; const pulse=beat*beat; b.root.scale.setScalar(1+pulse*0.06); b.head.scale.setScalar(1+pulse*0.05); b.head.rotation.z=Math.sin(t*2)*0.05; b.head.rotation.y=Math.sin(t*1.5)*0.08; const hug=0.5+pulse*0.3; b.leftArm.rotation.z=0.5+hug*0.5; b.rightArm.rotation.z=-0.5-hug*0.5; b.spine.rotation.z=Math.sin(t*2)*0.02; },
+    climbing: (b,t)=>{ const cc=t*4; const ap=Math.sin(cc), ap2=Math.sin(cc+Math.PI); b.spine.rotation.z=0.08; b.spine.rotation.x=-0.05; b.head.rotation.z=-0.05; b.head.rotation.y=0.1; b.head.position.y=0.02; b.leftArm.rotation.z=0.8+ap*0.5; b.leftArm.rotation.x=-0.3+ap*0.4; b.rightArm.rotation.z=-0.8+ap2*0.5; b.rightArm.rotation.x=-0.3+ap2*0.4; b.root.position.y=Math.sin(cc)*0.03; },
+    crawling_upside: (b,t)=>{ const cc=t*3; const ap=Math.sin(cc), ap2=Math.sin(cc+Math.PI); b.root.rotation.x=Math.PI; b.root.rotation.z=0; b.head.rotation.x=-0.15; b.head.rotation.z=Math.sin(cc*0.5)*0.05; b.leftArm.rotation.z=-0.6+ap*0.4; b.leftArm.rotation.x=0.2+ap*0.3; b.rightArm.rotation.z=0.6+ap2*0.4; b.rightArm.rotation.x=0.2+ap2*0.3; b.spine.rotation.z=Math.sin(cc)*0.04; },
+  };
+
+  function setMood(m) { if (!anims[m]||m===currentMood) return; saveTo(prevState); currentMood=m; moodTime=0; transitionTime=0; }
+  const clock = new THREE.Clock();
+  function update() {
+    const d=clock.getDelta(); moodTime+=d; const fn=anims[currentMood]; if(!fn) return;
+    if (transitionTime<TRANSITION) { transitionTime+=d; const t=Math.min(transitionTime/TRANSITION,1); const e=t*t*(3-2*t); reset(); fn(bones,moodTime); saveTo(targetState); reset(); lerpState(prevState,targetState,e); }
+    else { reset(); fn(bones,moodTime); }
+  }
+  reset(); anims.idle(bones,0); group.position.y += 0.3;
+  return { group, bones, setMood, update, currentMood:()=>currentMood };
+}
+// ===== 骨骼动画系统结束 =====
+
+let bonesChar = null;
+
 function buildPlaceholderCharacter() {
   if (!threeScene) return;
   if (!toonGradientMap) {
@@ -2007,64 +2118,24 @@ function buildPlaceholderCharacter() {
   }
   if (threeCurrentModel) {
     threeScene.remove(threeCurrentModel);
+    threeCurrentModel = null;
   }
-  const character = new THREE.Group();
+  if (bonesChar) {
+    threeScene.remove(bonesChar.group);
+    bonesChar = null;
+  }
   const colors = characterColors[currentStyle] || characterColors.kawaii;
 
-  // Head (sphere) - with uploaded image texture if available
-  let headMaterial;
+  // 使用骨骼动画系统创建角色
+  let avatarTexture = null;
   if (uploadedImage) {
-    const texture = new THREE.TextureLoader().load(uploadedImage);
-    texture.colorSpace = THREE.SRGBColorSpace;
-    headMaterial = new THREE.MeshToonMaterial({ map: texture, gradientMap: toonGradientMap });
-  } else {
-    headMaterial = new THREE.MeshToonMaterial({ color: colors.head, gradientMap: toonGradientMap });
+    try {
+      avatarTexture = new THREE.TextureLoader().load(uploadedImage);
+      avatarTexture.colorSpace = THREE.SRGBColorSpace;
+    } catch (e) { console.warn('Texture load failed:', e); }
   }
-  const headGeo = new THREE.SphereGeometry(0.5, 32, 32);
-  const head = new THREE.Mesh(headGeo, headMaterial);
-  head.position.y = 1.1;
-  head.castShadow = true;
-  head.name = 'head';
-  character.add(head);
-
-  // Body (cylinder)
-  const bodyGeo = new THREE.CylinderGeometry(0.35, 0.4, 0.7, 32);
-  const bodyMat = new THREE.MeshToonMaterial({ color: colors.body, gradientMap: toonGradientMap });
-  const body = new THREE.Mesh(bodyGeo, bodyMat);
-  body.position.y = 0.3;
-  body.castShadow = true;
-  body.name = 'body';
-  character.add(body);
-
-  // Arms (spheres)
-  const armGeo = new THREE.SphereGeometry(0.15, 16, 16);
-  const armMat = new THREE.MeshToonMaterial({ color: colors.arms, gradientMap: toonGradientMap });
-  const leftArm = new THREE.Mesh(armGeo, armMat);
-  leftArm.position.set(-0.55, 0.5, 0);
-  leftArm.castShadow = true;
-  leftArm.name = 'leftArm';
-  character.add(leftArm);
-  const rightArm = new THREE.Mesh(armGeo, armMat);
-  rightArm.position.set(0.55, 0.5, 0);
-  rightArm.castShadow = true;
-  rightArm.name = 'rightArm';
-  character.add(rightArm);
-
-  // Legs (cylinders)
-  const legGeo = new THREE.CylinderGeometry(0.12, 0.14, 0.3, 16);
-  const legMat = new THREE.MeshToonMaterial({ color: colors.legs, gradientMap: toonGradientMap });
-  const leftLeg = new THREE.Mesh(legGeo, legMat);
-  leftLeg.position.set(-0.18, -0.2, 0);
-  leftLeg.castShadow = true;
-  leftLeg.name = 'leftLeg';
-  character.add(leftLeg);
-  const rightLeg = new THREE.Mesh(legGeo, legMat);
-  rightLeg.position.set(0.18, -0.2, 0);
-  rightLeg.castShadow = true;
-  rightLeg.name = 'rightLeg';
-  character.add(rightLeg);
-
-  threeCurrentModel = character;
+  bonesChar = createBonesCharacterApp(avatarTexture, colors, toonGradientMap);
+  threeCurrentModel = bonesChar.group;
   threeScene.add(threeCurrentModel);
   if (threeLoading) threeLoading.style.display = 'none';
 }
@@ -2134,26 +2205,29 @@ function applyMaterialToModel(prop, value) {
   if (!threeCurrentModel) return;
   threeCurrentModel.traverse((child) => {
     if (child.isMesh && child.material) {
-      if (child.material.isMeshStandardMaterial) {
-        switch (prop) {
-          case 'color':
-            child.material.color.set(value);
-            break;
-          case 'roughness':
-            child.material.roughness = parseFloat(value);
-            break;
-          case 'metalness':
-            child.material.metalness = parseFloat(value);
-            break;
-          case 'emissiveIntensity':
+      const isStd = child.material.isMeshStandardMaterial;
+      const isToon = child.material.isMeshToonMaterial;
+      if (!isStd && !isToon) return;
+      switch (prop) {
+        case 'color':
+          child.material.color.set(value);
+          break;
+        case 'roughness':
+          if (isStd) child.material.roughness = parseFloat(value);
+          break;
+        case 'metalness':
+          if (isStd) child.material.metalness = parseFloat(value);
+          break;
+        case 'emissiveIntensity':
+          if (isStd) {
             child.material.emissiveIntensity = parseFloat(value);
             if (parseFloat(value) > 0 && child.material.emissive.getHex() === 0x000000) {
               child.material.emissive.set(0x333333);
             }
-            break;
-        }
-        child.material.needsUpdate = true;
+          }
+          break;
       }
+      child.material.needsUpdate = true;
     }
   });
 }
@@ -2628,6 +2702,21 @@ function resetPetIdle() {
 }
 document.addEventListener('mousemove', resetPetIdle);
 document.addEventListener('click', resetPetIdle);
+
+// 心情切换按钮事件
+document.querySelectorAll('#moodBar .mood-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const mood = btn.dataset.mood;
+    if (bonesChar) {
+      bonesChar.setMood(mood);
+      document.querySelectorAll('#moodBar .mood-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      // 同时更新 pet 心情
+      applyPetMood(mood);
+      showPetBubble(randomFrom(PET_MOODS[mood]?.bubbles || PET_MOODS.idle.bubbles));
+    }
+  });
+});
 
 // PiP 置顶
 async function togglePiP() {

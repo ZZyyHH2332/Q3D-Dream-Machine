@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q3D Dream Machine - 3D GLB 模型预览</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: #0a0e1a;
+    color: #f0f0f5;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== Top Section: Provider Status Panel ===== */
+  .status-panel {
+    height: 200px;
+    min-height: 200px;
+    padding: 20px 28px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .panel-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: #f0f0f5;
+  }
+
+  .panel-subtitle {
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(240,240,245,0.45);
+  }
+
+  .fallback-chain {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 16px;
+    padding: 3px 12px;
+    background: rgba(96,165,250,0.1);
+    border: 1px solid rgba(96,165,250,0.2);
+    border-radius: 20px;
+    font-size: 11px;
+    color: #60a5fa;
+    font-weight: 500;
+  }
+
+  .fallback-chain .arrow { opacity: 0.5; }
+
+  .provider-cards {
+    display: flex;
+    gap: 14px;
+    flex: 1;
+  }
+
+  .provider-card {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 0.3s;
+  }
+
+  .provider-card:hover {
+    border-color: rgba(96,165,250,0.3);
+  }
+
+  .provider-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .provider-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .provider-icon {
+    font-size: 20px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px;
+  }
+
+  .provider-name {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .priority-tag {
+    font-size: 10px;
+    color: rgba(240,240,245,0.35);
+    font-weight: 400;
+  }
+
+  .status-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .status-badge.not_configured {
+    background: rgba(251,146,60,0.15);
+    color: #fb923c;
+    border: 1px solid rgba(251,146,60,0.25);
+  }
+
+  .provider-config {
+    font-size: 11px;
+    color: rgba(240,240,245,0.35);
+    font-family: 'DM Sans', monospace;
+    background: rgba(255,255,255,0.04);
+    padding: 3px 8px;
+    border-radius: 6px;
+    display: inline-block;
+    width: fit-content;
+  }
+
+  .provider-desc {
+    font-size: 12px;
+    color: rgba(240,240,245,0.55);
+    margin-top: auto;
+  }
+
+  .info-note {
+    font-size: 11px;
+    color: rgba(240,240,245,0.3);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .info-note::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: #00D4FF;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ===== Bottom Section: 3D Canvas ===== */
+  .preview-section {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #canvas3d {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .style-switcher {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+  }
+
+  .style-btn {
+    padding: 7px 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(16px);
+    color: #f0f0f5;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: 'DM Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .style-btn:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.25);
+  }
+
+  .style-btn.active {
+    background: rgba(96,165,250,0.2);
+    border-color: rgba(96,165,250,0.5);
+    color: #60a5fa;
+    box-shadow: 0 0 16px rgba(96,165,250,0.15);
+  }
+
+  .info-overlay {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    background: rgba(10,14,26,0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 14px 18px;
+    z-index: 10;
+    font-size: 12px;
+    line-height: 1.8;
+    color: rgba(240,240,245,0.6);
+  }
+
+  .info-overlay .info-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #f0f0f5;
+    margin-bottom: 4px;
+  }
+
+  .info-overlay .info-mock {
+    font-size: 10px;
+    color: rgba(240,240,245,0.3);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .info-overlay .info-mock::before {
+    content: '';
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    background: #fb923c;
+    border-radius: 50%;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== Top: Provider Status Panel ===== -->
+<div class="status-panel">
+  <div class="panel-header">
+    <span class="panel-title">3D 模型生成</span>
+    <span class="panel-subtitle">Generate 3D GLB Model</span>
+    <div class="fallback-chain">
+      <span>Hunyuan3D</span><span class="arrow">→</span>
+      <span>302.AI</span><span class="arrow">→</span>
+      <span>Tripo3D</span>
+    </div>
+  </div>
+
+  <div class="provider-cards">
+    <!-- Hunyuan3D -->
+    <div class="provider-card">
+      <div class="provider-card-top">
+        <div class="provider-name-row">
+          <div class="provider-icon">🧊</div>
+          <div>
+            <div class="provider-name">Hunyuan3D</div>
+            <div class="priority-tag">优先级 1</div>
+          </div>
+        </div>
+        <span class="status-badge not_configured">not_configured</span>
+      </div>
+      <span class="provider-config">Q3D_HUNYUAN_API_URL</span>
+      <div class="provider-desc">本地部署，零成本</div>
+    </div>
+
+    <!-- 302.AI -->
+    <div class="provider-card">
+      <div class="provider-card-top">
+        <div class="provider-name-row">
+          <div class="provider-icon">☁️</div>
+          <div>
+            <div class="provider-name">302.AI</div>
+            <div class="priority-tag">优先级 2</div>
+          </div>
+        </div>
+        <span class="status-badge not_configured">not_configured</span>
+      </div>
+      <span class="provider-config">Q3D_302AI_API_KEY</span>
+      <div class="provider-desc">免费积分，无 GPU 适用</div>
+    </div>
+
+    <!-- Tripo3D -->
+    <div class="provider-card">
+      <div class="provider-card-top">
+        <div class="provider-name-row">
+          <div class="provider-icon">📦</div>
+          <div>
+            <div class="provider-name">Tripo3D</div>
+            <div class="priority-tag">优先级 3</div>
+          </div>
+        </div>
+        <span class="status-badge not_configured">not_configured</span>
+      </div>
+      <span class="provider-config">Q3D_TRIPO_API_KEY</span>
+      <div class="provider-desc">保底降级方案</div>
+    </div>
+  </div>
+
+  <div class="info-note">当前为 Mock 模式，配置任一 Provider API Key 后可生成真实 GLB 模型</div>
+</div>
+
+<!-- ===== Bottom: 3D Model Preview ===== -->
+<div class="preview-section">
+  <div class="style-switcher">
+    <button class="style-btn active" data-style="kawaii">Kawaii</button>
+    <button class="style-btn" data-style="guofeng">国风</button>
+    <button class="style-btn" data-style="chaowan">潮玩</button>
+    <button class="style-btn" data-style="jianyue">简约</button>
+  </div>
+
+  <canvas id="canvas3d"></canvas>
+
+  <div class="info-overlay">
+    <div class="info-title">模拟 3D GLB 预览</div>
+    <div>格式: GLB (GLTF Binary)</div>
+    <div>Provider: Mock</div>
+    <div class="info-mock">配置 API 后生成真实模型</div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // ===== Color Schemes =====
+  var styles = {
+    kawaii:  { head: 0xFFB6C1, body: 0xFF69B4, hands: 0xFFC0CB, feet: 0xFF69B4, eyes: 0x333333 },
+    guofeng: { head: 0xF5F5DC, body: 0x8B4513, hands: 0xDEB887, feet: 0x8B4513, eyes: 0x333333 },
+    chaowan: { head: 0x00D4FF, body: 0x1A1A2E, hands: 0xFFD700, feet: 0x1A1A2E, eyes: 0xFF6B6B },
+    jianyue: { head: 0x78909C, body: 0x37474F, hands: 0x90A4AE, feet: 0x37474F, eyes: 0x00BCD4 }
+  };
+
+  var currentStyle = 'kawaii';
+
+  // ===== Scene Setup =====
+  var canvas = document.getElementById('canvas3d');
+  var container = canvas.parentElement;
+
+  var scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0a0e1a);
+  scene.fog = new THREE.FogExp2(0x0a0e1a, 0.035);
+
+  var camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+  camera.position.set(0, 2.5, 7);
+  camera.lookAt(0, 1.5, 0);
+
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  // ===== Controls =====
+  var controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.target.set(0, 1.5, 0);
+  controls.minDistance = 3;
+  controls.maxDistance = 15;
+  controls.autoRotate = true;
+  controls.autoRotateSpeed = 1.5;
+  controls.enablePan = false;
+
+  // ===== Lighting =====
+  var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+  scene.add(ambientLight);
+
+  var dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+  dirLight.position.set(5, 8, 4);
+  dirLight.castShadow = true;
+  dirLight.shadow.mapSize.width = 1024;
+  dirLight.shadow.mapSize.height = 1024;
+  scene.add(dirLight);
+
+  var rimLight = new THREE.DirectionalLight(0x60a5fa, 0.3);
+  rimLight.position.set(-4, 3, -3);
+  scene.add(rimLight);
+
+  // ===== Grid Helper =====
+  var gridHelper = new THREE.GridHelper(12, 24, 0x1a2040, 0x141830);
+  gridHelper.position.y = -0.5;
+  scene.add(gridHelper);
+
+  // ===== Ground Plane (shadow receiver) =====
+  var groundGeo = new THREE.PlaneGeometry(12, 12);
+  var groundMat = new THREE.ShadowMaterial({ opacity: 0.3 });
+  var ground = new THREE.Mesh(groundGeo, groundMat);
+  ground.rotation.x = -Math.PI / 2;
+  ground.position.y = -0.5;
+  ground.receiveShadow = true;
+  scene.add(ground);
+
+  // ===== Character Model =====
+  var character = new THREE.Group();
+  var materials = {};
+
+  function makeMat(color) {
+    return new THREE.MeshPhongMaterial({
+      color: color,
+      shininess: 60,
+      specular: 0x444444,
+      flatShading: false
+    });
+  }
+
+  // Head
+  var headGeo = new THREE.SphereGeometry(1.2, 32, 32);
+  materials.head = makeMat(styles.kawaii.head);
+  var head = new THREE.Mesh(headGeo, materials.head);
+  head.position.y = 2.5;
+  head.castShadow = true;
+  character.add(head);
+
+  // Body
+  var bodyGeo = new THREE.CylinderGeometry(0.6, 0.7, 1.2, 24);
+  materials.body = makeMat(styles.kawaii.body);
+  var body = new THREE.Mesh(bodyGeo, materials.body);
+  body.position.y = 1.0;
+  body.castShadow = true;
+  character.add(body);
+
+  // Hands
+  var handGeo = new THREE.SphereGeometry(0.3, 24, 24);
+  materials.leftHand = makeMat(styles.kawaii.hands);
+  materials.rightHand = makeMat(styles.kawaii.hands);
+  var leftHand = new THREE.Mesh(handGeo, materials.leftHand);
+  leftHand.position.set(-0.9, 1.5, 0);
+  leftHand.castShadow = true;
+  character.add(leftHand);
+  var rightHand = new THREE.Mesh(handGeo, materials.rightHand);
+  rightHand.position.set(0.9, 1.5, 0);
+  rightHand.castShadow = true;
+  character.add(rightHand);
+
+  // Feet
+  var footGeo = new THREE.SphereGeometry(0.25, 24, 24);
+  materials.leftFoot = makeMat(styles.kawaii.feet);
+  materials.rightFoot = makeMat(styles.kawaii.feet);
+  var leftFoot = new THREE.Mesh(footGeo, materials.leftFoot);
+  leftFoot.position.set(-0.35, -0.3, 0);
+  leftFoot.castShadow = true;
+  character.add(leftFoot);
+  var rightFoot = new THREE.Mesh(footGeo, materials.rightFoot);
+  rightFoot.position.set(0.35, -0.3, 0);
+  rightFoot.castShadow = true;
+  character.add(rightFoot);
+
+  // Eyes
+  var eyeGeo = new THREE.SphereGeometry(0.15, 20, 20);
+  materials.eyeL = makeMat(styles.kawaii.eyes);
+  materials.eyeR = makeMat(styles.kawaii.eyes);
+  var leftEye = new THREE.Mesh(eyeGeo, materials.eyeL);
+  leftEye.position.set(-0.35, 2.7, 1.05);
+  character.add(leftEye);
+  var rightEye = new THREE.Mesh(eyeGeo, materials.eyeR);
+  rightEye.position.set(0.35, 2.7, 1.05);
+  character.add(rightEye);
+
+  // Nose
+  var noseGeo = new THREE.SphereGeometry(0.08, 16, 16);
+  materials.nose = makeMat(0xFFAAAA);
+  var nose = new THREE.Mesh(noseGeo, materials.nose);
+  nose.position.set(0, 2.45, 1.15);
+  character.add(nose);
+
+  // Mouth (small torus arc)
+  var mouthGeo = new THREE.TorusGeometry(0.12, 0.02, 8, 16, Math.PI);
+  materials.mouth = makeMat(0xFF8888);
+  var mouth = new THREE.Mesh(mouthGeo, materials.mouth);
+  mouth.position.set(0, 2.25, 1.1);
+  mouth.rotation.x = Math.PI;
+  mouth.rotation.z = Math.PI;
+  character.add(mouth);
+
+  scene.add(character);
+
+  // ===== Style Switching =====
+  var styleButtons = document.querySelectorAll('.style-btn');
+  styleButtons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      styleButtons.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var styleName = btn.getAttribute('data-style');
+      applyStyle(styleName);
+    });
+  });
+
+  function applyStyle(name) {
+    currentStyle = name;
+    var s = styles[name];
+    tweenColor(materials.head.color, s.head);
+    tweenColor(materials.body.color, s.body);
+    tweenColor(materials.leftHand.color, s.hands);
+    tweenColor(materials.rightHand.color, s.hands);
+    tweenColor(materials.leftFoot.color, s.feet);
+    tweenColor(materials.rightFoot.color, s.feet);
+    tweenColor(materials.eyeL.color, s.eyes);
+    tweenColor(materials.eyeR.color, s.eyes);
+  }
+
+  function tweenColor(colorObj, targetHex) {
+    var r = colorObj.r, g = colorObj.g, b = colorObj.b;
+    var tR = ((targetHex >> 16) & 0xFF) / 255;
+    var tG = ((targetHex >> 8) & 0xFF) / 255;
+    var tB = (targetHex & 0xFF) / 255;
+    var steps = 15;
+    var step = 0;
+    function tick() {
+      step++;
+      var t = step / steps;
+      var ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      colorObj.r = r + (tR - r) * ease;
+      colorObj.g = g + (tG - g) * ease;
+      colorObj.b = b + (tB - b) * ease;
+      if (step < steps) {
+        requestAnimationFrame(tick);
+      }
+    }
+    tick();
+  }
+
+  // ===== Animation Loop =====
+  var clock = new THREE.Clock();
+
+  function animate() {
+    requestAnimationFrame(animate);
+    var elapsed = clock.getElapsedTime();
+
+    // Gentle floating motion
+    character.position.y = Math.sin(elapsed * 1.2) * 0.08;
+
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  // ===== Resize =====
+  window.addEventListener('resize', function() {
+    var w = container.clientWidth;
+    var h = container.clientHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  });
+})();
+</script>
+</body>
+</html>

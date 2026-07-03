@@ -139,6 +139,48 @@ Be specific about colors. Keep each field under 30 words.`,
             };
         }
     },
+    async analyzePhotoWithModel(imageBase64, model) {
+        // External API 模式下，model 参数仅作为记录
+        // 实际仍使用 GPT-4o Vision 进行分析（外部 API 不支持 Auto Mode 模型切换）
+        console.log(`[external-api] analyzePhotoWithModel called with model: ${model}, using GPT-4o Vision`);
+        return this.analyzePhoto(imageBase64);
+    },
+    async optimizePromptWithModel(analysis, style, model) {
+        // 使用 GPT-4o 生成优化后的 prompt
+        const client = getOpenAIClient();
+        const styleDesc = STYLE_PROMPTS[style] || STYLE_PROMPTS.kawaii;
+        console.log(`[external-api] optimizePromptWithModel called with model: ${model}, using GPT-4o`);
+        const response = await client.chat.completions.create({
+            model: "gpt-4o",
+            messages: [
+                {
+                    role: "system",
+                    content: "You are a professional Q-version character designer and AI image generation expert. Generate high-quality English prompts for AI image generation.",
+                },
+                {
+                    role: "user",
+                    content: `Based on the following photo analysis, generate a high-quality English prompt for AI image generation.
+
+Photo analysis:
+${JSON.stringify(analysis, null, 2)}
+
+Target style: ${style} (${styleDesc})
+
+Requirements:
+1. Prompt must be in English
+2. Include detailed descriptions of facial features, hairstyle, clothing, expression
+3. Include style keywords (chibi, Q-version, cute, cartoon, anime, etc.)
+4. Include quality keywords (high quality, detailed, professional, masterpiece, etc.)
+5. Include rendering keywords (3D render, soft lighting, smooth skin, etc.)
+6. Length: 100-200 words
+7. Output ONLY the prompt, nothing else`,
+                },
+            ],
+            max_tokens: 500,
+            temperature: 0.7,
+        });
+        return response.choices[0]?.message?.content || "";
+    },
     async generateAvatar(prompt, style) {
         const client = getOpenAIClient();
         const styleDesc = STYLE_PROMPTS[style] || STYLE_PROMPTS.kawaii;

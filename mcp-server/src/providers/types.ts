@@ -40,6 +40,8 @@ export enum TraeCollabSignal {
   NEED_IMAGE_GENERATION = "NEED_IMAGE_GENERATION",
   /** 需要对话补全，TRAE Agent 应自行生成回复 */
   NEED_CHAT_COMPLETION = "NEED_CHAT_COMPLETION",
+  /** 需要 Prompt 优化，TRAE Agent 应使用指定模型优化图像生成 prompt */
+  NEED_PROMPT_OPTIMIZATION = "NEED_PROMPT_OPTIMIZATION",
 }
 
 /**
@@ -56,6 +58,16 @@ export interface TraeCollabResponse {
   imagePrompt?: string;
   /** 当 signal=NEED_IMAGE_GENERATION 时，建议的图片尺寸 */
   imageSize?: string;
+  /** 当 signal=NEED_PROMPT_OPTIMIZATION 时，提供优化模板和要求 */
+  optimizePromptTemplate?: string;
+  /** 当 signal=NEED_PROMPT_OPTIMIZATION 时，照片分析结果 */
+  analysis?: PhotoAnalysis;
+  /** 当 signal=NEED_PROMPT_OPTIMIZATION 时，目标风格 */
+  style?: string;
+  /** 指定使用的模型 ID */
+  model?: string;
+  /** 指定使用的模型名称（中文） */
+  modelName?: string;
 }
 
 export interface IAvatarProvider {
@@ -90,4 +102,29 @@ export interface IAvatarProvider {
    * @throws TraeCollabSignal - TRAE 模式下可能抛出协作信号
    */
   chatCompletion(messages: ChatMessage[], options?: ChatOptions): Promise<string>;
+
+  /**
+   * 【可选】使用指定 Auto Mode 模型分析照片
+   * 当 provider 支持多模型协作时实现此方法
+   * @param imageBase64 - 图片 base64 编码
+   * @param model - Auto Mode 模型 ID（如 "Doubao-Seed-2.1-Pro"）
+   * @returns 结构化的人物特征分析
+   * @throws TraeCollabSignal - TRAE 模式下抛出协作信号，指示 Agent 使用指定模型分析
+   */
+  analyzePhotoWithModel?(imageBase64: string, model: string): Promise<PhotoAnalysis>;
+
+  /**
+   * 【可选】使用指定 Auto Mode 模型优化图像生成 prompt
+   * 当 provider 支持多模型协作时实现此方法
+   * @param analysis - 照片分析结果
+   * @param style - 目标风格
+   * @param model - Auto Mode 模型 ID
+   * @returns 优化后的英文 prompt
+   * @throws TraeCollabSignal - TRAE 模式下抛出协作信号，指示 Agent 使用指定模型优化
+   */
+  optimizePromptWithModel?(
+    analysis: PhotoAnalysis,
+    style: string,
+    model: string
+  ): Promise<string>;
 }

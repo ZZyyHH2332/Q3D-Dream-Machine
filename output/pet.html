@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q3D Desktop Pet</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'DM Sans','PingFang SC','Microsoft YaHei',sans-serif;
+  background:#0a0e1a; color:#f0f0f5;
+  min-height:100vh; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* ===== Glass Card ===== */
+.glass{
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;
+}
+
+/* ===== Layout ===== */
+.page{display:flex; gap:32px; padding:40px; max-width:1100px; width:100%;}
+
+/* ===== Pet Area (left) ===== */
+.pet-area{
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:40px; position:relative; min-height:500px;
+}
+.pet-name{
+  font-size:1.4rem; font-weight:600; color:#f0f0f5;
+  margin-bottom:8px; letter-spacing:1px;
+}
+.pet-mood-text{
+  font-size:0.82rem; color:rgba(255,255,255,0.5); margin-bottom:32px;
+}
+
+/* SVG Pet Character */
+.pet-character{
+  width:240px; height:300px; position:relative;
+  animation: petFloat 3s ease-in-out infinite;
+  cursor:pointer;
+}
+.pet-character:hover{ transform:scale(1.03); }
+.pet-character svg{ width:100%; height:100%; }
+
+@keyframes petFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-12px)}
+}
+
+/* Speech bubble */
+.pet-bubble{
+  position:absolute; top:-20px; left:50%; transform:translateX(-50%);
+  background:rgba(0,122,255,0.15); backdrop-filter:blur(16px);
+  border:1px solid rgba(0,122,255,0.25); border-radius:14px;
+  padding:10px 18px; font-size:0.85rem; color:#93c5fd;
+  white-space:nowrap; opacity:0; transition:opacity 0.3s;
+  pointer-events:none;
+}
+.pet-bubble.show{ opacity:1; }
+.pet-bubble::after{
+  content:''; position:absolute; bottom:-6px; left:50%; transform:translateX(-50%);
+  border-width:6px 6px 0; border-style:solid;
+  border-color:rgba(0,122,255,0.25) transparent transparent;
+}
+
+/* ===== Control Panel (right) ===== */
+.panel{
+  width:320px; padding:28px; display:flex; flex-direction:column; gap:20px;
+  max-height:600px; overflow-y:auto;
+}
+.panel-title{
+  font-size:1.1rem; font-weight:600; color:#f0f0f5;
+  display:flex; align-items:center; gap:8px;
+}
+.panel-title .dot{ width:8px; height:8px; border-radius:50%; background:#60a5fa; box-shadow:0 0 8px #60a5fa; }
+
+/* Section label */
+.section-label{
+  font-size:0.75rem; color:rgba(255,255,255,0.4);
+  text-transform:uppercase; letter-spacing:1.5px; margin-bottom:4px;
+}
+
+/* Mood buttons */
+.mood-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
+.mood-btn{
+  padding:8px 4px; border:1px solid rgba(255,255,255,0.08); border-radius:12px;
+  background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.6);
+  font-size:0.7rem; cursor:pointer; transition:all 0.25s; font-family:inherit;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+}
+.mood-btn .mood-icon{ font-size:1.1rem; }
+.mood-btn:hover{ background:rgba(96,165,250,0.12); border-color:rgba(96,165,250,0.25); color:#93c5fd; }
+.mood-btn.active{ background:rgba(0,122,255,0.25); border-color:rgba(0,122,255,0.4); color:#60a5fa; box-shadow:0 0 12px rgba(0,122,255,0.2); }
+
+/* Action buttons */
+.action-row{ display:flex; gap:8px; }
+.action-btn{
+  flex:1; padding:10px 8px; border:1px solid rgba(255,255,255,0.08); border-radius:12px;
+  background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.7);
+  font-size:0.78rem; cursor:pointer; transition:all 0.25s; font-family:inherit;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+}
+.action-btn .act-icon{ font-size:1.2rem; }
+.action-btn:hover{ background:rgba(96,165,250,0.12); border-color:rgba(96,165,250,0.2); }
+.action-btn:active{ transform:scale(0.96); }
+
+/* Stats bars */
+.stats-grid{ display:flex; flex-direction:column; gap:10px; }
+.stat-row{ display:flex; align-items:center; gap:10px; }
+.stat-label{ font-size:0.75rem; color:rgba(255,255,255,0.5); width:48px; text-align:right; }
+.stat-bar-bg{
+  flex:1; height:8px; background:rgba(255,255,255,0.06); border-radius:4px; overflow:hidden;
+}
+.stat-bar-fill{
+  height:100%; border-radius:4px; transition:width 0.5s ease;
+}
+.stat-bar-fill.blue{ background:linear-gradient(90deg,#007aff,#5ac8fa); }
+.stat-bar-fill.purple{ background:linear-gradient(90deg,#bf5af2,#da8fff); }
+.stat-bar-fill.green{ background:linear-gradient(90deg,#34c759,#7cdc98); }
+.stat-bar-fill.orange{ background:linear-gradient(90deg,#ff9f0a,#ffd60a); }
+.stat-bar-fill.pink{ background:linear-gradient(90deg,#ff375f,#ff6b8a); }
+.stat-bar-fill.cyan{ background:linear-gradient(90deg,#5ac8fa,#64d2ff); }
+.stat-value{ font-size:0.7rem; color:rgba(255,255,255,0.4); width:32px; }
+
+/* Level badge */
+.level-badge{
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(0,122,255,0.15); border:1px solid rgba(0,122,255,0.3);
+  border-radius:10px; padding:6px 14px; font-size:0.82rem; color:#60a5fa; font-weight:600;
+}
+.level-badge .lv-icon{ font-size:1rem; }
+
+/* Chat area */
+.chat-area{
+  display:flex; flex-direction:column; gap:8px;
+}
+.chat-messages{
+  max-height:140px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;
+  padding:8px; background:rgba(255,255,255,0.03); border-radius:12px;
+  scrollbar-width:thin; scrollbar-color:rgba(255,255,255,0.1) transparent;
+}
+.chat-msg{
+  max-width:85%; padding:8px 12px; border-radius:12px; font-size:0.78rem; line-height:1.4;
+}
+.chat-msg.user{
+  align-self:flex-end; background:rgba(0,122,255,0.2); color:#93c5fd; border-bottom-right-radius:4px;
+}
+.chat-msg.pet{
+  align-self:flex-start; background:rgba(191,90,242,0.15); color:#d8b4fe; border-bottom-left-radius:4px;
+}
+.chat-input-row{ display:flex; gap:6px; }
+.chat-input{
+  flex:1; padding:8px 14px; border:1px solid rgba(255,255,255,0.08); border-radius:12px;
+  background:rgba(255,255,255,0.04); color:#f0f0f5; font-size:0.78rem;
+  outline:none; font-family:inherit;
+}
+.chat-input::placeholder{ color:rgba(255,255,255,0.25); }
+.chat-input:focus{ border-color:rgba(96,165,250,0.4); }
+.chat-send{
+  padding:8px 14px; border:1px solid rgba(0,122,255,0.3); border-radius:12px;
+  background:rgba(0,122,255,0.2); color:#60a5fa; font-size:0.82rem;
+  cursor:pointer; font-family:inherit; transition:all 0.2s;
+}
+.chat-send:hover{ background:rgba(0,122,255,0.35); }
+
+/* Blink animation for SVG eyes */
+@keyframes blink{
+  0%,42%,58%,100%{transform:scaleY(1)}
+  50%{transform:scaleY(0.1)}
+}
+.eye-blink{ animation:blink 4s ease-in-out infinite; transform-origin:center; }
+
+/* Mood-specific overlays */
+.mood-happy .eye-blink{ animation-duration:6s; }
+.mood-sleepy .eye-blink{ animation:blink 1.5s ease-in-out infinite; }
+.mood-excited .pet-character{ animation:petBounce 0.5s ease-in-out infinite; }
+@keyframes petBounce{
+  0%,100%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(-18px) scale(1.04)}
+}
+.mood-angry .pet-character{ animation:petShake 0.3s ease-in-out infinite; }
+@keyframes petShake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-4px)}
+  75%{transform:translateX(4px)}
+}
+.mood-sad .pet-character{ animation:petSad 4s ease-in-out infinite; }
+@keyframes petSad{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(6px)}
+}
+
+/* Decorative particles */
+.bg-particle{
+  position:fixed; width:4px; height:4px; border-radius:50%; pointer-events:none; opacity:0;
+  animation:particleFloat 8s linear infinite;
+}
+@keyframes particleFloat{
+  0%{opacity:0;transform:translateY(100vh) scale(0)}
+  10%{opacity:0.6}
+  90%{opacity:0.6}
+  100%{opacity:0;transform:translateY(-20vh) scale(1)}
+}
+</style>
+</head>
+<body>
+
+<!-- Background particles -->
+<div id="bgParticles"></div>
+
+<div class="page">
+  <!-- Left: Pet Character -->
+  <div class="pet-area glass" id="petArea">
+    <div class="pet-name">Xiao Q</div>
+    <div class="pet-mood-text" id="moodText">happy</div>
+    <div class="pet-bubble" id="petBubble">Hello~</div>
+    <div class="pet-character" id="petCharacter" onclick="petClick()">
+      <svg viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="headGrad" cx="40%" cy="35%">
+            <stop offset="0%" stop-color="#ffe4d0"/>
+            <stop offset="100%" stop-color="#ffdab9"/>
+          </radialGradient>
+          <radialGradient id="bodyGrad" cx="50%" cy="30%">
+            <stop offset="0%" stop-color="#2a7fff"/>
+            <stop offset="100%" stop-color="#0055d4"/>
+          </radialGradient>
+          <radialGradient id="hairGrad" cx="50%" cy="30%">
+            <stop offset="0%" stop-color="#2d2d4e"/>
+            <stop offset="100%" stop-color="#1a1a2e"/>
+          </radialGradient>
+        </defs>
+
+        <!-- Body -->
+        <ellipse cx="120" cy="210" rx="50" ry="60" fill="url(#bodyGrad)" opacity="0.95"/>
+
+        <!-- Left arm -->
+        <g class="arm-left" id="armLeft">
+          <ellipse cx="62" cy="200" rx="16" ry="20" fill="#ffdab9"/>
+        </g>
+
+        <!-- Right arm -->
+        <g class="arm-right" id="armRight">
+          <ellipse cx="178" cy="200" rx="16" ry="20" fill="#ffdab9"/>
+        </g>
+
+        <!-- Left foot -->
+        <ellipse cx="98" cy="272" rx="18" ry="14" fill="#5e5ce6"/>
+
+        <!-- Right foot -->
+        <ellipse cx="142" cy="272" rx="18" ry="14" fill="#5e5ce6"/>
+
+        <!-- Hair (back) -->
+        <ellipse cx="120" cy="80" rx="72" ry="55" fill="url(#hairGrad)"/>
+
+        <!-- Head -->
+        <circle cx="120" cy="90" r="68" fill="url(#headGrad)"/>
+
+        <!-- Hair (front bangs) -->
+        <path d="M55,70 Q80,50 105,65 Q115,45 130,60 Q145,42 165,58 Q180,50 185,72 L185,55 Q170,25 120,20 Q70,25 55,55 Z" fill="url(#hairGrad)"/>
+
+        <!-- Left eye -->
+        <g class="eye-blink" id="leftEyeGroup">
+          <ellipse cx="98" cy="92" rx="14" ry="18" fill="#1d1d1f"/>
+          <ellipse cx="102" cy="86" rx="5" ry="6" fill="#ffffff"/>
+        </g>
+
+        <!-- Right eye -->
+        <g class="eye-blink" id="rightEyeGroup" style="animation-delay:0.15s">
+          <ellipse cx="142" cy="92" rx="14" ry="18" fill="#1d1d1f"/>
+          <ellipse cx="146" cy="86" rx="5" ry="6" fill="#ffffff"/>
+        </g>
+
+        <!-- Blush -->
+        <ellipse cx="78" cy="108" rx="12" ry="8" fill="#bf5af2" opacity="0.25"/>
+        <ellipse cx="162" cy="108" rx="12" ry="8" fill="#bf5af2" opacity="0.25"/>
+
+        <!-- Mouth (happy) -->
+        <path id="mouth" d="M105,118 Q120,132 135,118" stroke="#ff6b8a" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+        <!-- Star decoration -->
+        <g id="starDecor" opacity="0">
+          <polygon points="120,55 123,63 131,63 125,68 127,76 120,72 113,76 115,68 109,63 117,63" fill="#ffd60a"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Right: Control Panel -->
+  <div class="panel glass">
+    <div class="panel-title"><div class="dot"></div> Q3D Desktop Pet</div>
+
+    <div class="level-badge"><span class="lv-icon">&#9733;</span> <span id="levelText">Lv.1</span></div>
+
+    <!-- Mood -->
+    <div>
+      <div class="section-label">Mood</div>
+      <div class="mood-grid">
+        <button class="mood-btn active" data-mood="happy" onclick="setMood('happy')">
+          <span class="mood-icon">&#128522;</span>happy
+        </button>
+        <button class="mood-btn" data-mood="sad" onclick="setMood('sad')">
+          <span class="mood-icon">&#128546;</span>sad
+        </button>
+        <button class="mood-btn" data-mood="angry" onclick="setMood('angry')">
+          <span class="mood-icon">&#128545;</span>angry
+        </button>
+        <button class="mood-btn" data-mood="sleepy" onclick="setMood('sleepy')">
+          <span class="mood-icon">&#128564;</span>sleepy
+        </button>
+        <button class="mood-btn" data-mood="excited" onclick="setMood('excited')">
+          <span class="mood-icon">&#129321;</span>excited
+        </button>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div>
+      <div class="section-label">Actions</div>
+      <div class="action-row">
+        <button class="action-btn" onclick="feedPet()">
+          <span class="act-icon">&#127829;</span>Feed
+        </button>
+        <button class="action-btn" onclick="openChat()">
+          <span class="act-icon">&#128172;</span>Chat
+        </button>
+        <button class="action-btn" onclick="playPet()">
+          <span class="act-icon">&#127934;</span>Play
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div>
+      <div class="section-label">Stats</div>
+      <div class="stats-grid">
+        <div class="stat-row">
+          <span class="stat-label">EXP</span>
+          <div class="stat-bar-bg"><div class="stat-bar-fill blue" id="barExp" style="width:25%"></div></div>
+          <span class="stat-value" id="valExp">25%</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Bond</span>
+          <div class="stat-bar-bg"><div class="stat-bar-fill purple" id="barBond" style="width:60%"></div></div>
+          <span class="stat-value" id="valBond">60</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Satiety</span>
+          <div class="stat-bar-bg"><div class="stat-bar-fill orange" id="barSatiety" style="width:80%"></div></div>
+          <span class="stat-value" id="valSatiety">80</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Energy</span>
+          <div class="stat-bar-bg"><div class="stat-bar-fill green" id="barEnergy" style="width:90%"></div></div>
+          <span class="stat-value" id="valEnergy">90</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Clean</span>
+          <div class="stat-bar-bg"><div class="stat-bar-fill cyan" id="barClean" style="width:70%"></div></div>
+          <span class="stat-value" id="valClean">70</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Happy</span>
+          <div class="stat-bar-bg"><div class="stat-bar-fill pink" id="barHappy" style="width:75%"></div></div>
+          <span class="stat-value" id="valHappy">75</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat -->
+    <div>
+      <div class="section-label">Chat</div>
+      <div class="chat-area">
+        <div class="chat-messages" id="chatMessages">
+          <div class="chat-msg pet">Hi~ I am Xiao Q, your Q3D pet!</div>
+        </div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="chatInput" placeholder="Say something..." onkeydown="if(event.key==='Enter')sendChat()">
+          <button class="chat-send" onclick="sendChat()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== Pet State ===== */
+const stats = { exp:25, bond:60, satiety:80, energy:90, clean:70, happy:75, level:1 };
+let currentMood = 'happy';
+
+/* ===== Mood System ===== */
+function setMood(mood) {
+  currentMood = mood;
+  const area = document.getElementById('petArea');
+  area.className = 'pet-area glass mood-' + mood;
+  document.getElementById('moodText').textContent = mood;
+
+  // Update mouth shape
+  const mouth = document.getElementById('mouth');
+  const starDecor = document.getElementById('starDecor');
+  const mouthPaths = {
+    happy:  'M105,118 Q120,132 135,118',
+    sad:    'M105,128 Q120,118 135,128',
+    angry:  'M100,120 Q120,114 140,120',
+    sleepy: 'M112,124 Q120,124 128,124',
+    excited:'M100,116 Q120,138 140,116'
+  };
+  mouth.setAttribute('d', mouthPaths[mood] || mouthPaths.happy);
+  starDecor.setAttribute('opacity', mood === 'excited' ? '1' : '0');
+
+  // Update buttons
+  document.querySelectorAll('.mood-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.mood === mood);
+  });
+
+  // Adjust stats
+  const moodEffects = { happy:{happy:5}, sad:{happy:-5,energy:-2}, angry:{happy:-8,bond:-3}, sleepy:{energy:5,happy:-3}, excited:{happy:8,energy:-5} };
+  const fx = moodEffects[mood] || {};
+  for (const [k,v] of Object.entries(fx)) {
+    stats[k] = Math.max(0, Math.min(100, stats[k] + v));
+  }
+  updateStatsUI();
+  showBubble(moodTexts[mood] || '...');
+}
+
+const moodTexts = {
+  happy: 'So happy~!',
+  sad: 'I feel a bit down...',
+  angry: 'Grrr...!',
+  sleepy: 'Yawn... so sleepy...',
+  excited: 'WOW SO EXCITED!!'
+};
+
+/* ===== Bubble ===== */
+function showBubble(text) {
+  const el = document.getElementById('petBubble');
+  el.textContent = text;
+  el.classList.add('show');
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+/* ===== Pet Click ===== */
+function petClick() {
+  stats.bond = Math.min(100, stats.bond + 2);
+  stats.happy = Math.min(100, stats.happy + 1);
+  stats.exp = Math.min(100, stats.exp + 1);
+  updateStatsUI();
+  showBubble(['Thanks!','Hehe~','Yay!','Love you!','So comfy~'][Math.floor(Math.random()*5)]);
+}
+
+/* ===== Actions ===== */
+function feedPet() {
+  stats.satiety = Math.min(100, stats.satiety + 15);
+  stats.happy = Math.min(100, stats.happy + 5);
+  stats.exp = Math.min(100, stats.exp + 2);
+  if (stats.satiety > 100) stats.satiety = 100;
+  updateStatsUI();
+  showBubble('Yummy! Thanks!');
+}
+
+function playPet() {
+  if (stats.energy < 10) {
+    showBubble('Too tired... let me rest');
+    return;
+  }
+  stats.energy = Math.max(0, stats.energy - 10);
+  stats.happy = Math.min(100, stats.happy + 8);
+  stats.clean = Math.max(0, stats.clean - 5);
+  stats.exp = Math.min(100, stats.exp + 3);
+  stats.bond = Math.min(100, stats.bond + 2);
+  updateStatsUI();
+  showBubble('So fun! Play again!');
+}
+
+function openChat() {
+  document.getElementById('chatInput').focus();
+}
+
+/* ===== Stats UI ===== */
+function updateStatsUI() {
+  const bars = {
+    exp: ['barExp','valExp','%'], bond: ['barBond','valBond',''],
+    satiety: ['barSatiety','valSatiety',''], energy: ['barEnergy','valEnergy',''],
+    clean: ['barClean','valClean',''], happy: ['barHappy','valHappy','']
+  };
+  for (const [k,[barId,valId,suffix]] of Object.entries(bars)) {
+    const v = Math.round(stats[k]);
+    document.getElementById(barId).style.width = v + '%';
+    document.getElementById(valId).textContent = v + suffix;
+  }
+  // Level up check
+  if (stats.exp >= 100) {
+    stats.level++;
+    stats.exp = 0;
+    document.getElementById('levelText').textContent = 'Lv.' + stats.level;
+    showBubble('Level Up! Lv.' + stats.level);
+  }
+}
+
+/* ===== Chat ===== */
+const petReplies = {
+  hello: 'Hi there! How are you?',
+  hi: 'Hello~!',
+  name: 'I am Xiao Q, your Q3D companion!',
+  food: 'I love cookies and cake!',
+  play: 'Let\'s play together!',
+  tired: 'You should rest, take a break!',
+  love: 'I love you too!',
+  bye: 'See you later~',
+  joke: 'Why do programmers prefer dark mode? Because light attracts bugs!',
+};
+
+function sendChat() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  addChatMsg(text, 'user');
+  input.value = '';
+
+  setTimeout(() => {
+    const lower = text.toLowerCase();
+    let reply = 'That\'s interesting! Tell me more~';
+    for (const [key, val] of Object.entries(petReplies)) {
+      if (lower.includes(key)) { reply = val; break; }
+    }
+    addChatMsg(reply, 'pet');
+    stats.bond = Math.min(100, stats.bond + 1);
+    stats.exp = Math.min(100, stats.exp + 1);
+    updateStatsUI();
+  }, 600);
+}
+
+function addChatMsg(text, sender) {
+  const container = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + sender;
+  div.textContent = text;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+/* ===== Background Particles ===== */
+(function createBgParticles() {
+  const container = document.getElementById('bgParticles');
+  const colors = ['#007aff','#bf5af2','#5ac8fa','#34c759','#ff6b8a','#ffd60a'];
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'bg-particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 8 + 's';
+    p.style.animationDuration = (6 + Math.random() * 6) + 's';
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.width = (2 + Math.random() * 4) + 'px';
+    p.style.height = p.style.width;
+    container.appendChild(p);
+  }
+})();
+
+/* ===== Stat Decay (simulate passage of time) ===== */
+setInterval(() => {
+  stats.satiety = Math.max(0, stats.satiety - 0.5);
+  stats.energy = Math.max(0, stats.energy - 0.3);
+  stats.clean = Math.max(0, stats.clean - 0.2);
+  stats.happy = Math.max(0, stats.happy - 0.2);
+  updateStatsUI();
+}, 5000);
+
+/* ===== Init ===== */
+showBubble('Hi~ I am Xiao Q!');
+</script>
+</body>
+</html>

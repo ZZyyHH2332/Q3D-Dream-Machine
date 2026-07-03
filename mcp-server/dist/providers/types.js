@@ -15,5 +15,7 @@ export var TraeCollabSignal;
     TraeCollabSignal["NEED_IMAGE_GENERATION"] = "NEED_IMAGE_GENERATION";
     /** 需要对话补全，TRAE Agent 应自行生成回复 */
     TraeCollabSignal["NEED_CHAT_COMPLETION"] = "NEED_CHAT_COMPLETION";
+    /** 需要 Prompt 优化，TRAE Agent 应使用指定模型优化图像生成 prompt */
+    TraeCollabSignal["NEED_PROMPT_OPTIMIZATION"] = "NEED_PROMPT_OPTIMIZATION";
 })(TraeCollabSignal || (TraeCollabSignal = {}));
 //# sourceMappingURL=types.js.map

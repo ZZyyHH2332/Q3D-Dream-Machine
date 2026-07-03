@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q3D Dream Machine - 作品画廊</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: linear-gradient(135deg, #0a0e1a 0%, #16213e 50%, #0f3460 100%);
+  color: #f0f0f5;
+  min-height: 100vh;
+  padding: 40px 24px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.header h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #60a5fa, #00D4FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+.header .subtitle {
+  font-size: 0.95rem;
+  color: rgba(240, 240, 245, 0.6);
+  margin-bottom: 12px;
+}
+.header .badge {
+  display: inline-block;
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 0.8rem;
+  background: rgba(96, 165, 250, 0.15);
+  color: #60a5fa;
+  padding: 4px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(96, 165, 250, 0.3);
+}
+
+/* Glass card base */
+.glass {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+/* Statistics Bar */
+.stats-bar {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.stat-item {
+  text-align: center;
+}
+.stat-item .stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #60a5fa;
+}
+.stat-item .stat-label {
+  font-size: 0.82rem;
+  color: rgba(240, 240, 245, 0.5);
+  margin-top: 2px;
+}
+
+/* Filter Toolbar */
+.filter-toolbar {
+  margin-bottom: 28px;
+}
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.filter-row:last-child {
+  margin-bottom: 0;
+}
+.filter-label {
+  font-size: 0.78rem;
+  color: rgba(240, 240, 245, 0.4);
+  min-width: 50px;
+  line-height: 32px;
+}
+.filter-pill {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(240, 240, 245, 0.7);
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.filter-pill:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #f0f0f5;
+}
+.filter-pill.active {
+  background: #60a5fa;
+  color: #fff;
+  border-color: rgba(96, 165, 250, 0.5);
+}
+
+/* Work Grid */
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+@media (max-width: 900px) {
+  .work-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .work-grid { grid-template-columns: 1fr; }
+}
+
+.work-card {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.work-card.hidden {
+  opacity: 0;
+  transform: scale(0.92);
+  pointer-events: none;
+  position: absolute;
+  visibility: hidden;
+}
+.work-card.removing {
+  opacity: 0;
+  transform: scale(0.85) translateY(10px);
+  transition: all 0.5s ease;
+}
+
+.card-image-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  background: rgba(255, 255, 255, 0.04);
+}
+.card-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.style-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  backdrop-filter: blur(8px);
+}
+.status-tag {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  backdrop-filter: blur(8px);
+}
+
+.card-info {
+  padding: 0 2px;
+}
+.card-session {
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 0.8rem;
+  color: #60a5fa;
+  margin-bottom: 4px;
+}
+.card-time {
+  font-size: 0.78rem;
+  color: rgba(240, 240, 245, 0.45);
+  margin-bottom: 12px;
+}
+.card-actions {
+  display: flex;
+  gap: 8px;
+}
+.card-btn {
+  flex: 1;
+  padding: 8px 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #f0f0f5;
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.card-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.card-btn.detail-btn:hover {
+  background: rgba(96, 165, 250, 0.2);
+  border-color: rgba(96, 165, 250, 0.4);
+  color: #60a5fa;
+}
+.card-btn.delete-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+}
+
+/* Modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+.modal-overlay.visible {
+  display: flex;
+}
+.modal-content {
+  background: linear-gradient(145deg, rgba(22, 33, 62, 0.95), rgba(15, 52, 96, 0.95));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 560px;
+  width: 100%;
+  position: relative;
+  animation: modalIn 0.3s ease;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f0f0f5;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.modal-close:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+}
+.modal-image {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 14px;
+  margin: 0 auto 24px;
+  display: block;
+  background: rgba(255, 255, 255, 0.04);
+}
+.modal-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #f0f0f5;
+}
+.modal-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.modal-table tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.modal-table tr:last-child {
+  border-bottom: none;
+}
+.modal-table td {
+  padding: 10px 0;
+  font-size: 0.85rem;
+  vertical-align: top;
+}
+.modal-table td:first-child {
+  color: rgba(240, 240, 245, 0.45);
+  width: 120px;
+  font-size: 0.8rem;
+}
+.modal-table td:last-child {
+  color: #f0f0f5;
+  word-break: break-all;
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 0.82rem;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: rgba(240, 240, 245, 0.35);
+  font-size: 1rem;
+}
+.empty-state.hidden {
+  display: none;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>作品画廊</h1>
+    <div class="subtitle">Gallery Management · 作品管理</div>
+    <span class="badge">q3d_manage_gallery</span>
+  </div>
+
+  <!-- Statistics Bar -->
+  <div class="stats-bar glass" id="statsBar">
+    <div class="stat-item">
+      <div class="stat-value" id="statTotal">5</div>
+      <div class="stat-label">总作品</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="statKawaii">2</div>
+      <div class="stat-label">软萌大头</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="statGuofeng">1</div>
+      <div class="stat-label">国风Q版</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="statTrendy">1</div>
+      <div class="stat-label">潮玩手办</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="statSimple">1</div>
+      <div class="stat-label">简约卡通</div>
+    </div>
+  </div>
+
+  <!-- Filter Toolbar -->
+  <div class="filter-toolbar glass">
+    <div class="filter-row">
+      <span class="filter-label">风格</span>
+      <div class="filter-pill active" data-filter="style" data-value="全部">全部</div>
+      <div class="filter-pill" data-filter="style" data-value="软萌大头">软萌大头</div>
+      <div class="filter-pill" data-filter="style" data-value="国风Q版">国风Q版</div>
+      <div class="filter-pill" data-filter="style" data-value="潮玩手办">潮玩手办</div>
+      <div class="filter-pill" data-filter="style" data-value="简约卡通">简约卡通</div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">状态</span>
+      <div class="filter-pill active" data-filter="status" data-value="全部">全部</div>
+      <div class="filter-pill" data-filter="status" data-value="已上传">已上传</div>
+      <div class="filter-pill" data-filter="status" data-value="形象已生成">形象已生成</div>
+      <div class="filter-pill" data-filter="status" data-value="3D预览">3D预览</div>
+      <div class="filter-pill" data-filter="status" data-value="宠物已领养">宠物已领养</div>
+      <div class="filter-pill" data-filter="status" data-value="3D模型已生成">3D模型已生成</div>
+    </div>
+  </div>
+
+  <!-- Work Grid -->
+  <div class="work-grid" id="workGrid">
+
+    <!-- Work 1 -->
+    <div class="work-card glass" data-id="q3d_test_001" data-style="软萌大头" data-status="宠物已领养">
+      <div class="card-image-wrap">
+        <img src="./q3d-avatar-kawaii.jpg" alt="软萌大头作品1" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 300%22%3E%3Crect fill=%22%2316213e%22 width=%22300%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%2360a5fa%22 font-size=%2248%22%3E🐱%3C/text%3E%3C/svg%3E'">
+        <span class="style-tag" style="background:rgba(255,105,180,0.3);">软萌大头</span>
+        <span class="status-tag" style="background:rgba(76,175,80,0.3);">宠物已领养</span>
+      </div>
+      <div class="card-info">
+        <div class="card-session">q3d_test_001</div>
+        <div class="card-time">2026-07-01 10:00</div>
+        <div class="card-actions">
+          <button class="card-btn detail-btn" onclick="openDetail('q3d_test_001')">详情</button>
+          <button class="card-btn delete-btn" onclick="deleteCard('q3d_test_001')">删除</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Work 2 -->
+    <div class="work-card glass" data-id="q3d_test_002" data-style="国风Q版" data-status="3D预览已创建">
+      <div class="card-image-wrap">
+        <img src="./q3d-avatar-guofeng.jpg" alt="国风Q版作品" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 300%22%3E%3Crect fill=%22%2316213e%22 width=%22300%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23DC143C%22 font-size=%2248%22%3E🏮%3C/text%3E%3C/svg%3E'">
+        <span class="style-tag" style="background:rgba(220,20,60,0.3);">国风Q版</span>
+        <span class="status-tag" style="background:rgba(96,165,250,0.3);">3D预览已创建</span>
+      </div>
+      <div class="card-info">
+        <div class="card-session">q3d_test_002</div>
+        <div class="card-time">2026-07-01 10:15</div>
+        <div class="card-actions">
+          <button class="card-btn detail-btn" onclick="openDetail('q3d_test_002')">详情</button>
+          <button class="card-btn delete-btn" onclick="deleteCard('q3d_test_002')">删除</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Work 3 -->
+    <div class="work-card glass" data-id="q3d_test_003" data-style="潮玩手办" data-status="形象已生成">
+      <div class="card-image-wrap">
+        <img src="./q3d-avatar-trendy.jpg" alt="潮玩手办作品" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 300%22%3E%3Crect fill=%22%2316213e%22 width=%22300%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%2300D4FF%22 font-size=%2248%22%3E🎮%3C/text%3E%3C/svg%3E'">
+        <span class="style-tag" style="background:rgba(0,212,255,0.3);">潮玩手办</span>
+        <span class="status-tag" style="background:rgba(255,215,0,0.3);">形象已生成</span>
+      </div>
+      <div class="card-info">
+        <div class="card-session">q3d_test_003</div>
+        <div class="card-time">2026-07-01 10:30</div>
+        <div class="card-actions">
+          <button class="card-btn detail-btn" onclick="openDetail('q3d_test_003')">详情</button>
+          <button class="card-btn delete-btn" onclick="deleteCard('q3d_test_003')">删除</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Work 4 -->
+    <div class="work-card glass" data-id="q3d_test_004" data-style="简约卡通" data-status="形象已生成">
+      <div class="card-image-wrap">
+        <img src="./q3d-avatar-simple.jpg" alt="简约卡通作品" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 300%22%3E%3Crect fill=%22%2316213e%22 width=%22300%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%2378909C%22 font-size=%2248%22%3E✏️%3C/text%3E%3C/svg%3E'">
+        <span class="style-tag" style="background:rgba(120,144,156,0.3);">简约卡通</span>
+        <span class="status-tag" style="background:rgba(255,215,0,0.3);">形象已生成</span>
+      </div>
+      <div class="card-info">
+        <div class="card-session">q3d_test_004</div>
+        <div class="card-time">2026-07-01 10:45</div>
+        <div class="card-actions">
+          <button class="card-btn detail-btn" onclick="openDetail('q3d_test_004')">详情</button>
+          <button class="card-btn delete-btn" onclick="deleteCard('q3d_test_004')">删除</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Work 5 -->
+    <div class="work-card glass" data-id="q3d_test_005" data-style="软萌大头" data-status="已上传">
+      <div class="card-image-wrap">
+        <img src="./q3d-avatar-kawaii.jpg" alt="软萌大头作品2" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 300%22%3E%3Crect fill=%22%2316213e%22 width=%22300%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23FF69B4%22 font-size=%2248%22%3E🐰%3C/text%3E%3C/svg%3E'">
+        <span class="style-tag" style="background:rgba(255,105,180,0.3);">软萌大头</span>
+        <span class="status-tag" style="background:rgba(158,158,158,0.3);">已上传</span>
+      </div>
+      <div class="card-info">
+        <div class="card-session">q3d_test_005</div>
+        <div class="card-time">2026-07-01 11:00</div>
+        <div class="card-actions">
+          <button class="card-btn detail-btn" onclick="openDetail('q3d_test_005')">详情</button>
+          <button class="card-btn delete-btn" onclick="deleteCard('q3d_test_005')">删除</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Empty state -->
+  <div class="empty-state glass hidden" id="emptyState">暂无匹配的作品</div>
+
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <img class="modal-image" id="modalImage" src="" alt="作品预览">
+    <div class="modal-title" id="modalTitle">作品详情</div>
+    <table class="modal-table">
+      <tr><td>Session ID</td><td id="mSessionId"></td></tr>
+      <tr><td>状态</td><td id="mStatus"></td></tr>
+      <tr><td>风格</td><td id="mStyle"></td></tr>
+      <tr><td>avatarPath</td><td id="mAvatarPath"></td></tr>
+      <tr><td>previewPath</td><td id="mPreviewPath"></td></tr>
+      <tr><td>petPath</td><td id="mPetPath"></td></tr>
+      <tr><td>glbPath</td><td id="mGlbPath"></td></tr>
+      <tr><td>创建时间</td><td id="mCreatedAt"></td></tr>
+      <tr><td>更新时间</td><td id="mUpdatedAt"></td></tr>
+    </table>
+  </div>
+</div>
+
+<script>
+// Mock work data store
+const worksData = {
+  'q3d_test_001': {
+    id: 'q3d_test_001',
+    style: '软萌大头',
+    status: '宠物已领养',
+    image: './q3d-avatar-kawaii.jpg',
+    avatarPath: './q3d-avatar-kawaii.jpg',
+    previewPath: './preview-3d.html',
+    petPath: './pet.html',
+    glbPath: './output/avatar-q3d_test_001.glb',
+    createdAt: '2026-07-01 10:00',
+    updatedAt: '2026-07-01 10:35'
+  },
+  'q3d_test_002': {
+    id: 'q3d_test_002',
+    style: '国风Q版',
+    status: '3D预览已创建',
+    image: './q3d-avatar-guofeng.jpg',
+    avatarPath: './q3d-avatar-guofeng.jpg',
+    previewPath: './preview-3d.html',
+    petPath: null,
+    glbPath: null,
+    createdAt: '2026-07-01 10:15',
+    updatedAt: '2026-07-01 10:20'
+  },
+  'q3d_test_003': {
+    id: 'q3d_test_003',
+    style: '潮玩手办',
+    status: '形象已生成',
+    image: './q3d-avatar-trendy.jpg',
+    avatarPath: './q3d-avatar-trendy.jpg',
+    previewPath: null,
+    petPath: null,
+    glbPath: null,
+    createdAt: '2026-07-01 10:30',
+    updatedAt: '2026-07-01 10:30'
+  },
+  'q3d_test_004': {
+    id: 'q3d_test_004',
+    style: '简约卡通',
+    status: '形象已生成',
+    image: './q3d-avatar-simple.jpg',
+    avatarPath: './q3d-avatar-simple.jpg',
+    previewPath: null,
+    petPath: null,
+    glbPath: null,
+    createdAt: '2026-07-01 10:45',
+    updatedAt: '2026-07-01 10:45'
+  },
+  'q3d_test_005': {
+    id: 'q3d_test_005',
+    style: '软萌大头',
+    status: '已上传',
+    image: './q3d-avatar-kawaii.jpg',
+    avatarPath: null,
+    previewPath: null,
+    petPath: null,
+    glbPath: null,
+    createdAt: '2026-07-01 11:00',
+    updatedAt: '2026-07-01 11:00'
+  }
+};
+
+// Current filter state
+let currentStyleFilter = '全部';
+let currentStatusFilter = '全部';
+
+// Status mapping for status filter matching
+// "3D预览" filter should match both "3D预览已创建" statuses
+function matchStatus(cardStatus, filterStatus) {
+  if (filterStatus === '全部') return true;
+  if (filterStatus === '3D预览') return cardStatus.indexOf('3D预览') !== -1;
+  return cardStatus === filterStatus;
+}
+
+// Apply filters
+function applyFilters() {
+  const cards = document.querySelectorAll('.work-card');
+  let visibleCount = 0;
+  cards.forEach(card => {
+    const style = card.getAttribute('data-style');
+    const status = card.getAttribute('data-status');
+    const styleMatch = currentStyleFilter === '全部' || style === currentStyleFilter;
+    const statusMatch = matchStatus(status, currentStatusFilter);
+    if (styleMatch && statusMatch) {
+      card.classList.remove('hidden');
+      visibleCount++;
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+  // Toggle empty state
+  const emptyState = document.getElementById('emptyState');
+  if (visibleCount === 0) {
+    emptyState.classList.remove('hidden');
+  } else {
+    emptyState.classList.add('hidden');
+  }
+}
+
+// Filter pill click handlers
+document.querySelectorAll('.filter-pill').forEach(pill => {
+  pill.addEventListener('click', function() {
+    const filterType = this.getAttribute('data-filter');
+    const value = this.getAttribute('data-value');
+
+    // Deactivate siblings in same row
+    this.parentElement.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
+
+    if (filterType === 'style') {
+      currentStyleFilter = value;
+    } else if (filterType === 'status') {
+      currentStatusFilter = value;
+    }
+
+    applyFilters();
+  });
+});
+
+// Open detail modal
+function openDetail(id) {
+  const data = worksData[id];
+  if (!data) return;
+
+  document.getElementById('modalImage').src = data.image;
+  document.getElementById('modalTitle').textContent = '作品详情 · ' + data.style;
+  document.getElementById('mSessionId').textContent = data.id;
+  document.getElementById('mStatus').textContent = data.status;
+  document.getElementById('mStyle').textContent = data.style;
+  document.getElementById('mAvatarPath').textContent = data.avatarPath || '-';
+  document.getElementById('mPreviewPath').textContent = data.previewPath || '-';
+  document.getElementById('mPetPath').textContent = data.petPath || '-';
+  document.getElementById('mGlbPath').textContent = data.glbPath || '-';
+  document.getElementById('mCreatedAt').textContent = data.createdAt;
+  document.getElementById('mUpdatedAt').textContent = data.updatedAt;
+
+  document.getElementById('modalOverlay').classList.add('visible');
+}
+
+// Close modal
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modalOverlay') && !e.target.classList.contains('modal-close')) return;
+  document.getElementById('modalOverlay').classList.remove('visible');
+}
+
+// Delete card with animation
+function deleteCard(id) {
+  const card = document.querySelector('.work-card[data-id="' + id + '"]');
+  if (!card) return;
+
+  card.classList.add('removing');
+  setTimeout(() => {
+    card.remove();
+    // Remove from data store
+    delete worksData[id];
+    // Update stats
+    updateStats();
+    // Re-apply filters
+    applyFilters();
+  }, 500);
+}
+
+// Update statistics
+function updateStats() {
+  const remaining = Object.values(worksData);
+  const total = remaining.length;
+  const kawaii = remaining.filter(w => w.style === '软萌大头').length;
+  const guofeng = remaining.filter(w => w.style === '国风Q版').length;
+  const trendy = remaining.filter(w => w.style === '潮玩手办').length;
+  const simple = remaining.filter(w => w.style === '简约卡通').length;
+
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statKawaii').textContent = kawaii;
+  document.getElementById('statGuofeng').textContent = guofeng;
+  document.getElementById('statTrendy').textContent = trendy;
+  document.getElementById('statSimple').textContent = simple;
+}
+
+// Keyboard close for modal
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.getElementById('modalOverlay').classList.remove('visible');
+  }
+});
+</script>
+</body>
+</html>

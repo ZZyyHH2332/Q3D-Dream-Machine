@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q3D Dream Machine - 重新生成头像</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: linear-gradient(135deg, #0a0e1a 0%, #16213e 50%, #0f3460 100%);
+    color: #f0f0f5;
+    min-height: 100vh;
+    padding: 32px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .page-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #60a5fa, #00D4FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .page-header p {
+    font-size: 14px;
+    color: rgba(240,240,245,0.6);
+    margin-top: 8px;
+  }
+
+  .columns {
+    display: flex;
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .col-left  { width: 30%; flex-shrink: 0; }
+  .col-mid   { width: 35%; flex-shrink: 0; }
+  .col-right { width: 35%; flex-shrink: 0; }
+
+  .glass-card {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 24px;
+  }
+
+  .card-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .card-subtitle {
+    font-size: 13px;
+    color: rgba(240,240,245,0.5);
+    margin-bottom: 20px;
+  }
+
+  /* === Left: Source Selection === */
+  .source-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .source-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .source-item:hover {
+    background: rgba(255,255,255,0.04);
+  }
+
+  .source-item.selected {
+    border-color: #60a5fa;
+    box-shadow: 0 0 16px rgba(96,165,250,0.3), 0 0 40px rgba(96,165,250,0.1);
+    background: rgba(96,165,250,0.06);
+  }
+
+  .source-thumb {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.12);
+  }
+
+  .source-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .source-name {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .source-id {
+    font-size: 12px;
+    color: rgba(240,240,245,0.45);
+    font-family: monospace;
+  }
+
+  /* === Middle: Operation Panel === */
+  .section-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: rgba(240,240,245,0.8);
+  }
+
+  .style-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .style-btn {
+    width: 100%;
+    padding: 10px 18px;
+    border-radius: 24px;
+    border: 2px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    color: #f0f0f5;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .style-btn:hover {
+    background: rgba(255,255,255,0.08);
+  }
+
+  .style-btn .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .style-btn.selected {
+    border-color: var(--accent);
+    background: rgba(255,255,255,0.08);
+    box-shadow: 0 0 12px var(--glow);
+  }
+
+  .style-btn[data-style="kawaii"]  { --accent: #FF69B4; --glow: rgba(255,105,180,0.3); }
+  .style-btn[data-style="kawaii"]  .dot { background: #FF69B4; }
+  .style-btn[data-style="guofeng"] { --accent: #DC143C; --glow: rgba(220,20,60,0.3); }
+  .style-btn[data-style="guofeng"] .dot { background: #DC143C; }
+  .style-btn[data-style="trendy"]  { --accent: #00D4FF; --glow: rgba(0,212,255,0.3); }
+  .style-btn[data-style="trendy"]  .dot { background: #00D4FF; }
+  .style-btn[data-style="simple"]  { --accent: #78909C; --glow: rgba(120,144,156,0.3); }
+  .style-btn[data-style="simple"]  .dot { background: #78909C; }
+
+  .style-btn .style-en {
+    font-size: 12px;
+    color: rgba(240,240,245,0.4);
+    margin-left: auto;
+  }
+
+  /* Reason radio buttons */
+  .reason-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+
+  .reason-btn {
+    width: 100%;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.03);
+    color: #f0f0f5;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .reason-btn:hover {
+    background: rgba(255,255,255,0.06);
+  }
+
+  .reason-btn.selected {
+    border-color: #60a5fa;
+    background: rgba(96,165,250,0.08);
+  }
+
+  .reason-btn .radio {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.3);
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.2s ease;
+  }
+
+  .reason-btn.selected .radio {
+    border-color: #60a5fa;
+  }
+
+  .reason-btn.selected .radio::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #60a5fa;
+  }
+
+  /* Execute button */
+  .exec-btn {
+    width: 100%;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #60a5fa, #00D4FF);
+    color: #0a0e1a;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(96,165,250,0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .exec-btn:hover:not(:disabled) {
+    box-shadow: 0 4px 30px rgba(96,165,250,0.5), 0 0 60px rgba(0,212,255,0.2);
+    transform: translateY(-1px);
+  }
+
+  .exec-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .exec-btn.processing {
+    pointer-events: none;
+  }
+
+  .exec-btn .spinner {
+    display: none;
+    width: 18px;
+    height: 18px;
+    border: 3px solid rgba(10,14,26,0.2);
+    border-top-color: #0a0e1a;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+
+  .exec-btn.processing .spinner {
+    display: inline-block;
+  }
+
+  .exec-btn.processing .btn-text {
+    opacity: 0.7;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* === Right: Result Display === */
+  .result-placeholder {
+    text-align: center;
+    color: rgba(240,240,245,0.35);
+    font-size: 14px;
+    padding: 40px 0;
+  }
+
+  .result-content {
+    display: none;
+  }
+
+  .comparison {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+  }
+
+  .compare-item {
+    text-align: center;
+  }
+
+  .compare-label {
+    font-size: 12px;
+    color: rgba(240,240,245,0.5);
+    margin-bottom: 8px;
+  }
+
+  .compare-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .compare-arrow {
+    font-size: 24px;
+    color: #60a5fa;
+    flex-shrink: 0;
+  }
+
+  /* JSON display */
+  .json-block {
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 14px;
+    font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    color: rgba(240,240,245,0.75);
+    overflow-x: auto;
+    margin-bottom: 20px;
+    white-space: pre;
+  }
+
+  .json-block .key { color: #60a5fa; }
+  .json-block .string { color: #00D4FF; }
+  .json-block .bool { color: #FF69B4; }
+
+  /* History */
+  .history-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: rgba(240,240,245,0.7);
+  }
+
+  .history-list {
+    max-height: 150px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-right: 4px;
+  }
+
+  .history-list::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .history-list::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.03);
+    border-radius: 2px;
+  }
+
+  .history-list::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+  }
+
+  .history-entry {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    font-size: 12px;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .history-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .history-arrow {
+    color: #60a5fa;
+    font-size: 12px;
+  }
+
+  .history-time {
+    margin-left: auto;
+    color: rgba(240,240,245,0.35);
+    font-size: 11px;
+  }
+
+  /* Tooltip for new entry animation */
+  .result-content.show {
+    animation: slideUp 0.4s ease;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Q3D Dream Machine - 重新生成头像</h1>
+  <p>q3d_regenerate_avatar 工具演示</p>
+</div>
+
+<div class="columns">
+
+  <!-- Left Column: Source Selection -->
+  <div class="col-left">
+    <div class="glass-card">
+      <div class="card-title">选择源作品</div>
+      <div class="card-subtitle">点击选中要重新生成的作品</div>
+      <div class="source-list" id="sourceList">
+        <div class="source-item" data-source="kawaii" data-id="q3d_test_001" onclick="selectSource(this)">
+          <img src="./q3d-avatar-kawaii.jpg" class="source-thumb" alt="kawaii">
+          <div class="source-info">
+            <div class="source-name">软萌大头</div>
+            <div class="source-id">q3d_test_001</div>
+          </div>
+        </div>
+        <div class="source-item" data-source="guofeng" data-id="q3d_test_002" onclick="selectSource(this)">
+          <img src="./q3d-avatar-guofeng.jpg" class="source-thumb" alt="guofeng">
+          <div class="source-info">
+            <div class="source-name">国风Q版</div>
+            <div class="source-id">q3d_test_002</div>
+          </div>
+        </div>
+        <div class="source-item" data-source="trendy" data-id="q3d_test_003" onclick="selectSource(this)">
+          <img src="./q3d-avatar-trendy.jpg" class="source-thumb" alt="trendy">
+          <div class="source-info">
+            <div class="source-name">潮玩手办</div>
+            <div class="source-id">q3d_test_003</div>
+          </div>
+        </div>
+        <div class="source-item" data-source="simple" data-id="q3d_test_004" onclick="selectSource(this)">
+          <img src="./q3d-avatar-simple.jpg" class="source-thumb" alt="simple">
+          <div class="source-info">
+            <div class="source-name">简约卡通</div>
+            <div class="source-id">q3d_test_004</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Middle Column: Operation Panel -->
+  <div class="col-mid">
+    <div class="glass-card">
+      <div class="card-title">重新生成设置</div>
+      <div class="card-subtitle">配置目标风格与原因</div>
+
+      <div class="section-label">选择新风格</div>
+      <div class="style-buttons" id="styleButtons">
+        <button class="style-btn" data-style="kawaii" onclick="selectStyle(this)">
+          <span class="dot"></span>
+          软萌大头
+          <span class="style-en">kawaii</span>
+        </button>
+        <button class="style-btn" data-style="guofeng" onclick="selectStyle(this)">
+          <span class="dot"></span>
+          国风Q版
+          <span class="style-en">guofeng</span>
+        </button>
+        <button class="style-btn" data-style="trendy" onclick="selectStyle(this)">
+          <span class="dot"></span>
+          潮玩手办
+          <span class="style-en">trendy</span>
+        </button>
+        <button class="style-btn" data-style="simple" onclick="selectStyle(this)">
+          <span class="dot"></span>
+          简约卡通
+          <span class="style-en">simple</span>
+        </button>
+      </div>
+
+      <div class="section-label">重新生成原因</div>
+      <div class="reason-list" id="reasonList">
+        <button class="reason-btn selected" data-reason="style_change" onclick="selectReason(this)">
+          <span class="radio"></span>
+          换风格 (style_change)
+        </button>
+        <button class="reason-btn" data-reason="new_seed" onclick="selectReason(this)">
+          <span class="radio"></span>
+          换种子 (new_seed)
+        </button>
+        <button class="reason-btn" data-reason="not_satisfied" onclick="selectReason(this)">
+          <span class="radio"></span>
+          不满意 (not_satisfied)
+        </button>
+        <button class="reason-btn" data-reason="other" onclick="selectReason(this)">
+          <span class="radio"></span>
+          其他 (other)
+        </button>
+      </div>
+
+      <button class="exec-btn" id="execBtn" disabled onclick="executeRegenerate()">
+        <span class="spinner"></span>
+        <span class="btn-text">执行重新生成</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Right Column: Result Display -->
+  <div class="col-right">
+    <div class="glass-card">
+      <div class="card-title">重新生成结果</div>
+      <div class="card-subtitle">生成效果与历史记录</div>
+
+      <div class="result-placeholder" id="resultPlaceholder">
+        选择源作品和新风格后点击执行
+      </div>
+
+      <div class="result-content" id="resultContent">
+        <div class="comparison" id="comparison">
+          <div class="compare-item">
+            <div class="compare-label">原作品</div>
+            <img class="compare-img" id="beforeImg" src="" alt="before">
+          </div>
+          <div class="compare-arrow">&#x2192;</div>
+          <div class="compare-item">
+            <div class="compare-label">新作品</div>
+            <img class="compare-img" id="afterImg" src="" alt="after">
+          </div>
+        </div>
+
+        <div class="json-block" id="jsonBlock"></div>
+
+        <div class="history-title">操作历史</div>
+        <div class="history-list" id="historyList"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // State
+  let selectedSource = null;  // { el, style, id, imgSrc }
+  let selectedStyle  = null;  // { el, style }
+  let selectedReason = 'style_change';
+  let historyCount   = 0;
+  let isProcessing   = false;
+
+  const styleNames = {
+    kawaii:  '软萌大头',
+    guofeng: '国风Q版',
+    trendy:  '潮玩手办',
+    simple:  '简约卡通'
+  };
+
+  const styleFilters = {
+    kawaii:  'saturate(1.5) brightness(1.1)',
+    guofeng: 'sepia(0.6) brightness(0.9)',
+    trendy:  'hue-rotate(180deg) saturate(1.3)',
+    simple:  'grayscale(0.8) brightness(0.95)'
+  };
+
+  const styleImages = {
+    kawaii:  './q3d-avatar-kawaii.jpg',
+    guofeng: './q3d-avatar-guofeng.jpg',
+    trendy:  './q3d-avatar-trendy.jpg',
+    simple:  './q3d-avatar-simple.jpg'
+  };
+
+  // Source selection
+  function selectSource(el) {
+    if (isProcessing) return;
+    document.querySelectorAll('.source-item').forEach(i => i.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedSource = {
+      el,
+      style: el.dataset.source,
+      id: el.dataset.id,
+      imgSrc: el.querySelector('.source-thumb').src
+    };
+    checkReady();
+  }
+
+  // Style selection
+  function selectStyle(el) {
+    if (isProcessing) return;
+    document.querySelectorAll('.style-btn').forEach(i => i.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedStyle = {
+      el,
+      style: el.dataset.style
+    };
+    checkReady();
+  }
+
+  // Reason selection
+  function selectReason(el) {
+    if (isProcessing) return;
+    document.querySelectorAll('.reason-btn').forEach(i => i.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedReason = el.dataset.reason;
+  }
+
+  // Enable/disable execute
+  function checkReady() {
+    const btn = document.getElementById('execBtn');
+    btn.disabled = !(selectedSource && selectedStyle);
+  }
+
+  // Execute
+  function executeRegenerate() {
+    if (!selectedSource || !selectedStyle || isProcessing) return;
+    isProcessing = true;
+
+    const btn = document.getElementById('execBtn');
+    btn.classList.add('processing');
+    btn.disabled = true;
+
+    setTimeout(() => {
+      isProcessing = false;
+      btn.classList.remove('processing');
+      btn.disabled = false;
+
+      const newWorkId = 'q3d_regen_' + String(Date.now()).slice(-6);
+      const now = new Date().toISOString().replace('T', ' ').slice(0, 19) + 'Z';
+      const isoTime = new Date().toISOString();
+
+      // Show result
+      document.getElementById('resultPlaceholder').style.display = 'none';
+      const content = document.getElementById('resultContent');
+      content.style.display = 'block';
+      content.classList.remove('show');
+      void content.offsetWidth; // reflow
+      content.classList.add('show');
+
+      // Before image
+      const beforeImg = document.getElementById('beforeImg');
+      beforeImg.src = selectedSource.imgSrc;
+      beforeImg.style.filter = 'none';
+
+      // After image (same src, different filter)
+      const afterImg = document.getElementById('afterImg');
+      afterImg.src = selectedSource.imgSrc;
+      afterImg.style.filter = styleFilters[selectedStyle.style] || 'none';
+
+      // JSON block
+      const jsonHtml =
+        '<span class="key">{</span>\n' +
+        '  <span class="key">"success"</span>: <span class="bool">true</span>,\n' +
+        '  <span class="key">"sourceWorkId"</span>: <span class="string">"' + selectedSource.id + '"</span>,\n' +
+        '  <span class="key">"newWorkId"</span>: <span class="string">"' + newWorkId + '"</span>,\n' +
+        '  <span class="key">"oldStyle"</span>: <span class="string">"' + selectedSource.style + '"</span>,\n' +
+        '  <span class="key">"newStyle"</span>: <span class="string">"' + selectedStyle.style + '"</span>,\n' +
+        '  <span class="key">"reason"</span>: <span class="string">"' + selectedReason + '"</span>,\n' +
+        '  <span class="key">"regeneratedAt"</span>: <span class="string">"' + isoTime + '"</span>,\n' +
+        '  <span class="key">"message"</span>: <span class="string">"重新生成完成，已保存新形象"</span>\n' +
+        '<span class="key">}</span>';
+      document.getElementById('jsonBlock').innerHTML = jsonHtml;
+
+      // Add history entry
+      historyCount++;
+      const list = document.getElementById('historyList');
+      const entry = document.createElement('div');
+      entry.className = 'history-entry';
+
+      const oldIcon = styleImages[selectedSource.style];
+      const newIcon = styleImages[selectedStyle.style];
+      const timeStr = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+      entry.innerHTML =
+        '<img class="history-icon" src="' + oldIcon + '" alt="old">' +
+        '<span class="history-arrow">&#x2192;</span>' +
+        '<img class="history-icon" src="' + newIcon + '" alt="new">' +
+        '<span>' + styleNames[selectedSource.style] + ' &rarr; ' + styleNames[selectedStyle.style] + '</span>' +
+        '<span class="history-time">' + timeStr + '</span>';
+
+      list.insertBefore(entry, list.firstChild);
+
+    }, 2000);
+  }
+</script>
+
+</body>
+</html>
