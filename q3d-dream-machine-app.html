@@ -1828,8 +1828,8 @@ function initThreeJS() {
   const grid = new THREE.GridHelper(10, 20, 0x1a2744, 0x111827);
   threeScene.add(grid);
 
-  // Default: load a simple cube as placeholder
-  loadGLBModel(null);
+  // Default: load the Blender-generated Q-character GLB
+  loadGLBModel('assets/generated/chibi_character.glb');
 
   // Resize
   window.addEventListener('resize', () => {
@@ -3159,7 +3159,7 @@ function generateMinimalGLB() {
   return new Blob([glb], { type: 'model/gltf-binary' });
 }
 
-let currentGlbUrl = null;
+let currentGlbUrl = 'assets/generated/chibi_character.glb';
 
 const downloadGlbBtn = document.getElementById('downloadGlbBtn');
 if (downloadGlbBtn) {
