@@ -166,6 +166,14 @@ export function registerGenerateAvatar(server: any): void {
           "正面视角、纯色背景、全身可见、清晰轮廓、T-pose/A-pose。" +
           "生成的图像将更适合 Hunyuan3D-2 等模型进行高质量 3D 重建。默认 false。",
       },
+      view: {
+        type: "string",
+        description:
+          "【可选】指定生成视角，用于多视图 3D 重建。" +
+          "front=正面（默认）、side=侧面、back=背面。" +
+          "配合 for3D=true 使用，可生成正面/侧面/背面三视图用于高质量 3D 重建。",
+        enum: ["front", "side", "back"],
+      },
     },
     async (args: {
       uploadId: string;
@@ -177,6 +185,7 @@ export function registerGenerateAvatar(server: any): void {
       model?: string;
       optimizePrompt?: boolean;
       for3D?: boolean;
+      view?: "front" | "side" | "back";
     }) => {
       try {
         const {
@@ -189,6 +198,7 @@ export function registerGenerateAvatar(server: any): void {
           model,
           optimizePrompt = false,
           for3D = false,
+          view = "front",
         } = args;
 
         // Check API configuration (skip in test mode / trae mode)
@@ -453,10 +463,10 @@ export function registerGenerateAvatar(server: any): void {
           let finalPrompt = basePrompt;
           let negativePrompt: string | null = null;
           if (for3D) {
-            const enhanced = enhanceFor3D(basePrompt, style, true);
+            const enhanced = enhanceFor3D(basePrompt, style, true, view);
             finalPrompt = enhanced.prompt;
             negativePrompt = enhanced.negative;
-            console.log(`[generate-avatar] 3D-ready prompt enhancement applied`);
+            console.log(`[generate-avatar] 3D-ready prompt enhancement applied (view: ${view})`);
           }
 
           const result = await provider.generateAvatar(finalPrompt, styleDesc);
@@ -475,7 +485,7 @@ export function registerGenerateAvatar(server: any): void {
             let imagePromptForAgent = basePromptForAgent;
             let negativePrompt: string | null = null;
             if (for3D) {
-              const enhanced = enhanceFor3D(basePromptForAgent, style, true);
+              const enhanced = enhanceFor3D(basePromptForAgent, style, true, view);
               imagePromptForAgent = enhanced.prompt;
               negativePrompt = enhanced.negative;
             }

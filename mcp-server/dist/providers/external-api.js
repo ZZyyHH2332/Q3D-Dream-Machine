@@ -119,11 +119,36 @@ Be specific about colors. Keep each field under 30 words.`,
             return {
                 gender: parsed.gender || "unknown",
                 ageRange: parsed.ageRange || "unknown",
-                hairStyle: parsed.hairStyle || "unknown",
-                facialFeatures: parsed.facialFeatures || "unknown",
-                clothing: parsed.clothing || "unknown",
+                hair: {
+                    style: parsed.hair?.style || parsed.hairStyle || "unknown",
+                    color: parsed.hair?.color || "unknown",
+                    details: parsed.hair?.details,
+                    volume: parsed.hair?.volume,
+                },
+                eyes: {
+                    color: parsed.eyes?.color || "unknown",
+                    size: parsed.eyes?.size || "medium",
+                    shape: parsed.eyes?.shape,
+                    expression: parsed.eyes?.expression,
+                },
+                facialFeatures: {
+                    nose: parsed.facialFeatures?.nose,
+                    mouth: parsed.facialFeatures?.mouth,
+                    faceShape: parsed.facialFeatures?.faceShape,
+                    specialMarks: parsed.facialFeatures?.specialMarks,
+                },
+                outfit: {
+                    top: parsed.outfit?.top || parsed.clothing || "unknown",
+                    bottom: parsed.outfit?.bottom || "unknown",
+                    outerwear: parsed.outfit?.outerwear,
+                    shoes: parsed.outfit?.shoes,
+                    material: parsed.outfit?.material,
+                },
+                accessories: parsed.accessories || [],
                 expression: parsed.expression || "unknown",
+                pose: parsed.pose,
                 overallVibe: parsed.overallVibe || "friendly",
+                special_features: parsed.special_features,
             };
         }
         catch (err) {
@@ -131,9 +156,11 @@ Be specific about colors. Keep each field under 30 words.`,
             return {
                 gender: "unknown",
                 ageRange: "unknown",
-                hairStyle: "unknown",
-                facialFeatures: "unknown",
-                clothing: "casual wear",
+                hair: { style: "unknown", color: "unknown" },
+                eyes: { color: "unknown", size: "medium" },
+                facialFeatures: {},
+                outfit: { top: "casual wear", bottom: "unknown" },
+                accessories: [],
                 expression: "smiling",
                 overallVibe: "friendly",
             };
@@ -223,7 +250,10 @@ Requirements:
  */
 export function buildGeneratePrompt(style, analysis, customPrompt) {
     const styleDesc = STYLE_PROMPTS[style] || STYLE_PROMPTS.kawaii;
-    const descText = `gender: ${analysis.gender}, age: ${analysis.ageRange}, hair: ${analysis.hairStyle}, face: ${analysis.facialFeatures}, clothing: ${analysis.clothing}, expression: ${analysis.expression}, vibe: ${analysis.overallVibe}`;
+    const hairDesc = analysis.hair?.style || "unknown";
+    const faceDesc = analysis.facialFeatures?.faceShape || "unknown";
+    const outfitDesc = analysis.outfit?.top || "unknown";
+    const descText = `gender: ${analysis.gender}, age: ${analysis.ageRange}, hair: ${hairDesc}, face: ${faceDesc}, clothing: ${outfitDesc}, expression: ${analysis.expression}, vibe: ${analysis.overallVibe}`;
     let processedCustom = undefined;
     if (customPrompt) {
         processedCustom = sanitizeCustomPrompt(customPrompt);

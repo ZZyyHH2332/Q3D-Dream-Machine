@@ -8,14 +8,16 @@
  * - 强调体积感和结构感
  */
 export declare const THREE_D_READY_SUFFIX: string;
+export declare const VIEW_PROMPT_SUFFIX: Record<string, string>;
 export declare const THREE_D_NEGATIVE_PROMPT: string;
 /**
  * 将普通 2D prompt 转换为 3D-ready prompt
  * @param basePrompt 原始 2D prompt
  * @param style 风格名称
  * @param includeNegative 是否包含负面 prompt
+ * @param view 视角（front/side/back），用于多视图生成
  */
-export declare function enhanceFor3D(basePrompt: string, style?: string, includeNegative?: boolean): {
+export declare function enhanceFor3D(basePrompt: string, style?: string, includeNegative?: boolean, view?: string): {
     prompt: string;
     negative: string | null;
 };

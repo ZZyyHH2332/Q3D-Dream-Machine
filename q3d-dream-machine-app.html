@@ -1828,8 +1828,46 @@ function initThreeJS() {
   const grid = new THREE.GridHelper(10, 20, 0x1a2744, 0x111827);
   threeScene.add(grid);
 
-  // Default: load the Blender-generated Q-character GLB
-  loadGLBModel('assets/generated/chibi_character.glb');
+  // Dynamic GLB loading based on URL parameters
+  // Usage: ?session=xxx loads assets/generated/{session}/model.glb
+  //        ?model=path/to/file.glb loads custom model
+  const urlParams = new URLSearchParams(window.location.search);
+  const sessionParam = urlParams.get('session');
+  const modelParam = urlParams.get('model');
+  
+  let defaultModelUrl = 'assets/generated/chibi_character.glb';
+  
+  if (sessionParam) {
+    // Try postprocessed model first, then original, then fallback
+    const sessionModels = [
+      `assets/generated/${sessionParam}/model_postprocessed.glb`,
+      `assets/generated/${sessionParam}/model.glb`,
+    ];
+    
+    // Try loading session models with fallback
+    let loaded = false;
+    for (const url of sessionModels) {
+      try {
+        const response = await fetch(url, { method: 'HEAD' });
+        if (response.ok) {
+          defaultModelUrl = url;
+          loaded = true;
+          console.log(`[Q3D] Loading session model: ${url}`);
+          break;
+        }
+      } catch (e) {
+        // Continue to next
+      }
+    }
+    if (!loaded) {
+      console.log(`[Q3D] Session model not found, using default`);
+    }
+  } else if (modelParam) {
+    defaultModelUrl = modelParam;
+    console.log(`[Q3D] Loading custom model: ${modelParam}`);
+  }
+  
+  loadGLBModel(defaultModelUrl);
 
   // Resize
   window.addEventListener('resize', () => {
@@ -3202,7 +3240,7 @@ if (blenderToggle && blenderBody && blenderChevron) {
 }
 
 // ===== Blender 桥接服务器通信 =====
-const BRIDGE_URL = 'http://localhost:8766';
+const BRIDGE_URL = 'http://localhost:8777';
 const bridgeStatus = document.getElementById('bridgeStatus');
 
 async function checkBridgeStatus() {

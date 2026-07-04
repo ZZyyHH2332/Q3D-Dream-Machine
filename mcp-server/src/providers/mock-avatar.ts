@@ -82,9 +82,11 @@ export const mockAvatarProvider: IAvatarProvider = {
     return {
       gender: "unknown",
       ageRange: "20s",
-      hairStyle: "short black hair",
-      facialFeatures: "round face with bright eyes",
-      clothing: "casual wear",
+      hair: { style: "short black hair", color: "black" },
+      eyes: { color: "brown", size: "medium" },
+      facialFeatures: { faceShape: "round" },
+      outfit: { top: "casual wear", bottom: "jeans" },
+      accessories: [],
       expression: "smiling",
       overallVibe: "friendly",
     };
@@ -99,9 +101,11 @@ export const mockAvatarProvider: IAvatarProvider = {
     return {
       gender: "unknown",
       ageRange: "20s",
-      hairStyle: "short black hair",
-      facialFeatures: "round face with bright eyes",
-      clothing: "casual wear",
+      hair: { style: "short black hair", color: "black" },
+      eyes: { color: "brown", size: "medium" },
+      facialFeatures: { faceShape: "round" },
+      outfit: { top: "casual wear", bottom: "jeans" },
+      accessories: [],
       expression: "smiling",
       overallVibe: "friendly",
     };
@@ -114,7 +118,10 @@ export const mockAvatarProvider: IAvatarProvider = {
   ): Promise<string> {
     await delay(50 + Math.random() * 100);
     console.log(`[mock] optimizePromptWithModel called with model: ${model}`);
-    return `A cute chibi character with ${analysis.facialFeatures}, ${analysis.hairStyle}, ${analysis.clothing}, ${analysis.expression}. Style: ${style}, Q-version, cartoon, anime. High quality, detailed, professional, masterpiece. 3D render, soft lighting, smooth skin. [MOCK OPTIMIZED]`;
+    const hairDesc = analysis.hair?.style || "short hair";
+    const outfitDesc = analysis.outfit?.top || "casual wear";
+    const faceDesc = analysis.facialFeatures?.faceShape || "round face";
+    return `A cute chibi character with ${faceDesc}, ${hairDesc}, ${outfitDesc}, ${analysis.expression}. Style: ${style}, Q-version, cartoon, anime. High quality, detailed, professional, masterpiece. 3D render, soft lighting, smooth skin. [MOCK OPTIMIZED]`;
   },
 
   async generateAvatar(

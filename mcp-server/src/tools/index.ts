@@ -14,6 +14,13 @@ import { registerControlMood } from "./control-mood.js";
 import { registerPetCare } from "./pet-care.js";
 import { registerRegenerateAvatar } from "./regenerate-avatar.js";
 import { registerGenerateDreamLattice } from "./generate-dream-lattice.js";
+// 纯 TRAE 模型驱动 3D 建模工具
+import { registerGenerateMultiview } from "./generate-multiview.js";
+import { registerGenerateBlenderScript } from "./generate-blender-script.js";
+import { registerExecuteBlenderScript } from "./execute-blender-script.js";
+import { registerRefineBlenderScript } from "./refine-blender-script.js";
+import { registerAssessModelQuality } from "./assess-model-quality.js";
+import { registerPipelineGenerate } from "./pipeline-generate.js";
 
 export function registerAllTools(server: any): void {
   // 核心工具（8 个）
@@ -34,4 +41,12 @@ export function registerAllTools(server: any): void {
   registerPetCare(server);
   registerRegenerateAvatar(server);
   registerGenerateDreamLattice(server);
+
+  // 纯 TRAE 模型驱动 3D 建模工具（6 个）
+  registerGenerateMultiview(server);       // 多视图生成（front/side/back）
+  registerGenerateBlenderScript(server);   // Blender 脚本生成
+  registerExecuteBlenderScript(server);    // Blender 脚本执行
+  registerRefineBlenderScript(server);     // 脚本迭代优化
+  registerAssessModelQuality(server);      // 3D 模型质量评估
+  registerPipelineGenerate(server);        // Pipeline 编排器
 }

@@ -85,23 +85,58 @@ export const traeNativeProvider = {
         throw new TraeCollabError(TraeCollabSignal.NEED_VISION_ANALYSIS, `请使用 TRAE Auto Mode 的 ${modelName} 模型分析照片，并将结果作为 photoAnalysis 参数传入。`, {
             model,
             modelName,
-            visionPrompt: `请使用 ${modelName} 模型分析这张照片，提取以下特征用于生成 Q 版形象：
+            visionPrompt: `请使用 ${modelName} 模型分析这张照片，提取以下特征用于生成手办级 Q 版 3D 角色。
 
-要求：
-1. 详细描述人物的五官特征（眼睛大小、鼻子形状、嘴巴特点等）
-2. 详细描述发型和发色
-3. 详细描述服装颜色和款式
-4. 描述表情和整体气质
-5. 输出格式：JSON 对象，包含以下字段：
-   - gender（性别）
-   - ageRange（年龄段，如 20-30）
-   - hairStyle（发型，详细描述颜色和造型）
-   - facialFeatures（五官特征，详细描述）
-   - clothing（服装，详细描述颜色和款式）
-   - expression（表情）
-   - overallVibe（整体气质）
+【重要】这是用于高质量 3D 建模的特征提取，需要特别关注：
+1. 毛发细节（发型、发色、发束走向）- 将用于贝塞尔曲线建模
+2. 小物件配饰（帽子、眼镜、项链、发饰等）- 需要精准把控
+3. 服装材质质感（布料、皮革、金属等）- 将用于 PBR 材质设置
 
-请尽可能详细，这些信息将用于生成高质量的 Q 版形象。`,
+输出格式：JSON 对象，包含以下字段：
+
+{
+  "gender": "性别",
+  "ageRange": "年龄段，如 20-30",
+  "hair": {
+    "style": "发型（长发/短发/卷发/直发/双马尾/...）",
+    "color": "发色（具体颜色描述）",
+    "details": "特殊细节（刘海/发饰/发束走向/...）",
+    "volume": "发量（多/中/少）"
+  },
+  "eyes": {
+    "color": "眼睛颜色",
+    "size": "眼睛大小（大/中/小）",
+    "shape": "眼睛形状（圆/杏/细长/...）",
+    "expression": "眼神表情"
+  },
+  "facialFeatures": {
+    "nose": "鼻子特点",
+    "mouth": "嘴巴特点",
+    "faceShape": "脸型",
+    "specialMarks": "特殊标记（痣/疤痕/...）"
+  },
+  "outfit": {
+    "top": "上衣（详细描述颜色和款式）",
+    "bottom": "下装（详细描述颜色和款式）",
+    "outerwear": "外套（如有）",
+    "shoes": "鞋子",
+    "material": "服装材质（布料/皮革/金属/...）"
+  },
+  "accessories": [
+    {
+      "type": "配饰类型（帽子/眼镜/项链/手链/发饰/...）",
+      "description": "详细描述",
+      "material": "材质（金属/塑料/布料/...）",
+      "color": "颜色"
+    }
+  ],
+  "expression": "整体表情",
+  "pose": "姿势/动作",
+  "overallVibe": "整体气质（可爱/酷/优雅/...）",
+  "special_features": ["任何独特的细节"]
+}
+
+请尽可能详细，特别是毛发和小物件配饰，这些信息将用于生成手办级质量的 3D 角色。`,
         });
     },
     /**

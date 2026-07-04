@@ -8,12 +8,17 @@
  * - 强调体积感和结构感
  */
 // 3D-ready 增强后缀（追加到 2D prompt 末尾）
-export const THREE_D_READY_SUFFIX = "3D model reference sheet style, front-facing view, T-pose or A-pose, " +
-    "centered composition, full body visible from head to feet, " +
+export const THREE_D_READY_SUFFIX = "3D model reference sheet style, centered composition, full body visible from head to feet, " +
     "clean solid white background, no shadows on background, " +
     "clear silhouette, well-defined body structure, " +
     "consistent proportions, volumetric appearance, " +
     "studio lighting, even illumination, no harsh shadows";
+// 视角专用 prompt 后缀（用于多视图生成）
+export const VIEW_PROMPT_SUFFIX = {
+    front: "front-facing view, T-pose or A-pose, full face visible, symmetrical pose",
+    side: "strict side profile view, facing left, full body silhouette, clear outline, arms at sides",
+    back: "back view, facing away from camera, full back visible, hair and outfit details from behind, arms at sides",
+};
 // 负面 prompt（用于排除不利于 3D 重建的元素）
 export const THREE_D_NEGATIVE_PROMPT = "side view, back view, three-quarter view, turned body, " +
     "crossed arms, hands covering face, hands behind back, " +
@@ -42,11 +47,13 @@ const STYLE_3D_PREFIX = {
  * @param basePrompt 原始 2D prompt
  * @param style 风格名称
  * @param includeNegative 是否包含负面 prompt
+ * @param view 视角（front/side/back），用于多视图生成
  */
-export function enhanceFor3D(basePrompt, style = "kawaii", includeNegative = true) {
+export function enhanceFor3D(basePrompt, style = "kawaii", includeNegative = true, view = "front") {
     const prefix3D = STYLE_3D_PREFIX[style] || STYLE_3D_PREFIX.kawaii;
-    // 组合：3D 前缀 + 原始 prompt + 3D 后缀
-    const enhanced = `${prefix3D}${basePrompt}, ${THREE_D_READY_SUFFIX}`;
+    const viewSuffix = VIEW_PROMPT_SUFFIX[view] || VIEW_PROMPT_SUFFIX.front;
+    // 组合：3D 前缀 + 原始 prompt + 视角后缀 + 3D 后缀
+    const enhanced = `${prefix3D}${basePrompt}, ${viewSuffix}, ${THREE_D_READY_SUFFIX}`;
     return {
         prompt: enhanced,
         negative: includeNegative ? THREE_D_NEGATIVE_PROMPT : null,

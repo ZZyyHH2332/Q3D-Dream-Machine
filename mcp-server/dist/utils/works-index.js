@@ -9,10 +9,18 @@ const indexPath = process.env.Q3D_WORKS_INDEX
 const STATUS_ORDER = [
     "uploaded",
     "avatar_generated",
+    "multiview_generated",
+    "script_generated",
+    "script_refined",
     "preview_created",
     "bones_preview_created",
     "model_generated",
     "pet_spawned",
+    "model_validated",
+    "model_needs_refine",
+    "pipeline_executing",
+    "pipeline_max_refine",
+    "pipeline_complete",
 ];
 function toRelativePath(absPath) {
     if (!absPath)
@@ -63,6 +71,8 @@ export function addOrUpdateWork(sessionId, updates) {
             glbPath: updates.glbPath ? toRelativePath(updates.glbPath) : null,
             petName: updates.petName || null,
             personality: updates.personality || null,
+            qualityScore: updates.qualityScore || null,
+            modelPath: updates.modelPath || null,
             originalPath: updates.originalPath ? toRelativePath(updates.originalPath) : null,
             initialMood: updates.initialMood || null,
         };

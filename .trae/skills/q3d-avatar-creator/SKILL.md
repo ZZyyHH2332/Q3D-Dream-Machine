@@ -25,14 +25,13 @@ description: 生成 Q 版 3D 虚拟形象、上传照片创建卡通角色、桌
 - `imagePath`: 用户上传的照片文件路径（绝对路径）
 - `style`: 风格选择，可选 `kawaii`（软萌大头）/`guofeng`（国风Q版）/`trendy`（潮玩手办）/`simple`（简约卡通），默认 `kawaii`
 - `model`: Auto Mode 模型选择（可选），用于照片分析和 prompt 优化。可选值：
-  - `Doubao-Seed-2.1-Pro`（推荐，分析最详细）
-  - `Doubao-Seed-2.1-Turbo`（速度快，质量适中）
+  - `Doubao-Seed-2.1-Turbo`（可用，图像生成推荐）
+  - `Qwen3.7-Plus`（多模态视觉分析强）
   - `GLM-5.2`（代码能力强，prompt 优化好）
   - `GLM-5`（稳定可靠）
   - `DeepSeek-V4-Pro`（推理能力强）
   - `DeepSeek-V4-Flash`（速度快）
-  - `Kimi-K2.7`（长上下文，适合复杂分析）
-  - `Qwen3.7-Plus`（多模态理解好）
+  - `Kimi-K2.7`（代码专精，适合脚本生成）
   - `MiniMax-M3`（工程能力强）
   - `auto`（根据照片复杂度自动选择）
 - `optimizePrompt`: 是否使用 AI 模型优化图像生成 prompt（可选，默认 false）。设为 true 时，会先用模型生成更精准的英文 prompt 再生成图像
@@ -58,9 +57,9 @@ description: 生成 Q 版 3D 虚拟形象、上传照片创建卡通角色、桌
 当用户希望获得更高质量的 Q 版形象时，可以使用多模型协作模式：
 
 1. **选择模型**: 根据用户需求推荐合适的 Auto Mode 模型
-   - 追求最高质量 → `Doubao-Seed-2.1-Pro`
-   - 追求速度 → `Doubao-Seed-2.1-Turbo` 或 `DeepSeek-V4-Flash`
-   - 复杂照片需要详细分析 → `Kimi-K2.7`
+   - 追求最高质量 → `Qwen3.7-Plus`（视觉分析）或 `Doubao-Seed-2.1-Turbo`（图像生成）
+   - 追求速度 → `DeepSeek-V4-Flash` 或 `Doubao-Seed-2.1-Turbo`
+   - 复杂照片需要详细分析 → `Qwen3.7-Plus`
    - 希望 prompt 优化好 → `GLM-5.2`
 
 2. **模型分析照片**: 调用 `q3d_generate_avatar` 时传入 `model` 参数
@@ -81,7 +80,7 @@ description: 生成 Q 版 3D 虚拟形象、上传照片创建卡通角色、桌
 q3d_generate_avatar(
   uploadId="xxx",
   style="kawaii",
-  model="Doubao-Seed-2.1-Pro",
+  model="Qwen3.7-Plus",
   optimizePrompt=true
 )
 ```
@@ -94,6 +93,21 @@ q3d_generate_avatar(
 - **重新生成**：调用 `q3d_regenerate_avatar` 换种子/换风格
 - **换风格**：4 种风格任选，一键切换
 - **查看作品**：调用 `q3d_manage_gallery` 查看所有作品
+
+### 🧊 3D 建模（TRAE 模型驱动）
+- **一站式建模**：调用 `q3d_pipeline_generate` 自动编排全流程
+  - 阶段 1：Qwen3.7-Plus 分析照片特征
+  - 阶段 2：Doubao-Seed-2.1-Turbo 生成三视图
+  - 阶段 3：Kimi-K2.7-Code 生成 Blender Python 脚本
+  - 阶段 4：Blender Bridge 执行脚本 → GLB 模型
+  - 阶段 5：Qwen3.7-Plus 评估质量（5 维度评分）
+  - 阶段 6：不达标自动 refine（DeepSeek-V4-Pro 修复，最多 3 次）
+- **分步建模**：
+  - `q3d_generate_multiview`：生成正面/侧面/背面三视图
+  - `q3d_generate_blender_script`：生成 Blender Python 脚本
+  - `q3d_execute_blender_script`：执行脚本 → GLB 模型
+  - `q3d_refine_blender_script`：根据错误反馈优化脚本
+  - `q3d_assess_model`：评估模型质量（轮廓/比例/色彩/细节/材质）
 
 ### 🦴 3D 预览
 - **骨骼动画预览**：调用 `q3d_create_bones_preview` 查看 9 种动画
@@ -148,7 +162,7 @@ q3d_generate_avatar(
 - **API 调用失败**：如果返回 API 错误（超时、余额不足、内容审核拒绝），自动降级到下一个 Provider（TRAE Native → External API → Mock），并向用户说明情况。
 - **图片过大**：如果上传图片超过 4MB，建议用户压缩后再上传。
 - **生成不满意**：提供重新生成（换种子值）或切换风格选项。
-- **模型分析失败**：如果指定的 Auto Mode 模型分析不准确，建议切换到其他模型重试。推荐 `Doubao-Seed-2.1-Pro` 获得最详细的分析结果。
+- **模型分析失败**：如果指定的 Auto Mode 模型分析不准确，建议切换到其他模型重试。推荐 `Qwen3.7-Plus` 获得最详细的分析结果。
 - **Prompt 优化失败**：如果优化后的 prompt 生成效果不佳，可以设置 `optimizePrompt=false` 使用默认 prompt 构建逻辑。
 
 ## 示例对话

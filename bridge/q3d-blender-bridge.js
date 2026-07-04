@@ -3,7 +3,7 @@
  * 本地桥接服务器：Web 页面 <-> Blender (via BlenderMCP addon)
  *
  * 启动: node bridge/q3d-blender-bridge.js
- * 端口: 8766 (HTTP) / 8767 (WebSocket)
+ * 端口: 8777 (HTTP) / 9877 (TCP to Blender)
  */
 
 const express = require('express');
@@ -14,8 +14,8 @@ const path = require('path');
 const fs = require('fs');
 const os = require('os');
 
-const HTTP_PORT = 8766;
-const BLENDER_PORT = 9876;  // BlenderMCP addon default
+const HTTP_PORT = 8777;
+const BLENDER_PORT = 9877;  // BlenderMCP addon port
 const BLENDER_HOST = 'localhost';
 
 const app = express();
@@ -32,8 +32,10 @@ function findBlenderPath() {
   const platform = os.platform();
 
   if (platform === 'win32') {
-    // 常见安装路径
     const candidates = [
+      'd:\\Trae CN\\Q3D_Dream_Machine\\blender-env\\blender.exe',
+      'E:\\blender\\blender.exe',
+      'C:\\Program Files\\Blender Foundation\\Blender 5.1\\blender.exe',
       'C:\\Program Files\\Blender Foundation\\Blender 4.4\\blender.exe',
       'C:\\Program Files\\Blender Foundation\\Blender 4.3\\blender.exe',
       'C:\\Program Files\\Blender Foundation\\Blender 4.2\\blender.exe',
@@ -92,6 +94,12 @@ function findBlenderPath() {
 
 function connectToBlenderSocket() {
   return new Promise((resolve, reject) => {
+    // 如果已有 socket，先关闭
+    if (blenderSocket) {
+      try { blenderSocket.destroy(); } catch(e) {}
+      blenderSocket = null;
+    }
+    
     const socket = new net.Socket();
     socket.setTimeout(5000);
 
@@ -104,6 +112,7 @@ function connectToBlenderSocket() {
 
     socket.on('error', (err) => {
       blenderConnected = false;
+      console.error('[Bridge] Socket error:', err.message);
       reject(err);
     });
 
@@ -115,9 +124,11 @@ function connectToBlenderSocket() {
 
     socket.on('timeout', () => {
       socket.destroy();
+      blenderConnected = false;
       reject(new Error('Connection timeout'));
     });
 
+    console.log(`[Bridge] Connecting to ${BLENDER_HOST}:${BLENDER_PORT}...`);
     socket.connect(BLENDER_PORT, BLENDER_HOST);
   });
 }
@@ -160,7 +171,16 @@ function sendCommandToBlender(command) {
 // ==================== HTTP API ====================
 
 // 健康检查
-app.get('/status', (req, res) => {
+app.get('/status', async (req, res) => {
+  // 如果 Blender 运行但未连接，尝试重连
+  if (blenderProcess && !blenderConnected) {
+    try {
+      await connectToBlenderSocket();
+    } catch (e) {
+      // 连接失败，继续返回当前状态
+    }
+  }
+  
   res.json({
     status: 'ok',
     blenderConnected,
@@ -191,11 +211,21 @@ app.post('/launch-blender', async (req, res) => {
     // 如果 addon.py 存在，自动加载
     if (fs.existsSync(addonPath)) {
       args.push('--python', addonPath);
+      console.log(`[Bridge] Loading addon: ${addonPath}`);
+    } else {
+      console.log(`[Bridge] Addon not found at: ${addonPath}`);
     }
+
+    const blenderDir = path.dirname(blenderPath);
+    const env = { ...process.env };
+    delete env.PYTHONHOME;
+    delete env.PYTHONPATH;
 
     blenderProcess = spawn(blenderPath, args, {
       detached: false,
-      windowsHide: false,  // Windows 下显示 Blender 窗口
+      windowsHide: false,
+      cwd: blenderDir,
+      env: env,
     });
 
     console.log(`[Bridge] Blender launched: ${blenderPath} (PID: ${blenderProcess.pid})`);
@@ -231,7 +261,7 @@ app.post('/launch-blender', async (req, res) => {
 
     res.json({
       success: true,
-      pid: blenderProcess.pid,
+      pid: blenderProcess ? blenderProcess.pid : null,
       connected,
       blenderPath,
       addonLoaded: fs.existsSync(addonPath),

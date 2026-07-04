@@ -11,10 +11,18 @@ const indexPath = process.env.Q3D_WORKS_INDEX
 const STATUS_ORDER = [
   "uploaded",
   "avatar_generated",
+  "multiview_generated",
+  "script_generated",
+  "script_refined",
   "preview_created",
   "bones_preview_created",
   "model_generated",
   "pet_spawned",
+  "model_validated",
+  "model_needs_refine",
+  "pipeline_executing",
+  "pipeline_max_refine",
+  "pipeline_complete",
 ];
 
 export interface WorkEntry {
@@ -22,10 +30,18 @@ export interface WorkEntry {
   status:
     | "uploaded"
     | "avatar_generated"
+    | "multiview_generated"
+    | "script_generated"
+    | "script_refined"
     | "preview_created"
     | "bones_preview_created"
     | "pet_spawned"
-    | "model_generated";
+    | "model_generated"
+    | "model_validated"
+    | "model_needs_refine"
+    | "pipeline_executing"
+    | "pipeline_max_refine"
+    | "pipeline_complete";
   style: "kawaii" | "guofeng" | "trendy" | "simple";
   styleName: string;
   createdAt: string;
@@ -37,6 +53,8 @@ export interface WorkEntry {
   glbPath: string | null;
   petName: string | null;
   personality: string | null;
+  qualityScore: number | null;
+  modelPath: string | null;
   originalPath: string | null;
   initialMood: string | null;
 }
@@ -101,6 +119,8 @@ export function addOrUpdateWork(
       glbPath: updates.glbPath ? toRelativePath(updates.glbPath) : null,
       petName: updates.petName || null,
       personality: updates.personality || null,
+      qualityScore: updates.qualityScore || null,
+      modelPath: updates.modelPath || null,
       originalPath: updates.originalPath ? toRelativePath(updates.originalPath) : null,
       initialMood: updates.initialMood || null,
     };
