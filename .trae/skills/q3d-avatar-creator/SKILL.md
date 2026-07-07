@@ -94,20 +94,26 @@ q3d_generate_avatar(
 - **换风格**：4 种风格任选，一键切换
 - **查看作品**：调用 `q3d_manage_gallery` 查看所有作品
 
-### 🧊 3D 建模（TRAE 模型驱动）
+### 🧊 3D 建模（TRAE 模型驱动 · 8 阶段 Pipeline v2）
+
+**策略**："2D 反哺 3D" — Doubao 生成纹理贴图投射到 3D 模型，GLM-5.2 提取材质参数，MiniMax-M3 精调 PBR 数值。
+
 - **一站式建模**：调用 `q3d_pipeline_generate` 自动编排全流程
-  - 阶段 1：Qwen3.7-Plus 分析照片特征
-  - 阶段 2：Doubao-Seed-2.1-Turbo 生成三视图
-  - 阶段 3：Kimi-K2.7-Code 生成 Blender Python 脚本
-  - 阶段 4：Blender Bridge 执行脚本 → GLB 模型
-  - 阶段 5：Qwen3.7-Plus 评估质量（5 维度评分）
-  - 阶段 6：不达标自动 refine（DeepSeek-V4-Pro 修复，最多 3 次）
+  - 阶段 1：**Qwen3.7-Plus** 分析照片特征（PhotoAnalysis）
+  - 阶段 2：**Doubao-Seed-2.1-Turbo** 生成三视图（front/side/back）
+  - 阶段 3：**Doubao-Seed-2.1-Turbo** 生成纹理贴图（skin/hair/dress/accessory/trim × 5 张）
+  - 阶段 4：**GLM-5.2 → MiniMax-M3** 提取材质参数 + PBR 数值精调
+  - 阶段 5：**Kimi-K2.7-Code** 生成含 UV 展开 + Image Texture 节点 + 精调材质的 Blender 脚本
+  - 阶段 6：**Blender Bridge** 后台执行脚本 → 带纹理的 GLB 模型
+  - 阶段 7：**Qwen3.7-Plus** 评估质量（5 维度评分）
+  - 阶段 8：**DeepSeek-V4-Pro** 不达标自动修复（最多 3 次）
 - **分步建模**：
   - `q3d_generate_multiview`：生成正面/侧面/背面三视图
   - `q3d_generate_blender_script`：生成 Blender Python 脚本
   - `q3d_execute_blender_script`：执行脚本 → GLB 模型
   - `q3d_refine_blender_script`：根据错误反馈优化脚本
   - `q3d_assess_model`：评估模型质量（轮廓/比例/色彩/细节/材质）
+- **6 模型全部参与**：Qwen3.7-Plus（视觉+评估）、Doubao-Seed-2.1（多视图+纹理）、GLM-5.2（材质提取）、Kimi-K2.7（脚本生成）、DeepSeek-V4-Pro（修复）、MiniMax-M3（参数精调）
 
 ### 🦴 3D 预览
 - **骨骼动画预览**：调用 `q3d_create_bones_preview` 查看 9 种动画

@@ -30,6 +30,7 @@ export interface PhotoAnalysis {
     outerwear?: string;
     shoes?: string;
     material?: string;
+    pattern?: string;
   };
   accessories?: Array<{
     type: string;
@@ -49,6 +50,23 @@ export interface PhotoAnalysis {
 export interface ChatMessage {
   role: "system" | "user" | "assistant";
   content: string;
+}
+
+/** PBR 材质参数（GLM-5.2 提取 + MiniMax-M3 精调） */
+export interface MaterialParams {
+  [part: string]: {
+    baseColor: string;
+    baseColorRGBA?: [number, number, number, number];
+    roughness: number;
+    metallic: number;
+    subsurface?: number;
+    subsurfaceRadius?: [number, number, number];
+    specularIOR?: number;
+    sheenWeight?: number;
+    coatWeight?: number;
+    coatRoughness?: number;
+    texturePath?: string;
+  };
 }
 
 export interface ChatOptions {
@@ -87,6 +105,10 @@ export enum TraeCollabSignal {
   NEED_SCRIPT_PIPELINE = "NEED_SCRIPT_PIPELINE",
   /** 需要质量评估：对比 GLB 渲染图与参考图，给出评分和改进建议 */
   NEED_QUALITY_ASSESSMENT = "NEED_QUALITY_ASSESSMENT",
+  /** 需要纹理生成：TRAE Agent 应调用 GenerateImage 生成纹理贴图 */
+  NEED_TEXTURE_GENERATION = "NEED_TEXTURE_GENERATION",
+  /** 需要材质参数提取：TRAE Agent 应分析纹理图提取 PBR 参数 */
+  NEED_MATERIAL_EXTRACTION = "NEED_MATERIAL_EXTRACTION",
 }
 
 /**

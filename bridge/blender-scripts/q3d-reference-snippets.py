@@ -395,6 +395,200 @@ def create_metaball_element(meta, location, radius):
     e.radius = radius
     return e
 
+# ============ UV 展开与纹理 ============
+
+def smart_uv_unwrap(obj, method='ANGLE_BASED', angle_limit=66):
+    """
+    智能 UV 展开
+    
+    Args:
+        obj: 目标 mesh 对象
+        method: 展开方法 ('ANGLE_BASED' / 'CONFORMAL')
+        angle_limit: 角度限制（度）
+    """
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.select_all(action='SELECT')
+    
+    if method == 'ANGLE_BASED':
+        bpy.ops.uv.smart_project(angle_limit=math.radians(angle_limit))
+    else:
+        bpy.ops.uv.unwrap(method=method, margin=0.02)
+    
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+def cube_uv_project(obj):
+    """为立方体形状的物体做立方体投影"""
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.uv.cube_project()
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+def cylinder_uv_project(obj):
+    """为圆柱体形状的物体做柱面投影"""
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.uv.cylinder_project()
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+def sphere_uv_project(obj):
+    """为球体形状的物体做球面投影"""
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.uv.sphere_project()
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+# ============ 纹理材质（Image Texture） ============
+
+def create_textured_material(name, texture_path, roughness=0.3, metallic=0.0, 
+                              color_tint=None, use_alpha=False):
+    """
+    创建带图像纹理的 PBR 材质（核心新增函数）
+    
+    Args:
+        name: 材质名称
+        texture_path: 纹理贴图文件路径（绝对路径）
+        roughness: 粗糙度
+        metallic: 金属度
+        color_tint: 可选的颜色叠加 RGBA
+        use_alpha: 是否使用纹理的 Alpha 通道
+    
+    Returns:
+        bpy.types.Material
+    """
+    mat = bpy.data.materials.new(name=name)
+    mat.use_nodes = True
+    nodes = mat.node_tree.nodes
+    links = mat.node_tree.links
+    nodes.clear()
+    
+    # 输出节点
+    output = nodes.new('ShaderNodeOutputMaterial')
+    output.location = (800, 0)
+    
+    # Principled BSDF
+    bsdf = nodes.new('ShaderNodeBsdfPrincipled')
+    bsdf.location = (500, 0)
+    bsdf.inputs['Roughness'].default_value = roughness
+    bsdf.inputs['Metallic'].default_value = metallic
+    
+    # 图像纹理
+    tex = nodes.new('ShaderNodeTexImage')
+    tex.location = (100, 0)
+    tex.interpolation = 'Smart'
+    tex.projection = 'FLAT'
+    try:
+        tex.image = bpy.data.images.load(texture_path)
+    except:
+        print(f"  [WARNING] Texture not found: {texture_path}, using color fallback")
+        tex.image = bpy.data.images.new(name + "_blank", 512, 512, alpha=True)
+    
+    # 纹理坐标
+    coord = nodes.new('ShaderNodeTexCoord')
+    coord.location = (-200, 0)
+    
+    # 连接：UV → 纹理 → BSDF
+    links.new(coord.outputs['UV'], tex.inputs['Vector'])
+    
+    if color_tint:
+        # 颜色叠加：纹理色 × 色调
+        mix = nodes.new('ShaderNodeMix')
+        mix.location = (300, 0)
+        mix.data_type = 'RGBA'
+        mix.inputs['Factor'].default_value = 0.5
+        mix.inputs['A'].default_value = color_tint
+        links.new(tex.outputs['Color'], mix.inputs['B'])
+        links.new(mix.outputs['Result'], bsdf.inputs['Base Color'])
+    else:
+        links.new(tex.outputs['Color'], bsdf.inputs['Base Color'])
+    
+    if use_alpha:
+        links.new(tex.outputs['Alpha'], bsdf.inputs['Alpha'])
+        mat.blend_method = 'CLIP'
+    
+    links.new(bsdf.outputs['BSDF'], output.inputs['Surface'])
+    return mat
+
+def create_blended_material(name, base_color_rgba, texture_path, blend_factor=0.5,
+                             roughness=0.3, metallic=0.0):
+    """
+    创建纯色 + 纹理混合材质（如星点图案叠加在纯色裙摆上）
+    
+    Args:
+        name: 材质名称
+        base_color_rgba: 基础纯色 RGBA
+        texture_path: 纹理贴图路径
+        blend_factor: 混合比例 (0=纯色, 1=纹理)
+        roughness: 粗糙度
+        metallic: 金属度
+    
+    Returns:
+        bpy.types.Material
+    """
+    mat = bpy.data.materials.new(name=name)
+    mat.use_nodes = True
+    nodes = mat.node_tree.nodes
+    links = mat.node_tree.links
+    nodes.clear()
+    
+    output = nodes.new('ShaderNodeOutputMaterial')
+    output.location = (800, 0)
+    
+    bsdf = nodes.new('ShaderNodeBsdfPrincipled')
+    bsdf.location = (500, 0)
+    bsdf.inputs['Roughness'].default_value = roughness
+    bsdf.inputs['Metallic'].default_value = metallic
+    
+    # 纯色输入
+    rgb = nodes.new('ShaderNodeRGB')
+    rgb.location = (-100, 200)
+    rgb.outputs['Color'].default_value = base_color_rgba
+    
+    # 纹理输入
+    tex = nodes.new('ShaderNodeTexImage')
+    tex.location = (-100, -100)
+    try:
+        tex.image = bpy.data.images.load(texture_path)
+    except:
+        tex.image = bpy.data.images.new(name + "_blank", 512, 512, alpha=True)
+    
+    coord = nodes.new('ShaderNodeTexCoord')
+    coord.location = (-400, -100)
+    links.new(coord.outputs['UV'], tex.inputs['Vector'])
+    
+    # 混合
+    mix = nodes.new('ShaderNodeMix')
+    mix.location = (300, 0)
+    mix.data_type = 'RGBA'
+    mix.inputs['Factor'].default_value = blend_factor
+    mix.inputs['A'].default_value = base_color_rgba
+    links.new(tex.outputs['Color'], mix.inputs['B'])
+    links.new(mix.outputs['Result'], bsdf.inputs['Base Color'])
+    
+    links.new(bsdf.outputs['BSDF'], output.inputs['Surface'])
+    return mat
+
+def load_texture_and_apply(obj, texture_path, material_name=None, roughness=0.3):
+    """
+    一键加载纹理并应用到对象
+    
+    Args:
+        obj: 目标 mesh 对象
+        texture_path: 纹理贴图路径
+        material_name: 材质名称（可选，默认使用纹理文件名）
+        roughness: 粗糙度
+    """
+    import os
+    if material_name is None:
+        material_name = os.path.splitext(os.path.basename(texture_path))[0] + "_Mat"
+    
+    mat = create_textured_material(material_name, texture_path, roughness=roughness)
+    obj.data.materials.append(mat)
+    return mat
+
 # ============ 高级材质 ============
 
 def create_skin_material(name, base_color, subsurface_color=(1.0, 0.8, 0.7)):
@@ -523,6 +717,11 @@ print("  - create_skin_material(name, base_color, subsurface_color)")
 print("  - create_hair_material(name, base_color)")
 print("  - create_fabric_material(name, base_color, roughness)")
 print("  - create_metal_material(name, base_color, metallic, roughness)")
+print("  - smart_uv_unwrap(obj, method, angle_limit)")
+print("  - cube_uv_project(obj) / cylinder_uv_project(obj) / sphere_uv_project(obj)")
+print("  - create_textured_material(name, texture_path, roughness, metallic, color_tint, use_alpha)")
+print("  - create_blended_material(name, base_color_rgba, texture_path, blend_factor, roughness, metallic)")
+print("  - load_texture_and_apply(obj, texture_path, material_name, roughness)")
 print("  - setup_three_point_lighting(key_energy, fill_energy, rim_energy)")
 print("  - create_smooth_sphere(name, location, radius)")
 print("  - create_smooth_cube(name, location, size)")

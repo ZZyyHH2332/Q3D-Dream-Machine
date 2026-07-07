@@ -23,13 +23,15 @@ import {
   ModelTask,
   getAllTaskRoutes,
 } from "../providers/model-router.js";
-import { buildModelAdaptedScriptPrompt } from "../utils/prompt-optimizer.js";
+import { buildModelAdaptedScriptPrompt, buildTextureGenerationPrompt, buildMaterialExtractionPrompt } from "../utils/prompt-optimizer.js";
 
 /** Pipeline 阶段 */
 type PipelineStage =
   | "init"
   | "vision"
   | "multiview"
+  | "texture"
+  | "material"
   | "script"
   | "execution"
   | "assessment"
@@ -42,6 +44,8 @@ interface PipelineState {
   currentStage: PipelineStage;
   photoAnalysis?: PhotoAnalysis;
   multiviewPaths?: string[];
+  texturePaths?: Record<string, string>;
+  materialParams?: Record<string, any>;
   scriptPath?: string;
   glbPath?: string;
   qualityScore?: number;
@@ -104,6 +108,14 @@ export function registerPipelineGenerate(server: any): void {
         type: "string",
         description: "【TRAE 回传】质量评估结果 JSON 字符串",
       },
+      texturePaths: {
+        type: "string",
+        description: "【TRAE 回传】纹理贴图路径 JSON 对象（如 {\"skin\":\"...\", \"hair\":\"...\"}）",
+      },
+      materialParams: {
+        type: "string",
+        description: "【TRAE 回传】材质参数 JSON 对象（GLM-5.2 提取 + MiniMax-M3 精调）",
+      },
       style: {
         type: "string",
         description: "角色风格（可选，默认自动提取）",
@@ -116,6 +128,8 @@ export function registerPipelineGenerate(server: any): void {
       generatedImagePaths?: string;
       scriptPath?: string;
       qualityAssessment?: string;
+      texturePaths?: string;
+      materialParams?: string;
       style?: string;
     }) => {
       try {
@@ -126,6 +140,8 @@ export function registerPipelineGenerate(server: any): void {
           generatedImagePaths,
           scriptPath,
           qualityAssessment,
+          texturePaths,
+          materialParams,
           style,
         } = args;
 
@@ -135,6 +151,8 @@ export function registerPipelineGenerate(server: any): void {
         // 更新状态
         if (photoAnalysis) state.photoAnalysis = JSON.parse(photoAnalysis);
         if (generatedImagePaths) state.multiviewPaths = JSON.parse(generatedImagePaths);
+        if (texturePaths) state.texturePaths = JSON.parse(texturePaths);
+        if (materialParams) state.materialParams = JSON.parse(materialParams);
         if (scriptPath) state.scriptPath = scriptPath;
         if (qualityAssessment) {
           const assessment = JSON.parse(qualityAssessment);
@@ -264,6 +282,121 @@ export function registerPipelineGenerate(server: any): void {
               };
             }
 
+            // 推进到纹理阶段
+            state.currentStage = "texture";
+            savePipelineState(state);
+          }
+          // fall through to texture
+
+          case "texture": {
+            // 阶段 3: 纹理贴图生成（Doubao-Seed-2.1-Turbo）
+            if (!state.texturePaths) {
+              const textureRoute = routeModel(ModelTask.TEXTURE_GENERATION);
+              const analysis = state.photoAnalysis;
+
+              // 为每个部件构建纹理 prompt
+              const textureParts = ["skin", "hair", "dress", "accessory", "trim"] as const;
+              const texturePrompts = Object.fromEntries(
+                textureParts.map((part) => [
+                  part,
+                  analysis ? buildTextureGenerationPrompt(textureRoute.modelId, analysis, part) : `seamless tileable texture for ${part} of a chibi character, diffuse/albedo map, 1024x1024, flat lighting, no shadows`,
+                ])
+              );
+
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: JSON.stringify({
+                      success: false,
+                      signal: TraeCollabSignal.NEED_TEXTURE_GENERATION,
+                      sessionId,
+                      currentStage: "texture",
+                      texturePrompts,
+                      textureParts: textureParts,
+                      modelRoute: {
+                        modelId: textureRoute.modelId,
+                        modelName: textureRoute.modelName,
+                        reasoning: textureRoute.reasoning,
+                        fallbackModelId: textureRoute.fallbackModelId,
+                        fallbackModelName: textureRoute.fallbackModelName,
+                      },
+                      message:
+                        "请使用 " + textureRoute.modelName + " 模型调用 GenerateImage 生成纹理贴图，" +
+                        "然后将路径 JSON 对象作为 texturePaths 参数重新调用此工具。",
+                      hint:
+                        "1. 使用 " + textureRoute.modelName + " 模型\n" +
+                        "2. 为 skin/hair/dress/accessory/trim 各生成一张 512x512 纹理贴图\n" +
+                        "3. 重新调用此工具，传入 texturePaths: {\"skin\":\"...\", \"hair\":\"...\", ...}",
+                      nextStage: "material",
+                    }),
+                  },
+                ],
+              };
+            }
+
+            // 推进到材质提取阶段
+            state.currentStage = "material";
+            savePipelineState(state);
+          }
+          // fall through to material
+
+          case "material": {
+            // 阶段 4: 材质参数提取 + 精调（GLM-5.2 → MiniMax-M3）
+            if (!state.materialParams) {
+              const materialRoute = routeModel(ModelTask.MATERIAL_EXTRACTION);
+              const tuningRoute = routeModel(ModelTask.PARAMETER_TUNING);
+              const analysis = state.photoAnalysis;
+
+              const prompt = analysis
+                ? buildMaterialExtractionPrompt(materialRoute.modelId, analysis, state.texturePaths || {})
+                : "请分析角色特征，提取每个部件的 PBR 材质参数（baseColor, roughness, metallic, subsurface 等）。";
+
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: JSON.stringify({
+                      success: false,
+                      signal: TraeCollabSignal.NEED_MATERIAL_EXTRACTION,
+                      sessionId,
+                      currentStage: "material",
+                      materialRoute: {
+                        modelId: materialRoute.modelId,
+                        modelName: materialRoute.modelName,
+                        reasoning: materialRoute.reasoning,
+                        fallbackModelId: materialRoute.fallbackModelId,
+                        fallbackModelName: materialRoute.fallbackModelName,
+                      },
+                      tuningRoute: {
+                        modelId: tuningRoute.modelId,
+                        modelName: tuningRoute.modelName,
+                        reasoning: tuningRoute.reasoning,
+                      },
+                      prompt,
+                      materialSpec: {
+                        skin: "baseColor HEX, roughness 0.3-0.5, metallic 0, subsurface 0.05-0.2",
+                        hair: "baseColor HEX, roughness 0.2-0.4, coatWeight 0.2-0.4",
+                        dress: "baseColor HEX, roughness 0.4-0.7, sheenWeight 0.2-0.4",
+                        accessory: "baseColor HEX, roughness 0.1-0.3, metallic 0.5-0.9",
+                        trim: "baseColor HEX, roughness 0.3-0.5, metallic 0",
+                      },
+                      message:
+                        "请使用 " + materialRoute.modelName + " 模型提取材质参数，" +
+                        "然后使用 " + tuningRoute.modelName + " 精调参数，" +
+                        "将 JSON 结果作为 materialParams 参数重新调用此工具。",
+                      hint:
+                        "1. 使用 " + materialRoute.modelName + " 分析角色特征和纹理，提取粗粒度 PBR 参数\n" +
+                        "2. 使用 " + tuningRoute.modelName + " 对参数进行精调（确保物理合理性）\n" +
+                        "3. 输出 JSON 格式的 materialParams\n" +
+                        "4. 重新调用此工具，传入 materialParams 参数",
+                      nextStage: "script",
+                    }),
+                  },
+                ],
+              };
+            }
+
             // 推进到脚本阶段
             state.currentStage = "script";
             savePipelineState(state);
@@ -294,9 +427,18 @@ export function registerPipelineGenerate(server: any): void {
 角色特征：
 ${JSON.stringify(state.photoAnalysis || {}, null, 2)}
 
+纹理贴图（请使用 create_textured_material / create_blended_material 加载）：
+${state.texturePaths ? Object.entries(state.texturePaths).map(([k, v]) => `  ${k}: ${v}`).join("\n") : "（无纹理，使用纯色材质）"}
+
+材质参数（请应用到 Principled BSDF 节点）：
+${state.materialParams ? JSON.stringify(state.materialParams, null, 2) : "（使用默认材质参数）"}
+
 要求：
+- 对所有部件进行 UV 展开（smart_uv_unwrap / cube_uv_project / cylinder_uv_project）
+- 使用 create_textured_material 为每个部件加载纹理贴图
+- 使用 create_blended_material 实现纯色+纹理混合（如星点图案叠加在裙摆上）
+- 严格应用上述材质参数（roughness, metallic, subsurface 等）
 - 使用细分曲面确保平滑
-- 使用高级材质（SSS 皮肤、高光头发、毛绒布料）
 - 三点布光
 - 导出为 GLB 格式到: ${glbOutputPath}
 - 手办级质量`;

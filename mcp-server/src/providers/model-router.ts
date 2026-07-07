@@ -22,6 +22,12 @@ export enum ModelTask {
   SCRIPT_REFINEMENT = "script_refinement",
   QUALITY_ASSESSMENT = "quality_assessment",
   MULTIVIEW_GENERATION = "multiview_generation",
+  /** 纹理生成：Doubao 生成可投射到 3D 的纹理贴图 */
+  TEXTURE_GENERATION = "texture_generation",
+  /** 材质参数提取：GLM-5.2 分析图片提取精确 HEX/PBR 参数 */
+  MATERIAL_EXTRACTION = "material_extraction",
+  /** 参数精调：MiniMax-M3 精调 PBR 数值 */
+  PARAMETER_TUNING = "parameter_tuning",
 }
 
 /** 模型路由结果 */
@@ -96,6 +102,30 @@ const MODEL_ROUTING_TABLE: Record<ModelTask, ModelRoute> = {
     promptStrategy: "multiview",
     fallbackModelId: "GLM-5.2",
     fallbackModelName: "智谱 GLM 5.2",
+  },
+  [ModelTask.TEXTURE_GENERATION]: {
+    modelId: "Doubao-Seed-2.1-Turbo",
+    modelName: "豆包 Seed 2.1 Turbo",
+    reasoning: "2D 图像生成质量好，适合生成无缝纹理贴图和图案",
+    promptStrategy: "texture_generation",
+    fallbackModelId: "GLM-5.2",
+    fallbackModelName: "智谱 GLM 5.2",
+  },
+  [ModelTask.MATERIAL_EXTRACTION]: {
+    modelId: "GLM-5.2",
+    modelName: "智谱 GLM 5.2",
+    reasoning: "多模态理解+Prompt 工程强，适合分析图片提取材质参数",
+    promptStrategy: "material_extraction",
+    fallbackModelId: "Qwen3.7-Plus",
+    fallbackModelName: "通义千问 3.7 Plus",
+  },
+  [ModelTask.PARAMETER_TUNING]: {
+    modelId: "MiniMax-M3",
+    modelName: "MiniMax M3",
+    reasoning: "工程能力强，适合 PBR 参数精调和数值优化",
+    promptStrategy: "engineering_params",
+    fallbackModelId: "DeepSeek-V4-Pro",
+    fallbackModelName: "DeepSeek V4 Pro",
   },
 };
 

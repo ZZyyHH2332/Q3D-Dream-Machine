@@ -23,7 +23,9 @@ export type PromptStrategy =
   | "debugging"
   | "comparative_analysis"
   | "multiview"
-  | "engineering_params";
+  | "engineering_params"
+  | "texture_generation"
+  | "material_extraction";
 
 /** 模型 Prompt 配置 */
 export interface ModelPromptConfig {
@@ -62,7 +64,10 @@ const MODEL_PROMPT_CONFIGS: Record<string, ModelPromptConfig> = {
 请生成完整可运行的 Python 脚本。代码必须包含：
 - import bpy, import math, from mathutils import Vector, Euler
 - 场景清理、角色创建、材质、灯光、GLB 导出
-- 使用高级建模技术（细分曲面、贝塞尔曲线、融球）`,
+- 对所有部件进行 UV 展开（smart_uv_unwrap / cube_uv_project / cylinder_uv_project）
+- 使用 create_textured_material 为每个部件加载纹理贴图创建 PBR 材质
+- 使用 create_blended_material 实现纯色+纹理混合（如星点图案叠加在裙摆上）
+- 不要使用基元体拼凑，要使用细分曲面、贝塞尔曲线、融球等高级技术`,
     formatInstructions: "只输出 Python 代码，不要包含 markdown 代码块标记或其他解释。",
   },
   "DeepSeek-V4-Pro": {
@@ -98,8 +103,16 @@ const MODEL_PROMPT_CONFIGS: Record<string, ModelPromptConfig> = {
     strategy: "engineering_params",
     temperature: 0.2,
     maxTokens: 4096,
-    systemPrompt: `你是一位 Blender 工程参数优化专家。
-请分析模型参数，给出精确的数值优化建议。`,
+    systemPrompt: `你是一位 Blender PBR 材质参数精调专家。
+请分析粗粒度材质参数，输出精确的数值优化建议。
+精调维度：
+1. Roughness：0=镜面，1=磨砂 — 皮肤 0.3-0.5，布料 0.4-0.7，金属 0.1-0.3
+2. Metallic：0=非金属，1=纯金属 — 皮肤/布料 0，珠宝 0.5-0.9
+3. Subsurface：皮肤散射 — 皮肤 0.05-0.2，Radius 用 (1.0,0.3,0.1) 暖色调
+4. Specular IOR Level：0=无高光，1=强高光 — 皮肤 0.2-0.3，布料 0.1-0.2
+5. Sheen Weight：天鹅绒质感 — 布料可加 0.2-0.4
+6. Coat Weight：清漆层 — 头发可加 0.2-0.4
+确保所有参数在物理合理范围内，不要出现 metallic=1 且 roughness=0 的违反物理的组合。`,
     formatInstructions: "输出 JSON 格式：包含参数名、当前值、建议值、调整理由。",
   },
 };
@@ -238,4 +251,87 @@ export function buildMultiviewPrompt(
   } else {
     return `Q版角色${viewType === "front" ? "正面" : viewType === "side" ? "侧面" : "背面"}全身图，${style}风格，白色背景，高质量3D渲染。`;
   }
+}
+
+/**
+ * 为纹理生成任务构建 prompt
+ * 生成可投射到 3D 模型上的无缝纹理贴图
+ */
+export function buildTextureGenerationPrompt(
+  modelId: string,
+  analysis: PhotoAnalysis,
+  part: "skin" | "hair" | "dress" | "accessory" | "trim"
+): string {
+  const config = getModelPromptConfig(modelId);
+
+  const partPrompts: Record<string, string> = {
+    skin: "seamless tileable skin texture, smooth even skin tone, subtle pore detail, diffuse/albedo map, flat even lighting, no shadows, no 3D perspective, orthographic top-down view, 1024x1024, professional texture asset for 3D character",
+    hair: "seamless tileable hair texture, flowing strands pattern, [color] gradient, diffuse/albedo map, flat even lighting, no shadows, no 3D perspective, orthographic top-down view, 1024x1024, professional texture asset for 3D character",
+    dress: "seamless tileable fabric texture, [pattern] pattern, soft cloth weave, diffuse/albedo map, flat even lighting, no shadows, no 3D perspective, orthographic top-down view, 1024x1024, professional texture asset for 3D character",
+    accessory: "seamless tileable iridescent/metallic texture, shiny surface, diffuse/albedo map, flat even lighting, no shadows, no 3D perspective, orthographic top-down view, 1024x1024, professional texture asset for 3D character",
+    trim: "seamless tileable lace/trim texture, white delicate lace pattern, semi-transparent, diffuse/albedo map, flat even lighting, no shadows, no 3D perspective, orthographic top-down view, 1024x1024, professional texture asset for 3D character",
+  };
+
+  // 根据角色特征定制 prompt
+  let customPrompt = partPrompts[part] || partPrompts.dress;
+  
+  if (part === "hair" && analysis.hair) {
+    customPrompt = customPrompt.replace("[color]", analysis.hair.color || "gradient");
+  }
+  if (part === "dress" && analysis.outfit) {
+    const pattern = analysis.outfit.pattern || "star pattern";
+    customPrompt = customPrompt.replace("[pattern]", pattern);
+  }
+
+  return `${config.systemPrompt}
+
+Generate a texture map for: ${part} of a chibi character.
+${customPrompt}
+
+${config.formatInstructions}`;
+}
+
+/**
+ * 为材质参数提取任务构建 prompt
+ * GLM-5.2 分析 PhotoAnalysis 和纹理图，提取 PBR 材质参数
+ */
+export function buildMaterialExtractionPrompt(
+  modelId: string,
+  analysis: PhotoAnalysis,
+  texturePaths: Record<string, string>
+): string {
+  const config = getModelPromptConfig(modelId);
+
+  return `${config.systemPrompt}
+
+角色特征：
+${JSON.stringify(analysis, null, 2)}
+
+纹理贴图路径：
+${Object.entries(texturePaths).map(([k, v]) => `  ${k}: ${v}`).join("\n")}
+
+请分析上述角色特征和纹理，输出每个部件的精确 PBR 材质参数 JSON：
+{
+  "skin": {
+    "baseColor": "#HEXCODE",
+    "baseColorRGBA": [R, G, B, A],
+    "roughness": 0.0-1.0,
+    "metallic": 0.0-1.0,
+    "subsurface": 0.0-1.0,
+    "specularIOR": 0.0-1.0
+  },
+  "hair": { ... },
+  "dress": { ... },
+  "accessory": { ... },
+  "trim": { ... }
+}
+
+规则：
+- 皮肤：roughness 0.3-0.5, metallic 0, subsurface 0.05-0.2
+- 头发：roughness 0.2-0.4, 可加 coatWeight 0.2-0.4
+- 布料：roughness 0.4-0.7, sheenWeight 0.2-0.4
+- 金属/宝石：roughness 0.1-0.3, metallic 0.5-0.9
+- 所有颜色从角色特征描述中提取，不要编造
+
+${config.formatInstructions}`;
 }
