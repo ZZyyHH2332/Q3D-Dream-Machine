@@ -123,6 +123,11 @@ body {
   gap: 6px;
 }
 .load-size .dot2 { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-2); }
+.dot2.pulse { animation: dotPulse 1.2s ease-in-out infinite; }
+@keyframes dotPulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
 
 /* Progress bar */
 .progress-wrap {
@@ -287,18 +292,18 @@ body {
     <!-- Loading overlay -->
     <div class="load-overlay" id="loadOverlay">
       <img class="load-preview" src="demo/hunyuan3d/output/render.png" alt="预览">
-      <button class="load-btn" id="loadBtn" onclick="startLoading()">
-        <span class="icon">🧊</span> 加载 3D 模型
-      </button>
       <div class="load-size">
-        <span class="dot2"></span> 15.7 MB · 31 万顶点 · 纹理已压缩
+        <span class="dot2 pulse"></span> 15.7 MB · 31 万顶点 · 纹理已压缩
       </div>
-      <div class="progress-wrap" id="progressWrap">
+      <div class="progress-wrap show" id="progressWrap">
         <div class="progress-bar">
           <div class="progress-fill" id="progressFill"></div>
         </div>
-        <div class="progress-text" id="progressText">准备下载...</div>
+        <div class="progress-text" id="progressText">正在连接...</div>
       </div>
+      <button class="load-btn" id="loadBtn" style="display:none" onclick="startLoading()">
+        <span class="icon">⚠</span> 重新加载
+      </button>
     </div>
     <div class="viewer-overlay" id="viewerInfo"></div>
     <div class="viewer-hint">
@@ -542,6 +547,16 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   renderer.setSize(viewer.clientWidth, viewer.clientHeight);
 });
+
+// 页面加载完成后自动开始下载模型
+setTimeout(() => startLoading(), 300);
+
+// Service Worker 缓存：下次访问秒开
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
 </script>
 
 <script>
