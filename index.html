@@ -1,3047 +1,1363 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<m
-eta charset="UTF-8">
-<meta name="viewport" co
-ntent="width=device-width, initial-scale=1.0"
->
-<title>Q3D 形象造梦机 — 你的专属
- Q 版 3D 虚拟角色</title>
-<link href="ht
-tps://fonts.googleapis.com/css2?family=ZCOOL+
-KuaiLe&family=Ma+Shan+Zheng&family=Noto+Sans+
-SC:wght@300;400;500;700;900&display=swap" rel
-="stylesheet">
-<link rel="stylesheet" href="h
-ttps://cdn.jsdelivr.net/npm/mermaid@10/dist/m
-ermaid.min.css">
-<script src="https://cdn.jsd
-elivr.net/npm/mermaid@10/dist/mermaid.min.js"
-></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q3D 形象造梦机 — 你的专属 Q 版 3D 虚拟角色</title>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <style>
   :root {
-    --bg-gradien
-t-start: #FFF5F7;
-    --bg-gradient-end: #F0F
-9FF;
+    --bg-gradient-start: #FFF5F7;
+    --bg-gradient-end: #F0F9FF;
     --card-bg: rgba(255,255,255,0.78);
- 
-   --card-border: rgba(255,255,255,0.55);
-   
- --primary: #FF8FAB;
-    --primary-light: #FF
-B7C5;
+    --card-border: rgba(255,255,255,0.55);
+    --primary: #FF8FAB;
+    --primary-light: #FFB7C5;
     --primary-dark: #E86A8A;
-    --mint
-: #A8E6CF;
+    --mint: #A8E6CF;
     --sky: #B4D7F0;
-    --yellow: 
-#FFD93D;
+    --yellow: #FFD93D;
     --text-main: #4A4A6A;
-    --text
--sub: #8B8BA7;
+    --text-sub: #8B8BA7;
     --radius-lg: 24px;
-    --r
-adius-md: 16px;
-    --shadow-soft: 0 8px 32px
- rgba(255,143,171,0.14);
-    --shadow-hover: 
-0 16px 48px rgba(255,143,171,0.22);
-    --bou
-nce: cubic-bezier(0.34, 1.56, 0.64, 1);
-    -
--font-display: 'ZCOOL KuaiLe', 'Ma Shan Zheng
-', 'PingFang SC', 'Microsoft YaHei', sans-ser
-if;
-    --font-body: 'Noto Sans SC', 'PingFan
-g SC', 'Microsoft YaHei', sans-serif;
+    --radius-md: 16px;
+    --shadow-soft: 0 8px 32px rgba(255,143,171,0.14);
+    --shadow-hover: 0 16px 48px rgba(255,143,171,0.22);
+    --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --font-display: 'ZCOOL KuaiLe', 'Ma Shan Zheng', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    --font-body: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   }
 
-  
-* { margin:0; padding:0; box-sizing:border-bo
-x; }
+  * { margin:0; padding:0; box-sizing:border-box; }
   html { scroll-behavior:smooth; }
-  bod
-y {
+  body {
     font-family: var(--font-body);
-    co
-lor: var(--text-main);
-    background: linear
--gradient(135deg, var(--bg-gradient-start), v
-ar(--bg-gradient-end));
-    min-height: 100vh
-;
+    color: var(--text-main);
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+    min-height: 100vh;
     overflow-x: hidden;
-    line-height: 1.
-6;
+    line-height: 1.6;
   }
 
-  /* ===== 浮动背景粒子 ===== *
-/
+  /* ===== 浮动背景粒子 ===== */
   .bg-particles {
-    position: fixed; top:
-0; left:0; width:100%; height:100%;
-    point
-er-events: none; z-index:0; overflow:hidden;
-
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    pointer-events: none; z-index:0; overflow:hidden;
   }
   .particle {
-    position: absolute; bor
-der-radius: 50%;
-    opacity: 0.35; animation
-: floatParticle linear infinite;
+    position: absolute; border-radius: 50%;
+    opacity: 0.35; animation: floatParticle linear infinite;
   }
-  @keyfr
-ames floatParticle {
-    0% { transform: tran
-slateY(0) translateX(0) scale(1); }
-    33% {
- transform: translateY(-40px) translateX(20px
-) scale(1.08); }
-    66% { transform: transla
-teY(20px) translateX(-15px) scale(0.95); }
-  
-  100% { transform: translateY(0) translateX(
-0) scale(1); }
+  @keyframes floatParticle {
+    0% { transform: translateY(0) translateX(0) scale(1); }
+    33% { transform: translateY(-40px) translateX(20px) scale(1.08); }
+    66% { transform: translateY(20px) translateX(-15px) scale(0.95); }
+    100% { transform: translateY(0) translateX(0) scale(1); }
   }
-  .p1 { width:300px; heigh
-t:300px; background:radial-gradient(circle, v
-ar(--primary-light), transparent 70%); top:-5
-%; left:-5%; animation-duration:18s; filter:b
-lur(60px); }
-  .p2 { width:220px; height:220p
-x; background:radial-gradient(circle, var(--s
-ky), transparent 70%); top:15%; right:-3%; an
-imation-duration:22s; animation-delay:-5s; fi
-lter:blur(50px); }
-  .p3 { width:180px; heigh
-t:180px; background:radial-gradient(circle, v
-ar(--mint), transparent 70%); bottom:20%; lef
-t:10%; animation-duration:20s; animation-dela
-y:-8s; filter:blur(45px); }
-  .p4 { width:260
-px; height:260px; background:radial-gradient(
-circle, var(--yellow), transparent 70%); bott
-om:5%; right:15%; animation-duration:24s; ani
-mation-delay:-3s; filter:blur(55px); }
-  .p5 
-{ width:140px; height:140px; background:radia
-l-gradient(circle, var(--primary), transparen
-t 70%); top:45%; left:40%; animation-duration
-:19s; animation-delay:-10s; filter:blur(40px)
-; opacity:0.2; }
+  .p1 { width:300px; height:300px; background:radial-gradient(circle, var(--primary-light), transparent 70%); top:-5%; left:-5%; animation-duration:18s; filter:blur(60px); }
+  .p2 { width:220px; height:220px; background:radial-gradient(circle, var(--sky), transparent 70%); top:15%; right:-3%; animation-duration:22s; animation-delay:-5s; filter:blur(50px); }
+  .p3 { width:180px; height:180px; background:radial-gradient(circle, var(--mint), transparent 70%); bottom:20%; left:10%; animation-duration:20s; animation-delay:-8s; filter:blur(45px); }
+  .p4 { width:260px; height:260px; background:radial-gradient(circle, var(--yellow), transparent 70%); bottom:5%; right:15%; animation-duration:24s; animation-delay:-3s; filter:blur(55px); }
+  .p5 { width:140px; height:140px; background:radial-gradient(circle, var(--primary), transparent 70%); top:45%; left:40%; animation-duration:19s; animation-delay:-10s; filter:blur(40px); opacity:0.2; }
 
-  /* ===== 通用动画 ===
-== */
+  /* ===== 通用动画 ===== */
   .reveal {
-    opacity:0; transform: t
-ranslateY(30px);
-    transition: opacity 0.7s
- var(--bounce), transform 0.7s var(--bounce);
-
+    opacity:0; transform: translateY(30px);
+    transition: opacity 0.7s var(--bounce), transform 0.7s var(--bounce);
   }
-  .reveal.visible { opacity:1; transform
-: translateY(0); }
+  .reveal.visible { opacity:1; transform: translateY(0); }
 
-  /* ===== 导航 ===== *
-/
+  /* ===== 导航 ===== */
   .top-nav {
-    position: fixed; top:0; le
-ft:0; width:100%; z-index:100;
-    padding: 1
-6px 40px; display:flex; justify-content:space
--between; align-items:center;
-    background:
- rgba(255,255,255,0.45); backdrop-filter: blu
-r(16px);
-    border-bottom: 1px solid rgba(25
-5,255,255,0.4);
+    position: fixed; top:0; left:0; width:100%; z-index:100;
+    padding: 16px 40px; display:flex; justify-content:space-between; align-items:center;
+    background: rgba(255,255,255,0.45); backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,255,255,0.4);
   }
   .nav-brand {
-    font-f
-amily: var(--font-display); font-size: 1.5rem
-;
-    background: linear-gradient(135deg, var
-(--primary), var(--sky));
-    -webkit-backgro
-und-clip: text; background-clip: text; color:
- transparent;
+    font-family: var(--font-display); font-size: 1.5rem;
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
     font-weight: 700;
   }
-  .na
-v-links { display:flex; gap:28px; }
-  .nav-li
-nks a {
-    color: var(--text-sub); text-deco
-ration:none; font-size:0.92rem; font-weight:5
-00;
-    transition: color 0.3s; position:rela
-tive;
+  .nav-links { display:flex; gap:28px; }
+  .nav-links a {
+    color: var(--text-sub); text-decoration:none; font-size:0.92rem; font-weight:500;
+    transition: color 0.3s; position:relative;
   }
-  .nav-links a:hover { color: var(-
--primary-dark); }
+  .nav-links a:hover { color: var(--primary-dark); }
   .nav-links a::after {
-   
- content:''; position:absolute; bottom:-4px; 
-left:0; width:0; height:2px;
-    background: 
-linear-gradient(90deg, var(--primary), var(--
-sky));
-    transition: width 0.3s var(--bounc
-e);
+    content:''; position:absolute; bottom:-4px; left:0; width:0; height:2px;
+    background: linear-gradient(90deg, var(--primary), var(--sky));
+    transition: width 0.3s var(--bounce);
   }
-  .nav-links a:hover::after { width:1
-00%; }
+  .nav-links a:hover::after { width:100%; }
 
   /* ===== Hero ===== */
   .hero {
-  
-  position:relative; z-index:1;
-    min-heigh
-t: 100vh; display:flex; flex-direction:column
-;
-    justify-content:center; align-items:cen
-ter; text-align:center;
-    padding: 120px 20
-px 80px;
+    position:relative; z-index:1;
+    min-height: 100vh; display:flex; flex-direction:column;
+    justify-content:center; align-items:center; text-align:center;
+    padding: 120px 20px 80px;
   }
   .hero-title {
-    font-family:
- var(--font-display); font-size: clamp(2.8rem
-, 7vw, 5.5rem);
-    line-height: 1.15; margin
--bottom: 20px;
-    background: linear-gradien
-t(135deg, var(--primary), var(--sky) 60%, var
-(--mint));
-    -webkit-background-clip: text;
- background-clip: text; color: transparent;
- 
-   letter-spacing: 0.04em;
+    font-family: var(--font-display); font-size: clamp(2.8rem, 7vw, 5.5rem);
+    line-height: 1.15; margin-bottom: 20px;
+    background: linear-gradient(135deg, var(--primary), var(--sky) 60%, var(--mint));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    letter-spacing: 0.04em;
   }
-  .hero-title 
-span {
-    display:inline-block; opacity:0; t
-ransform: translateY(20px);
-    animation: ch
-arReveal 0.6s var(--bounce) forwards;
+  .hero-title span {
+    display:inline-block; opacity:0; transform: translateY(20px);
+    animation: charReveal 0.6s var(--bounce) forwards;
   }
-  @
-keyframes charReveal {
-    to { opacity:1; tr
-ansform: translateY(0); }
+  @keyframes charReveal {
+    to { opacity:1; transform: translateY(0); }
   }
-  .hero-subtitl
-e {
-    font-size: clamp(1.05rem, 2.2vw, 1.35
-rem); color: var(--text-sub);
-    max-width: 
-600px; margin-bottom: 36px; font-weight: 400;
-
+  .hero-subtitle {
+    font-size: clamp(1.05rem, 2.2vw, 1.35rem); color: var(--text-sub);
+    max-width: 600px; margin-bottom: 36px; font-weight: 400;
   }
   .hero-cta {
-    display:inline-flex; a
-lign-items:center; gap:10px;
-    padding: 16p
-x 40px; border-radius: 9999px;
-    background
-: linear-gradient(135deg, var(--primary), var
-(--primary-dark));
-    color: #fff; font-size
-: 1.05rem; font-weight: 600; text-decoration:
-none;
-    box-shadow: 0 8px 24px rgba(255,143
-,171,0.35);
-    transition: transform 0.3s va
-r(--bounce), box-shadow 0.3s;
-    border: non
-e; cursor: pointer;
+    display:inline-flex; align-items:center; gap:10px;
+    padding: 16px 40px; border-radius: 9999px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff; font-size: 1.05rem; font-weight: 600; text-decoration:none;
+    box-shadow: 0 8px 24px rgba(255,143,171,0.35);
+    transition: transform 0.3s var(--bounce), box-shadow 0.3s;
+    border: none; cursor: pointer;
   }
   .hero-cta:hover {
- 
-   transform: scale(1.06) translateY(-2px);
- 
-   box-shadow: 0 14px 36px rgba(255,143,171,0
-.45);
+    transform: scale(1.06) translateY(-2px);
+    box-shadow: 0 14px 36px rgba(255,143,171,0.45);
   }
   .hero-scroll-hint {
-    position:
-absolute; bottom:30px; left:50%; transform:tr
-anslateX(-50%);
-    display:flex; flex-direct
-ion:column; align-items:center; gap:6px;
-    
-color: var(--text-sub); font-size:0.8rem; opa
-city:0.7;
-    animation: bounceDown 2s infini
-te;
+    position:absolute; bottom:30px; left:50%; transform:translateX(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    color: var(--text-sub); font-size:0.8rem; opacity:0.7;
+    animation: bounceDown 2s infinite;
   }
   @keyframes bounceDown {
-    0%,100%
- { transform: translateX(-50%) translateY(0);
- }
-    50% { transform: translateX(-50%) tran
-slateY(8px); }
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
   }
-  .hero-scroll-hint svg { 
-width:20px; height:20px; stroke:var(--text-su
-b); }
+  .hero-scroll-hint svg { width:20px; height:20px; stroke:var(--text-sub); }
 
   /* ===== Section 通用 ===== */
-  s
-ection { position:relative; z-index:1; paddin
-g: 80px 24px; max-width: 1200px; margin: 0 au
-to; }
+  section { position:relative; z-index:1; padding: 80px 24px; max-width: 1200px; margin: 0 auto; }
   .section-title {
-    font-family: var
-(--font-display); font-size: clamp(1.8rem, 4v
-w, 2.6rem);
-    text-align:center; margin-bot
-tom: 12px;
-    background: linear-gradient(13
-5deg, var(--primary), var(--sky));
-    -webki
-t-background-clip: text; background-clip: tex
-t; color: transparent;
+    font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.6rem);
+    text-align:center; margin-bottom: 12px;
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
   }
-  .section-subtitl
-e {
-    text-align:center; color: var(--text-
-sub); font-size:1rem;
-    max-width: 560px; m
-argin: 0 auto 48px;
+  .section-subtitle {
+    text-align:center; color: var(--text-sub); font-size:1rem;
+    max-width: 560px; margin: 0 auto 48px;
   }
 
-  /* ===== 三栏卡
-片区 ===== */
+  /* ===== 三栏卡片区 ===== */
   .cards-grid {
-    display:g
-rid; grid-template-columns: repeat(3, 1fr); g
-ap: 28px;
+    display:grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
   }
   .glass-card {
-    background:
- var(--card-bg); backdrop-filter: blur(12px);
-
-    border: 1px solid var(--card-border); bo
-rder-radius: var(--radius-lg);
-    padding: 3
-6px 28px; box-shadow: var(--shadow-soft);
-   
- transition: transform 0.4s var(--bounce), bo
-x-shadow 0.4s;
+    background: var(--card-bg); backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border); border-radius: var(--radius-lg);
+    padding: 36px 28px; box-shadow: var(--shadow-soft);
+    transition: transform 0.4s var(--bounce), box-shadow 0.4s;
   }
   .glass-card:hover {
-    
-transform: translateY(-6px); box-shadow: var(
---shadow-hover);
+    transform: translateY(-6px); box-shadow: var(--shadow-hover);
   }
   .card-icon {
-    width
-: 56px; height: 56px; border-radius: 50%; mar
-gin-bottom: 18px;
-    display:flex; align-ite
-ms:center; justify-content:center; font-size:
-1.6rem;
+    width: 56px; height: 56px; border-radius: 50%; margin-bottom: 18px;
+    display:flex; align-items:center; justify-content:center; font-size:1.6rem;
   }
-  .card-icon.pink { background: l
-inear-gradient(135deg, #FFE4E9, #FFB7C5); }
- 
- .card-icon.mint { background: linear-gradien
-t(135deg, #E0F2F1, #A8E6CF); }
-  .card-icon.s
-ky { background: linear-gradient(135deg, #E3F
-2FD, #B4D7F0); }
+  .card-icon.pink { background: linear-gradient(135deg, #FFE4E9, #FFB7C5); }
+  .card-icon.mint { background: linear-gradient(135deg, #E0F2F1, #A8E6CF); }
+  .card-icon.sky { background: linear-gradient(135deg, #E3F2FD, #B4D7F0); }
   .glass-card h3 {
-    font-
-family: var(--font-display); font-size: 1.25r
-em; margin-bottom: 10px;
-    color: var(--tex
-t-main);
+    font-family: var(--font-display); font-size: 1.25rem; margin-bottom: 10px;
+    color: var(--text-main);
   }
-  .glass-card p { font-size: 0.9
-2rem; color: var(--text-sub); line-height:1.7
-; }
-  .glass-card ul { margin-top:10px; paddi
-ng-left:18px; }
-  .glass-card li { font-size:
-0.88rem; color: var(--text-sub); margin-botto
-m:6px; }
+  .glass-card p { font-size: 0.92rem; color: var(--text-sub); line-height:1.7; }
+  .glass-card ul { margin-top:10px; padding-left:18px; }
+  .glass-card li { font-size:0.88rem; color: var(--text-sub); margin-bottom:6px; }
 
-  /* ===== 价值区域特殊样式
- ===== */
-  .value-grid { display:grid; grid-
-template-columns: repeat(2, 1fr); gap: 28px; 
-}
-  .value-card { display:flex; gap:18px; ali
-gn-items:flex-start; }
-  .value-card .card-ic
-on { flex-shrink:0; margin-bottom:0; }
-  .val
-ue-card h3 { margin-bottom:6px; font-family: 
-var(--font-display); font-size:1.15rem; }
-  .
-value-card p { font-size:0.9rem; color: var(-
--text-sub); line-height:1.65; }
+  /* ===== 价值区域特殊样式 ===== */
+  .value-grid { display:grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+  .value-card { display:flex; gap:18px; align-items:flex-start; }
+  .value-card .card-icon { flex-shrink:0; margin-bottom:0; }
+  .value-card h3 { margin-bottom:6px; font-family: var(--font-display); font-size:1.15rem; }
+  .value-card p { font-size:0.9rem; color: var(--text-sub); line-height:1.65; }
 
-  /* ===== M
-ermaid 流程图区 ===== */
-  .mermaid-conta
-iner {
-    background: var(--card-bg); backdr
-op-filter: blur(12px);
-    border: 1px solid 
-var(--card-border); border-radius: var(--radi
-us-lg);
-    padding: 40px 32px; box-shadow: v
-ar(--shadow-soft);
+  /* ===== Mermaid 流程图区 ===== */
+  .mermaid-container {
+    background: var(--card-bg); backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border); border-radius: var(--radius-lg);
+    padding: 40px 32px; box-shadow: var(--shadow-soft);
     overflow-x: auto;
   }
-
-  .mermaid svg { max-width: 100%; height: aut
-o; margin: 0 auto; display:block; }
-  /* 自�
-��义 mermaid 颜色覆盖 */
-  .mermaid .nod
-e rect, .mermaid .node circle, .mermaid .node
- ellipse, .mermaid .node polygon {
-    fill: 
-#FFF0F3 !important; stroke: var(--primary-lig
-ht) !important; stroke-width: 2px !important;
-
-    rx: 12px !important; ry: 12px !important
-;
+  .mermaid svg { max-width: 100%; height: auto; margin: 0 auto; display:block; }
+  /* 自定义 mermaid 颜色覆盖 */
+  .mermaid .node rect, .mermaid .node circle, .mermaid .node ellipse, .mermaid .node polygon {
+    fill: #FFF0F3 !important; stroke: var(--primary-light) !important; stroke-width: 2px !important;
+    rx: 12px !important; ry: 12px !important;
   }
-  .mermaid .node .label { color: var(--
-text-main) !important; font-family: var(--fon
-t-body) !important; font-size: 13px !importan
-t; }
-  .mermaid .edgePath .path { stroke: var
-(--primary-light) !important; stroke-width: 2
-px !important; }
-  .mermaid .arrowheadPath { 
-fill: var(--primary) !important; }
-  .mermaid
- .edgeLabel { background: rgba(255,255,255,0.
-8) !important; color: var(--text-sub) !import
-ant; }
+  .mermaid .node .label { color: var(--text-main) !important; font-family: var(--font-body) !important; font-size: 13px !important; }
+  .mermaid .edgePath .path { stroke: var(--primary-light) !important; stroke-width: 2px !important; }
+  .mermaid .arrowheadPath { fill: var(--primary) !important; }
+  .mermaid .edgeLabel { background: rgba(255,255,255,0.8) !important; color: var(--text-sub) !important; }
 
   /* ===== Demo 交互区 ===== */
-  
-.demo-workspace {
-    background: var(--card-
-bg); backdrop-filter: blur(12px);
-    border:
- 1px solid var(--card-border); border-radius:
- var(--radius-lg);
-    padding: 36px; box-sha
-dow: var(--shadow-soft);
-    display:grid; gr
-id-template-columns: 1fr 1fr; gap: 28px;
+  .demo-workspace {
+    background: var(--card-bg); backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border); border-radius: var(--radius-lg);
+    padding: 36px; box-shadow: var(--shadow-soft);
+    display:grid; grid-template-columns: 1fr 1fr; gap: 28px;
   }
+  .demo-left { display:flex; flex-direction:column; gap:20px; }
+  .demo-right { display:flex; flex-direction:column; align-items:center; justify-content:center; }
 
-  .demo-left { display:flex; flex-direction:c
-olumn; gap:20px; }
-  .demo-right { display:fl
-ex; flex-direction:column; align-items:center
-; justify-content:center; }
-
-  /* 上传区 *
-/
+  /* 上传区 */
   .upload-zone {
-    border: 2px dashed var
-(--primary-light); border-radius: var(--radiu
-s-md);
-    padding: 36px 24px; text-align:cen
-ter; cursor: pointer;
-    transition: border-
-color 0.3s, background 0.3s; position:relativ
-e;
+    border: 2px dashed var(--primary-light); border-radius: var(--radius-md);
+    padding: 36px 24px; text-align:center; cursor: pointer;
+    transition: border-color 0.3s, background 0.3s; position:relative;
     background: rgba(255,255,255,0.4);
   }
-
-  .upload-zone:hover, .upload-zone.dragover 
-{
-    border-color: var(--primary); backgroun
-d: rgba(255,143,171,0.06);
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--primary); background: rgba(255,143,171,0.06);
   }
-  .upload-zone
- input[type="file"] { position:absolute; inse
-t:0; opacity:0; cursor:pointer; }
-  .upload-i
-con { font-size: 2.2rem; margin-bottom: 10px;
- }
-  .upload-text { color: var(--text-sub); f
-ont-size:0.92rem; }
-  .upload-hint { color: v
-ar(--text-sub); font-size:0.8rem; margin-top:
-6px; opacity:0.7; }
-  .upload-preview { displ
-ay:none; margin-top:14px; }
-  .upload-preview
- img { max-width:100%; max-height:200px; bord
-er-radius:var(--radius-md); box-shadow:0 4px 
-16px rgba(0,0,0,0.08); }
+  .upload-zone input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+  .upload-icon { font-size: 2.2rem; margin-bottom: 10px; }
+  .upload-text { color: var(--text-sub); font-size:0.92rem; }
+  .upload-hint { color: var(--text-sub); font-size:0.8rem; margin-top:6px; opacity:0.7; }
+  .upload-preview { display:none; margin-top:14px; }
+  .upload-preview img { max-width:100%; max-height:200px; border-radius:var(--radius-md); box-shadow:0 4px 16px rgba(0,0,0,0.08); }
 
-  /* 快捷素材 *
-/
-  .quick-materials { display:flex; gap:10px
-; flex-wrap:wrap; }
+  /* 快捷素材 */
+  .quick-materials { display:flex; gap:10px; flex-wrap:wrap; }
   .chip-btn {
-    padding
-: 8px 18px; border-radius: 9999px; border: 1p
-x solid var(--card-border);
-    background: r
-gba(255,255,255,0.6); color: var(--text-sub);
- font-size:0.85rem;
-    cursor:pointer; trans
-ition: all 0.3s var(--bounce); font-family: v
-ar(--font-body);
+    padding: 8px 18px; border-radius: 9999px; border: 1px solid var(--card-border);
+    background: rgba(255,255,255,0.6); color: var(--text-sub); font-size:0.85rem;
+    cursor:pointer; transition: all 0.3s var(--bounce); font-family: var(--font-body);
   }
-  .chip-btn:hover { back
-ground: var(--primary-light); color:#fff; bor
-der-color:var(--primary-light); transform:tra
-nslateY(-2px); }
-  .chip-btn.active { backgro
-und: var(--primary); color:#fff; border-color
-:var(--primary); }
+  .chip-btn:hover { background: var(--primary-light); color:#fff; border-color:var(--primary-light); transform:translateY(-2px); }
+  .chip-btn.active { background: var(--primary); color:#fff; border-color:var(--primary); }
 
   /* 风格切换 */
-  .s
-tyle-panel { display:flex; gap:12px; flex-wra
-p:wrap; }
+  .style-panel { display:flex; gap:12px; flex-wrap:wrap; }
   .style-option {
-    flex:1; min-w
-idth:120px; padding:16px 12px; border-radius:
-var(--radius-md);
-    border: 2px solid trans
-parent; text-align:center; cursor:pointer;
-  
-  transition: all 0.35s var(--bounce); positi
-on:relative;
-    background: rgba(255,255,255
-,0.5);
+    flex:1; min-width:120px; padding:16px 12px; border-radius:var(--radius-md);
+    border: 2px solid transparent; text-align:center; cursor:pointer;
+    transition: all 0.35s var(--bounce); position:relative;
+    background: rgba(255,255,255,0.5);
   }
-  .style-option:hover { transform:
- translateY(-3px); }
-  .style-option.selected
- {
-    border-color: var(--primary); box-shad
-ow: 0 6px 20px rgba(255,143,171,0.2);
-    bac
-kground: rgba(255,255,255,0.9);
+  .style-option:hover { transform: translateY(-3px); }
+  .style-option.selected {
+    border-color: var(--primary); box-shadow: 0 6px 20px rgba(255,143,171,0.2);
+    background: rgba(255,255,255,0.9);
   }
-  .style-
-option .style-thumb {
-    width: 52px; height
-: 52px; border-radius: 50%; margin: 0 auto 10
-px;
-    display:flex; align-items:center; jus
-tify-content:center; font-size:1.4rem;
+  .style-option .style-thumb {
+    width: 52px; height: 52px; border-radius: 50%; margin: 0 auto 10px;
+    display:flex; align-items:center; justify-content:center; font-size:1.4rem;
   }
-  
-.style-option .style-name { font-size:0.85rem
-; font-weight:600; color:var(--text-main); }
-
+  .style-option .style-name { font-size:0.85rem; font-weight:600; color:var(--text-main); }
   .style-option .check-mark {
-    position:ab
-solute; top:8px; right:8px; width:20px; heigh
-t:20px; border-radius:50%;
-    background:var
-(--primary); color:#fff; font-size:12px; disp
-lay:none;
-    align-items:center; justify-con
-tent:center;
+    position:absolute; top:8px; right:8px; width:20px; height:20px; border-radius:50%;
+    background:var(--primary); color:#fff; font-size:12px; display:none;
+    align-items:center; justify-content:center;
   }
-  .style-option.selected .ch
-eck-mark { display:flex; }
+  .style-option.selected .check-mark { display:flex; }
 
-  .style-kawaii {
- background: linear-gradient(135deg, #FFE4E9,
- #FFF0F3); }
-  .style-kawaii .style-thumb { b
-ackground: linear-gradient(135deg, #FFB7C5, #
-FF8FAB); }
-  .style-guofeng { background: lin
-ear-gradient(135deg, #E0F2F1, #F1F8E9); }
-  .
-style-guofeng .style-thumb { background: line
-ar-gradient(135deg, #A8E6CF, #81C784); }
-  .s
-tyle-trendy { background: linear-gradient(135
-deg, #FFF8E1, #F3E5F5); }
-  .style-trendy .st
-yle-thumb { background: linear-gradient(135de
-g, #FFD93D, #CE93D8); }
-  .style-simple { bac
-kground: linear-gradient(135deg, #E3F2FD, #E8
-EAF6); }
-  .style-simple .style-thumb { backg
-round: linear-gradient(135deg, #B4D7F0, #9FA8
-DA); }
+  .style-kawaii { background: linear-gradient(135deg, #FFE4E9, #FFF0F3); }
+  .style-kawaii .style-thumb { background: linear-gradient(135deg, #FFB7C5, #FF8FAB); }
+  .style-guofeng { background: linear-gradient(135deg, #E0F2F1, #F1F8E9); }
+  .style-guofeng .style-thumb { background: linear-gradient(135deg, #A8E6CF, #81C784); }
+  .style-trendy { background: linear-gradient(135deg, #FFF8E1, #F3E5F5); }
+  .style-trendy .style-thumb { background: linear-gradient(135deg, #FFD93D, #CE93D8); }
+  .style-simple { background: linear-gradient(135deg, #E3F2FD, #E8EAF6); }
+  .style-simple .style-thumb { background: linear-gradient(135deg, #B4D7F0, #9FA8DA); }
 
   /* 3D 预览 */
   .preview-3d {
-   
- width: 260px; height: 260px; perspective: 90
-0px; position:relative;
+    width: 260px; height: 260px; perspective: 900px; position:relative;
   }
   .cube {
-    wid
-th: 100%; height: 100%; position: relative;
- 
-   transform-style: preserve-3d;
-    transiti
-on: transform 0.1s ease-out;
+    width: 100%; height: 100%; position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out;
   }
   .face {
-  
-  position: absolute; width: 200px; height: 2
-00px; left:30px; top:30px;
-    border-radius:
- 16px; border: 2px solid rgba(255,255,255,0.7
-);
-    display:flex; align-items:center; just
-ify-content:center;
-    font-size:0.8rem; col
-or: rgba(255,255,255,0.9); font-weight:600;
- 
-   backface-visibility: visible; overflow:hid
-den;
-    box-shadow: inset 0 0 20px rgba(255,
-255,255,0.3);
+    position: absolute; width: 200px; height: 200px; left:30px; top:30px;
+    border-radius: 16px; border: 2px solid rgba(255,255,255,0.7);
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.8rem; color: rgba(255,255,255,0.9); font-weight:600;
+    backface-visibility: visible; overflow:hidden;
+    box-shadow: inset 0 0 20px rgba(255,255,255,0.3);
   }
-  .face-front  { transform:
- rotateY(0deg) translateZ(100px); }
-  .face-b
-ack   { transform: rotateY(180deg) translateZ
-(100px); }
-  .face-left   { transform: rotate
-Y(-90deg) translateZ(100px); }
-  .face-right 
- { transform: rotateY(90deg) translateZ(100px
-); }
-  .face-top    { transform: rotateX(90de
-g) translateZ(100px); }
-  .face-bottom { tran
-sform: rotateX(-90deg) translateZ(100px); }
+  .face-front  { transform: rotateY(0deg) translateZ(100px); }
+  .face-back   { transform: rotateY(180deg) translateZ(100px); }
+  .face-left   { transform: rotateY(-90deg) translateZ(100px); }
+  .face-right  { transform: rotateY(90deg) translateZ(100px); }
+  .face-top    { transform: rotateX(90deg) translateZ(100px); }
+  .face-bottom { transform: rotateX(-90deg) translateZ(100px); }
 
-
-  .face-front { background: linear-gradient(1
-35deg, var(--primary-light), var(--primary));
- }
-  .face-back { background: linear-gradient
-(135deg, var(--sky), var(--mint)); }
-  .face-
-left { background: linear-gradient(135deg, va
-r(--mint), var(--yellow)); }
-  .face-right { 
-background: linear-gradient(135deg, var(--yel
-low), var(--primary-light)); }
-  .face-top { 
-background: linear-gradient(135deg, var(--sky
-), #E1F5FE); }
-  .face-bottom { background: l
-inear-gradient(135deg, var(--primary-dark), v
-ar(--primary)); }
+  .face-front { background: linear-gradient(135deg, var(--primary-light), var(--primary)); }
+  .face-back { background: linear-gradient(135deg, var(--sky), var(--mint)); }
+  .face-left { background: linear-gradient(135deg, var(--mint), var(--yellow)); }
+  .face-right { background: linear-gradient(135deg, var(--yellow), var(--primary-light)); }
+  .face-top { background: linear-gradient(135deg, var(--sky), #E1F5FE); }
+  .face-bottom { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); }
 
   .preview-hint {
-    text
--align:center; margin-top:14px; font-size:0.8
-2rem; color:var(--text-sub);
+    text-align:center; margin-top:14px; font-size:0.82rem; color:var(--text-sub);
   }
 
-  /* 生成
-按钮 */
+  /* 生成按钮 */
   .generate-btn {
-    width:100%; p
-adding: 16px; border-radius: var(--radius-md)
-; border:none;
-    background: linear-gradien
-t(135deg, var(--primary), var(--primary-dark)
-);
-    color:#fff; font-size:1.05rem; font-we
-ight:700; cursor:pointer;
-    box-shadow: 0 6
-px 20px rgba(255,143,171,0.3);
-    transition
-: all 0.3s var(--bounce); font-family: var(--
-font-body);
-    display:flex; align-items:cen
-ter; justify-content:center; gap:8px;
+    width:100%; padding: 16px; border-radius: var(--radius-md); border:none;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color:#fff; font-size:1.05rem; font-weight:700; cursor:pointer;
+    box-shadow: 0 6px 20px rgba(255,143,171,0.3);
+    transition: all 0.3s var(--bounce); font-family: var(--font-body);
+    display:flex; align-items:center; justify-content:center; gap:8px;
   }
-  .
-generate-btn:hover { transform: translateY(-2
-px); box-shadow: 0 10px 28px rgba(255,143,171
-,0.4); }
-  .generate-btn:active { transform: 
-translateY(0); }
-  .generate-btn:disabled { o
-pacity:0.6; cursor:not-allowed; }
+  .generate-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(255,143,171,0.4); }
+  .generate-btn:active { transform: translateY(0); }
+  .generate-btn:disabled { opacity:0.6; cursor:not-allowed; }
 
-  /* 生�
-�进度 */
+  /* 生成进度 */
   .gen-progress {
-    display:none
-; margin-top:16px; padding:16px; border-radiu
-s:var(--radius-md);
-    background:rgba(255,2
-55,255,0.6);
+    display:none; margin-top:16px; padding:16px; border-radius:var(--radius-md);
+    background:rgba(255,255,255,0.6);
   }
-  .gen-progress.visible { di
-splay:block; }
-  .progress-bar-track { height
-:8px; border-radius:999px; background:rgba(0,
-0,0,0.06); overflow:hidden; }
-  .progress-bar
--fill { height:100%; width:0%; border-radius:
-999px; background:linear-gradient(90deg, var(
---primary), var(--sky)); transition: width 0.
-4s ease; }
-  .progress-text { margin-top:8px;
- font-size:0.85rem; color:var(--text-sub); te
-xt-align:center; }
+  .gen-progress.visible { display:block; }
+  .progress-bar-track { height:8px; border-radius:999px; background:rgba(0,0,0,0.06); overflow:hidden; }
+  .progress-bar-fill { height:100%; width:0%; border-radius:999px; background:linear-gradient(90deg, var(--primary), var(--sky)); transition: width 0.4s ease; }
+  .progress-text { margin-top:8px; font-size:0.85rem; color:var(--text-sub); text-align:center; }
 
-  /* ===== 桌面宠物�
-�统 ===== */
+  /* ===== 桌面宠物系统 ===== */
   .desktop-pet {
-    position: 
-fixed; z-index: 99999; width: 130px; height: 
-130px;
-    cursor: grab; user-select: none; p
-ointer-events: auto;
-    transition: filter 0
-.3s, transform 0.2s;
-    filter: drop-shadow(
-0 6px 16px rgba(0,0,0,0.15));
+    position: fixed; z-index: 99999; width: 130px; height: 130px;
+    cursor: grab; user-select: none; pointer-events: auto;
+    transition: filter 0.3s, transform 0.2s;
+    filter: drop-shadow(0 6px 16px rgba(0,0,0,0.15));
   }
-  .desktop-
-pet:active { cursor: grabbing; }
-  .desktop-p
-et svg { width:100%; height:100%; }
-  .deskto
-p-pet.dragging { transition: none; }
-  .pet-b
-ounce { animation: petBounce 2s ease-in-out i
-nfinite; }
+  .desktop-pet:active { cursor: grabbing; }
+  .desktop-pet svg { width:100%; height:100%; }
+  .desktop-pet.dragging { transition: none; }
+  .pet-bounce { animation: petBounce 2s ease-in-out infinite; }
   @keyframes petBounce {
-    0%,10
-0% { transform: translateY(0); }
-    50% { tr
-ansform: translateY(-8px); }
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
   }
-  .pet-sleep
- { animation: petSleep 3s ease-in-out infinit
-e; }
+  .pet-sleep { animation: petSleep 3s ease-in-out infinite; }
   @keyframes petSleep {
-    0%,100% { tr
-ansform: scale(1); }
-    50% { transform: sca
-le(1.03) rotate(-2deg); }
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.03) rotate(-2deg); }
   }
-  .pet-spin { a
-nimation: petSpin 0.6s var(--bounce); }
-  @ke
-yframes petSpin { 0% { transform: rotate(0); 
-} 100% { transform: rotate(360deg); } }
+  .pet-spin { animation: petSpin 0.6s var(--bounce); }
+  @keyframes petSpin { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
 
-  /*
- 宠物气泡 */
+  /* 宠物气泡 */
   .pet-bubble {
-    position
-: absolute; bottom: 110%; left: 50%; transfor
-m: translateX(-50%);
-    background: var(--ca
-rd-bg); backdrop-filter: blur(12px);
-    bord
-er: 1px solid var(--card-border); border-radi
-us: 16px;
-    padding: 10px 16px; white-space
-: nowrap; font-size: 0.82rem;
-    color: var(
---text-main); box-shadow: var(--shadow-soft);
-
-    pointer-events: none; opacity:0; transit
-ion: opacity 0.3s, transform 0.3s var(--bounc
-e);
+    position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%);
+    background: var(--card-bg); backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border); border-radius: 16px;
+    padding: 10px 16px; white-space: nowrap; font-size: 0.82rem;
+    color: var(--text-main); box-shadow: var(--shadow-soft);
+    pointer-events: none; opacity:0; transition: opacity 0.3s, transform 0.3s var(--bounce);
   }
-  .pet-bubble.show { opacity:1; trans
-form: translateX(-50%) translateY(-6px); }
-  
-.pet-bubble::after {
-    content:''; position
-:absolute; top:100%; left:50%; transform:tran
-slateX(-50%);
-    border: 8px solid transpare
-nt; border-top-color: var(--card-bg);
+  .pet-bubble.show { opacity:1; transform: translateX(-50%) translateY(-6px); }
+  .pet-bubble::after {
+    content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+    border: 8px solid transparent; border-top-color: var(--card-bg);
   }
 
-  
-/* 宠物右键菜单 */
+  /* 宠物右键菜单 */
   .pet-context {
-   
- position: absolute; background: var(--card-b
-g); backdrop-filter: blur(16px);
-    border: 
-1px solid var(--card-border); border-radius: 
-var(--radius-md);
-    box-shadow: var(--shado
-w-hover); padding: 8px 0; min-width: 140px;
- 
-   display:none; z-index: 100000;
+    position: absolute; background: var(--card-bg); backdrop-filter: blur(16px);
+    border: 1px solid var(--card-border); border-radius: var(--radius-md);
+    box-shadow: var(--shadow-hover); padding: 8px 0; min-width: 140px;
+    display:none; z-index: 100000;
   }
-  .pet-
-context.show { display:block; }
-  .pet-contex
-t-item {
-    padding: 8px 16px; font-size:0.8
-5rem; color: var(--text-main); cursor:pointer
-;
+  .pet-context.show { display:block; }
+  .pet-context-item {
+    padding: 8px 16px; font-size:0.85rem; color: var(--text-main); cursor:pointer;
     transition: background 0.2s;
   }
-  .pet
--context-item:hover { background: rgba(255,14
-3,171,0.1); }
+  .pet-context-item:hover { background: rgba(255,143,171,0.1); }
 
   /* 宠物对话面板 */
-  .
-pet-chat-panel {
-    position: fixed; z-index
-: 100001; width: 340px; max-height: 460px;
-  
-  background: var(--card-bg); backdrop-filter
-: blur(20px);
-    border: 1px solid var(--car
-d-border); border-radius: var(--radius-lg);
- 
-   box-shadow: var(--shadow-hover); display:n
-one; flex-direction:column;
-    overflow:hidd
-en;
+  .pet-chat-panel {
+    position: fixed; z-index: 100001; width: 340px; max-height: 460px;
+    background: var(--card-bg); backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border); border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-hover); display:none; flex-direction:column;
+    overflow:hidden;
   }
-  .pet-chat-panel.show { display:flex
-; }
+  .pet-chat-panel.show { display:flex; }
   .chat-header {
-    padding: 14px 18px; 
-border-bottom: 1px solid var(--card-border);
-
-    display:flex; align-items:center; gap:10p
-x; background: rgba(255,255,255,0.5);
+    padding: 14px 18px; border-bottom: 1px solid var(--card-border);
+    display:flex; align-items:center; gap:10px; background: rgba(255,255,255,0.5);
   }
-  .
-chat-header-avatar { width:36px; height:36px;
- border-radius:50%; background:linear-gradien
-t(135deg,var(--primary),var(--sky)); display:
-flex; align-items:center; justify-content:cen
-ter; font-size:1.1rem; }
-  .chat-header-info 
-{ flex:1; }
-  .chat-header-name { font-weight
-:700; font-size:0.92rem; }
-  .chat-header-sta
-tus { font-size:0.75rem; color:var(--text-sub
-); }
-  .chat-header-close { width:28px; heigh
-t:28px; border-radius:50%; border:none; backg
-round:rgba(0,0,0,0.05); color:var(--text-sub)
-; cursor:pointer; display:flex; align-items:c
-enter; justify-content:center; font-size:1.1r
-em; transition:background 0.2s; }
-  .chat-hea
-der-close:hover { background:rgba(0,0,0,0.1);
- }
+  .chat-header-avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--sky)); display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
+  .chat-header-info { flex:1; }
+  .chat-header-name { font-weight:700; font-size:0.92rem; }
+  .chat-header-status { font-size:0.75rem; color:var(--text-sub); }
+  .chat-header-close { width:28px; height:28px; border-radius:50%; border:none; background:rgba(0,0,0,0.05); color:var(--text-sub); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1.1rem; transition:background 0.2s; }
+  .chat-header-close:hover { background:rgba(0,0,0,0.1); }
 
-  .chat-messages { flex:1; overflow-y:aut
-o; padding:14px 16px; display:flex; flex-dire
-ction:column; gap:10px; }
+  .chat-messages { flex:1; overflow-y:auto; padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
   .msg-bubble {
-   
- max-width: 82%; padding: 10px 14px; border-r
-adius: 14px; font-size:0.86rem; line-height:1
-.55;
-    word-break:break-word; animation: ms
-gIn 0.35s var(--bounce);
+    max-width: 82%; padding: 10px 14px; border-radius: 14px; font-size:0.86rem; line-height:1.55;
+    word-break:break-word; animation: msgIn 0.35s var(--bounce);
   }
-  @keyframes msg
-In { from { opacity:0; transform:translateY(8
-px) scale(0.95); } to { opacity:1; transform:
-translateY(0) scale(1); } }
-  .msg-user { ali
-gn-self:flex-end; background: linear-gradient
-(135deg, var(--primary), var(--primary-dark))
-; color:#fff; border-bottom-right-radius: 4px
-; }
-  .msg-pet { align-self:flex-start; backg
-round: rgba(255,255,255,0.85); color: var(--t
-ext-main); border: 1px solid var(--card-borde
-r); border-bottom-left-radius: 4px; }
-  .msg-
-pet.typing::after { content: '|'; animation: 
-blink 0.8s infinite; }
-  @keyframes blink { 0
-%,100%{opacity:1} 50%{opacity:0} }
+  @keyframes msgIn { from { opacity:0; transform:translateY(8px) scale(0.95); } to { opacity:1; transform:translateY(0) scale(1); } }
+  .msg-user { align-self:flex-end; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; border-bottom-right-radius: 4px; }
+  .msg-pet { align-self:flex-start; background: rgba(255,255,255,0.85); color: var(--text-main); border: 1px solid var(--card-border); border-bottom-left-radius: 4px; }
+  .msg-pet.typing::after { content: '|'; animation: blink 0.8s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-  .chat-i
-nput-area {
-    padding: 10px 14px; border-to
-p: 1px solid var(--card-border);
-    display:
-flex; gap:8px; align-items:center; background
-: rgba(255,255,255,0.5);
+  .chat-input-area {
+    padding: 10px 14px; border-top: 1px solid var(--card-border);
+    display:flex; gap:8px; align-items:center; background: rgba(255,255,255,0.5);
   }
   .chat-input {
-
-    flex:1; padding: 10px 14px; border-radius
-: 9999px; border: 1px solid var(--card-border
-);
-    background: rgba(255,255,255,0.7); fon
-t-size:0.88rem; color:var(--text-main); outli
-ne:none;
-    transition: border-color 0.2s, b
-ox-shadow 0.2s; font-family: var(--font-body)
-;
+    flex:1; padding: 10px 14px; border-radius: 9999px; border: 1px solid var(--card-border);
+    background: rgba(255,255,255,0.7); font-size:0.88rem; color:var(--text-main); outline:none;
+    transition: border-color 0.2s, box-shadow 0.2s; font-family: var(--font-body);
   }
-  .chat-input:focus { border-color: var
-(--primary-light); box-shadow: 0 0 0 3px rgba
-(255,143,171,0.12); }
+  .chat-input:focus { border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(255,143,171,0.12); }
   .chat-send-btn {
-    
-width: 38px; height: 38px; border-radius: 50%
-; border: none;
-    background: linear-gradie
-nt(135deg, var(--primary), var(--primary-dark
-));
-    color: #fff; cursor: pointer; display
-:flex; align-items:center; justify-content:ce
-nter;
-    transition: transform 0.2s var(--bo
-unce); flex-shrink:0;
+    width: 38px; height: 38px; border-radius: 50%; border: none;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff; cursor: pointer; display:flex; align-items:center; justify-content:center;
+    transition: transform 0.2s var(--bounce); flex-shrink:0;
   }
-  .chat-send-btn:ho
-ver { transform: scale(1.1); }
-  .chat-voice-
-btn {
-    width: 34px; height: 34px; border-r
-adius: 50%; border: 1px solid var(--card-bord
-er);
-    background: rgba(255,255,255,0.6); c
-olor: var(--text-sub); cursor: pointer;
-    d
-isplay:flex; align-items:center; justify-cont
-ent:center; font-size:0.9rem;
-    transition:
- all 0.2s; flex-shrink:0;
+  .chat-send-btn:hover { transform: scale(1.1); }
+  .chat-voice-btn {
+    width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--card-border);
+    background: rgba(255,255,255,0.6); color: var(--text-sub); cursor: pointer;
+    display:flex; align-items:center; justify-content:center; font-size:0.9rem;
+    transition: all 0.2s; flex-shrink:0;
   }
-  .chat-voice-b
-tn:hover { background: var(--primary-light); 
-color:#fff; border-color:var(--primary-light)
-; }
-  .chat-voice-btn.recording { background:
- #ff4444; color:#fff; animation: pulseRec 1s 
-infinite; }
-  @keyframes pulseRec { 0%,100%{t
-ransform:scale(1)} 50%{transform:scale(1.12)}
- }
+  .chat-voice-btn:hover { background: var(--primary-light); color:#fff; border-color:var(--primary-light); }
+  .chat-voice-btn.recording { background: #ff4444; color:#fff; animation: pulseRec 1s infinite; }
+  @keyframes pulseRec { 0%,100%{transform:scale(1)} 50%{transform:scale(1.12)} }
 
   .chat-trae-link {
-    padding: 8px 14px
-; text-align:center; font-size:0.78rem; color
-:var(--text-sub);
-    border-top: 1px solid v
-ar(--card-border); background: rgba(255,255,2
-55,0.4);
+    padding: 8px 14px; text-align:center; font-size:0.78rem; color:var(--text-sub);
+    border-top: 1px solid var(--card-border); background: rgba(255,255,255,0.4);
   }
   .chat-trae-link a {
-    color:
- var(--primary); text-decoration:none; font-w
-eight:600;
-    display:inline-flex; align-ite
-ms:center; gap:4px;
+    color: var(--primary); text-decoration:none; font-weight:600;
+    display:inline-flex; align-items:center; gap:4px;
   }
-  .chat-trae-link a:h
-over { text-decoration:underline; }
+  .chat-trae-link a:hover { text-decoration:underline; }
 
-  /* ===
-== 页脚 ===== */
+  /* ===== 页脚 ===== */
   footer {
-    text-align:
-center; padding: 50px 20px 30px; color: var(-
--text-sub); font-size:0.85rem;
-    position:r
-elative; z-index:1;
+    text-align:center; padding: 50px 20px 30px; color: var(--text-sub); font-size:0.85rem;
+    position:relative; z-index:1;
   }
-  footer a { color: v
-ar(--primary); text-decoration:none; }
+  footer a { color: var(--primary); text-decoration:none; }
 
-  /* 
-返回顶部 */
+  /* 返回顶部 */
   .back-to-top {
-    position
-: fixed; bottom: 28px; right: 28px; z-index: 
-200;
-    width: 48px; height: 48px; border-ra
-dius: 50%; border: none;
-    background: line
-ar-gradient(135deg, var(--primary), var(--pri
-mary-dark));
-    color: #fff; font-size: 1.2r
-em; cursor: pointer;
-    box-shadow: 0 6px 18
-px rgba(255,143,171,0.3);
-    display: flex; 
-align-items: center; justify-content: center;
+    position: fixed; bottom: 28px; right: 28px; z-index: 200;
+    width: 48px; height: 48px; border-radius: 50%; border: none;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff; font-size: 1.2rem; cursor: pointer;
+    box-shadow: 0 6px 18px rgba(255,143,171,0.3);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.3s var(--bounce), opacity 0.3s;
+    opacity: 0; pointer-events: none;
+  }
+  .back-to-top.visible { opacity: 1; pointer-events: auto; }
+  .back-to-top:hover { transform: translateY(-3px) scale(1.08); }
 
-    transition: transform 0.3s var(--bounce)
-, opacity 0.3s;
-    opacity: 0; pointer-event
-s: none;
-  }
-  .back-to-top.visible { opacity
-: 1; pointer-events: auto; }
-  .back-to-top:h
-over { transform: translateY(-3px) scale(1.08
-); }
-
-  /* ===== 作品展示区 ===== */
-  .
-works-section { padding: 0; max-width: 1200px
-; margin: 0 auto; }
-  .works-header {
-    dis
-play: flex; justify-content: space-between; a
-lign-items: center;
-    margin-bottom: 32px; 
-flex-wrap: wrap; gap: 16px;
-  }
-  .works-titl
-e {
-    font-family: var(--font-display); fon
-t-size: 1.8rem;
-    background: linear-gradie
-nt(135deg, var(--primary), var(--sky));
-    -
-webkit-background-clip: text; background-clip
-: text; color: transparent;
-  }
-  .works-coun
-t { color: var(--text-sub); font-size: 0.9rem
-; margin-left: 8px; }
-  .works-grid {
-    dis
-play: grid;
-    grid-template-columns: repeat
-(auto-fill, minmax(240px, 1fr));
-    gap: 24p
-x;
-  }
-
-  /* 作品卡片 */
-  .work-card { o
-verflow: hidden; padding: 0 !important; }
-  .
-work-thumb {
-    aspect-ratio: 1 / 1;
-    bac
-kground: linear-gradient(135deg, var(--primar
-y-light), var(--sky));
-    position: relative
-; overflow: hidden;
-  }
-  .work-thumb img { w
-idth: 100%; height: 100%; object-fit: cover; 
-transition: transform 0.4s var(--bounce); }
- 
- .work-card:hover .work-thumb img { transform
-: scale(1.08); }
-  .work-thumb.no-image::afte
-r {
-    content: '\1F3A8'; position: absolute
-; top: 50%; left: 50%;
-    transform: transla
-te(-50%, -50%); font-size: 3rem; opacity: 0.5
-;
-  }
-  .work-info { padding: 16px; display: 
-flex; justify-content: space-between; align-i
-tems: center; }
-  .work-style {
-    font-size
-: 0.78rem; font-weight: 600; padding: 4px 12p
-x;
-    border-radius: 999px;
-  }
-  .work-time
- { font-size: 0.8rem; color: var(--text-sub);
- }
-  .work-actions {
-    padding: 0 16px 16px
-; display: flex; gap: 8px; flex-wrap: wrap;
- 
- }
-  .work-btn {
-    flex: 1; min-width: 60px
-; padding: 8px 12px; border-radius: 12px; bor
-der: none;
-    background: linear-gradient(13
-5deg, var(--primary), var(--primary-dark));
- 
-   color: #fff; font-size: 0.82rem; font-weig
-ht: 600; text-decoration: none;
-    text-alig
-n: center; cursor: pointer; transition: trans
-form 0.2s var(--bounce);
-  }
-  .work-btn:hove
-r { transform: translateY(-2px); }
-  .work-bt
-n.secondary { background: linear-gradient(135
-deg, var(--sky), #81D4FA); }
-  .work-btn.dang
-er { background: #FF6B6B; flex: 0; min-width:
- auto; padding: 8px 14px; }
-
-  /* 空状态 *
-/
-  .works-empty {
-    display: none; flex-di
-rection: column; align-items: center;
-    jus
-tify-content: center; padding: 80px 20px; tex
-t-align: center;
-  }
-  .works-empty-icon {
-  
-  width: 140px; height: 140px; border-radius:
- 50%;
-    background: linear-gradient(135deg,
- var(--primary-light), var(--sky));
-    displ
-ay: flex; align-items: center; justify-conten
-t: center;
-    font-size: 3.5rem; margin-bott
-om: 24px;
-  }
-  .works-empty h3 { font-family
-: var(--font-display); font-size: 1.4rem; col
-or: var(--text-main); margin-bottom: 10px; }
-
-  .works-empty p { color: var(--text-sub); fo
-nt-size: 0.95rem; margin-bottom: 24px; }
-  .w
-orks-empty .hero-cta { margin-top: 0; }
-
-  /*
- Toast */
-  .toast {
-    position: fixed; bot
-tom: 80px; left: 50%;
-    transform: translat
-eX(-50%) translateY(20px);
-    background: va
-r(--text-main); color: #fff;
-    padding: 12p
-x 24px; border-radius: 12px;
-    font-size: 0
-.88rem; opacity: 0;
-    transition: all 0.4s 
-var(--bounce);
-    z-index: 1000; pointer-eve
-nts: none; white-space: nowrap;
-  }
-  .toast.
-show { opacity: 1; transform: translateX(-50%
-) translateY(0); }
-
-  /* ===== 响应式 ====
-= */
+  /* ===== 响应式 ===== */
   @media (max-width: 900px) {
-    .cards
--grid { grid-template-columns: 1fr; }
-    .va
-lue-grid { grid-template-columns: 1fr; }
-    
-.demo-workspace { grid-template-columns: 1fr;
- }
+    .cards-grid { grid-template-columns: 1fr; }
+    .value-grid { grid-template-columns: 1fr; }
+    .demo-workspace { grid-template-columns: 1fr; }
     .preview-3d { margin: 0 auto; }
-    .t
-op-nav { padding: 12px 20px; }
-    .nav-links
- { gap: 16px; }
-    .nav-links a { font-size:
- 0.85rem; }
-    .pet-chat-panel { width: calc
-(100vw - 40px); left: 20px !important; right:
- 20px; }
+    .top-nav { padding: 12px 20px; }
+    .nav-links { gap: 16px; }
+    .nav-links a { font-size: 0.85rem; }
+    .pet-chat-panel { width: calc(100vw - 40px); left: 20px !important; right: 20px; }
   }
   @media (max-width: 600px) {
-  
-  .style-panel { justify-content: center; }
- 
-   .style-option { min-width: calc(50% - 8px)
-; }
+    .style-panel { justify-content: center; }
+    .style-option { min-width: calc(50% - 8px); }
     .hero { padding: 100px 16px 60px; }
- 
-   section { padding: 50px 16px; }
+    section { padding: 50px 16px; }
   }
 
-  /* 
-粒子撒花特效 */
+  /* 粒子撒花特效 */
   .confetti {
-    posit
-ion: fixed; pointer-events: none; z-index: 99
-998;
-    width: 10px; height: 10px; border-ra
-dius: 50%;
-    animation: confettiFall 1.2s e
-ase-out forwards;
+    position: fixed; pointer-events: none; z-index: 99998;
+    width: 10px; height: 10px; border-radius: 50%;
+    animation: confettiFall 1.2s ease-out forwards;
   }
-  @keyframes confettiFa
-ll {
-    0% { opacity:1; transform: translate
-Y(0) rotate(0deg) scale(1); }
-    100% { opac
-ity:0; transform: translateY(200px) rotate(72
-0deg) scale(0.2); }
+  @keyframes confettiFall {
+    0% { opacity:1; transform: translateY(0) rotate(0deg) scale(1); }
+    100% { opacity:0; transform: translateY(200px) rotate(720deg) scale(0.2); }
   }
 </style>
 </head>
-<bod
-y>
+<body>
 
-<!-- ===== TRAE Native 升级通知 =====
- -->
-<div style="background: linear-gradient(
-135deg, #FF8FAB, #FFB7C5); color: white; padd
-ing: 12px 20px; text-align: center; font-fami
-ly: 'Noto Sans SC', sans-serif; font-size: 14
-px; position: relative; z-index: 1000;">
-  <s
-trong>🎉 已升级为 TRAE Native 工作流
-！</strong>
-  在 TRAE 中输入 <code style
-="background: rgba(255,255,255,0.25); padding
-: 2px 8px; border-radius: 4px;">生成我的 
-Q 版形象</code> 即可体验真实 AI 驱�
-��的完整功能
-  <a href="#trae-guide" sty
-le="color: white; text-decoration: underline;
- margin-left: 10px;">查看使用指南</a>
-<
-/div>
-
-<!-- ===== 浮动背景粒子 ===== --
->
+<!-- ===== 浮动背景粒子 ===== -->
 <div class="bg-particles">
-  <div class="pa
-rticle p1"></div>
-  <div class="particle p2">
-</div>
+  <div class="particle p1"></div>
+  <div class="particle p2"></div>
   <div class="particle p3"></div>
-  <d
-iv class="particle p4"></div>
-  <div class="p
-article p5"></div>
+  <div class="particle p4"></div>
+  <div class="particle p5"></div>
 </div>
 
-<!-- ===== 导航 
-===== -->
+<!-- ===== 导航 ===== -->
 <nav class="top-nav">
-  <div class=
-"nav-brand">Q3D 形象造梦机</div>
-  <div 
-class="nav-links">
-    <a href="#intro">创�
-�介绍</a>
-    <a href="#users">目标用户
-</a>
+  <div class="nav-brand">Q3D 形象造梦机</div>
+  <div class="nav-links">
+    <a href="#intro">创意介绍</a>
+    <a href="#users">目标用户</a>
     <a href="#value">价值意义</a>
-  
-  <a href="#flow">核心流程</a>
+    <a href="#flow">核心流程</a>
     <a href="#hunyuan3d">技术演示</a>
-    <a hre
-f="#works">我的作品</a>
-    <a href="q3d-
-dream-showcase.html" style="color: var(--prim
-ary-dark);">造梦晶格</a>
+    <a href="#demo">在线体验</a>
   </div>
 </nav>
 
-
 <!-- ===== Hero ===== -->
-<section class="he
-ro" id="hero">
-  <h1 class="hero-title" id="h
-eroTitle">Q3D 形象造梦机</h1>
-  <p class
-="hero-subtitle">上传一张照片，选择�
-��格，数十秒生成你的专属 Q 版 3D 
-虚拟角色。无需专业技能，无需高
-昂预算。</p>
-  <a class="hero-cta hero-ct
-a-primary" href="q3d-dream-machine-app.html" 
-style="font-size:1.1rem; padding:14px 36px;">
-
-    <span>🚀</span> 立即体验 Demo
-  </
-a>
-  <a class="hero-cta" href="#works" style=
-"margin-left:12px;">
-    <span>✨</span> 查
-看我的作品
+<section class="hero" id="hero">
+  <h1 class="hero-title" id="heroTitle">Q3D 形象造梦机</h1>
+  <p class="hero-subtitle">上传一张照片，AI 自动提取五官与穿搭特征，数十秒生成你的专属 Q 版 3D 虚拟角色。无需专业技能，无需高昂预算。</p>
+  <a class="hero-cta" href="#demo">
+    <span>✨</span> 立即体验
   </a>
-  <a class="hero-cta" 
-href="q3d-dream-showcase.html" style="margin-
-left:12px; background: linear-gradient(135deg
-, #A8E6CF, #B4D7F0); color: #4A4A6A;">
-    <s
-pan>🎨</span> Dream Lattice
-  </a>
-  <div c
-lass="hero-scroll-hint">
-    <span>向下滚�
-��探索</span>
-    <svg viewBox="0 0 24 24" 
-fill="none" stroke-width="2" stroke-linecap="
-round" stroke-linejoin="round"><polyline poin
-ts="6 9 12 15 18 9"></polyline></svg>
-  </div
->
-</section>
-
-<!-- ===== 创意介绍 ===== -
-->
-<section id="intro" class="reveal">
-  <h2 
-class="section-title">创意介绍</h2>
-  <p 
-class="section-subtitle">Q3D 形象造梦机�
-��一款基于 AI 的 Q 版 3D 虚拟角色�
-�成工具，让每个人都能轻松拥有�
-�属卡通立体形象。</p>
-  <div class="c
-ards-grid">
-    <div class="glass-card reveal
-">
-      <div class="card-icon pink">💡</di
-v>
-      <h3>灵感来源</h3>
-      <p>当�
-�短视频、虚拟直播、社交账号、�
-�创手办创作需求持续上涨，大量�
-�通人想拥有专属卡通立体形象，�
-�现有工具大多只能生成 2D 图片，�
-��量化 3D 生成工具十分稀缺。</p>
- 
-   </div>
-    <div class="glass-card reveal">
-
-      <div class="card-icon mint">🎯</div>
-
-      <h3>解决痛点</h3>
-      <p>普通�
-��户缺少 3D 建模与专业绘画能力，
-线下定制建模费用高、交付周期长
-。Q3D 让零基础用户也能一键生成�
-�预览的 3D 角色模型。</p>
-    </div>
-
-    <div class="glass-card reveal">
-      <di
-v class="card-icon sky">🚀</div>
-      <h3>
-产品形态</h3>
-      <p>网页端 AI 生�
-�工具，上传照片或手绘素材，自�
-�提取特征、重构 Q 版风格、生成�
-�量化 3D 网格，输出高清 2D 插画 + 
-可交互 3D 模型。</p>
-    </div>
-  </div
->
-</section>
-
-<!-- ===== 目标用户 ===== -
-->
-<section id="users" class="reveal">
-  <h2 
-class="section-title">目标用户与场景</
-h2>
-  <p class="section-subtitle">面向短�
-�频博主、虚拟主播、学生创作者�
-�自媒体爱好者、小型文创工作室�
-�二次元爱好者。</p>
-  <div class="card
-s-grid">
-    <div class="glass-card reveal">
-
-      <div class="card-icon pink">🎬</div>
-
-      <h3>短视频与直播</h3>
-      <p>�
-�作直播虚拟皮套、社交平台头像�
-�短视频动画素材，快速建立个人 I
-P 辨识度。</p>
-    </div>
-    <div class=
-"glass-card reveal">
-      <div class="card-i
-con mint">🎨</div>
-      <h3>文创与手�
-�</h3>
-      <p>潮玩手办前期建模预�
-�、个人专属 IP 设计，大幅降低打�
-��成本与沟通门槛。</p>
-    </div>
-   
- <div class="glass-card reveal">
-      <div c
-lass="card-icon sky">💬</div>
-      <h3>社
-交与表达</h3>
-      <p>社交平台头像
-、聊天表情包、虚拟形象展示，让
-每一次互动都充满个性。</p>
-    </d
-iv>
+  <div class="hero-scroll-hint">
+    <span>向下滚动探索</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
   </div>
 </section>
 
-<!-- ===== 价值与
-意义 ===== -->
-<section id="value" class="r
-eveal">
-  <h2 class="section-title">价值与
-意义</h2>
-  <p class="section-subtitle">效
-率提升与普惠娱乐双重价值，让 3D
- 虚拟形象创作不再是专业人士的�
-�权。</p>
-  <div class="value-grid">
-    <d
-iv class="glass-card value-card reveal">
-    
-  <div class="card-icon pink">⚡</div>
-     
- <div>
-        <h3>效率飞跃</h3>
-        
-<p>用户上传参考图后数十秒即可完
-成完整 Q 版 3D 角色生成，省去手�
-�、建模、材质渲染数天工作量，�
-�需学习专业设计软件。</p>
-      </d
-iv>
+<!-- ===== 创意介绍 ===== -->
+<section id="intro" class="reveal">
+  <h2 class="section-title">创意介绍</h2>
+  <p class="section-subtitle">Q3D 形象造梦机是一款基于 AI 的 Q 版 3D 虚拟角色生成工具，让每个人都能轻松拥有专属卡通立体形象。</p>
+  <div class="cards-grid">
+    <div class="glass-card reveal">
+      <div class="card-icon pink">💡</div>
+      <h3>灵感来源</h3>
+      <p>当下短视频、虚拟直播、社交账号、文创手办创作需求持续上涨，大量普通人想拥有专属卡通立体形象，但现有工具大多只能生成 2D 图片，轻量化 3D 生成工具十分稀缺。</p>
     </div>
-    <div class="glass-card val
-ue-card reveal">
-      <div class="card-icon 
-mint">🌈</div>
-      <div>
-        <h3>普�
-��娱乐</h3>
-        <p>抹平 3D 虚拟形�
-��创作的技术门槛，普通创作者无�
-��专业技能、无需高额预算就能打�
-��专属虚拟 IP，丰富内容生态。</p>
+    <div class="glass-card reveal">
+      <div class="card-icon mint">🎯</div>
+      <h3>解决痛点</h3>
+      <p>普通用户缺少 3D 建模与专业绘画能力，线下定制建模费用高、交付周期长。Q3D 让零基础用户也能一键生成可预览的 3D 角色模型。</p>
+    </div>
+    <div class="glass-card reveal">
+      <div class="card-icon sky">🚀</div>
+      <h3>产品形态</h3>
+      <p>网页端 AI 生成工具，上传照片或手绘素材，自动提取特征、重构 Q 版风格、生成轻量化 3D 网格，输出高清 2D 插画 + 可交互 3D 模型。</p>
+    </div>
+  </div>
+</section>
 
+<!-- ===== 目标用户 ===== -->
+<section id="users" class="reveal">
+  <h2 class="section-title">目标用户与场景</h2>
+  <p class="section-subtitle">面向短视频博主、虚拟主播、学生创作者、自媒体爱好者、小型文创工作室、二次元爱好者。</p>
+  <div class="cards-grid">
+    <div class="glass-card reveal">
+      <div class="card-icon pink">🎬</div>
+      <h3>短视频与直播</h3>
+      <p>制作直播虚拟皮套、社交平台头像、短视频动画素材，快速建立个人 IP 辨识度。</p>
+    </div>
+    <div class="glass-card reveal">
+      <div class="card-icon mint">🎨</div>
+      <h3>文创与手办</h3>
+      <p>潮玩手办前期建模预览、个人专属 IP 设计，大幅降低打样成本与沟通门槛。</p>
+    </div>
+    <div class="glass-card reveal">
+      <div class="card-icon sky">💬</div>
+      <h3>社交与表达</h3>
+      <p>社交平台头像、聊天表情包、虚拟形象展示，让每一次互动都充满个性。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 价值与意义 ===== -->
+<section id="value" class="reveal">
+  <h2 class="section-title">价值与意义</h2>
+  <p class="section-subtitle">效率提升与普惠娱乐双重价值，让 3D 虚拟形象创作不再是专业人士的特权。</p>
+  <div class="value-grid">
+    <div class="glass-card value-card reveal">
+      <div class="card-icon pink">⚡</div>
+      <div>
+        <h3>效率飞跃</h3>
+        <p>用户上传参考图后数十秒即可完成完整 Q 版 3D 角色生成，省去手绘、建模、材质渲染数天工作量，无需学习专业设计软件。</p>
+      </div>
+    </div>
+    <div class="glass-card value-card reveal">
+      <div class="card-icon mint">🌈</div>
+      <div>
+        <h3>普惠娱乐</h3>
+        <p>抹平 3D 虚拟形象创作的技术门槛，普通创作者无需专业技能、无需高额预算就能打造专属虚拟 IP，丰富内容生态。</p>
       </div>
     </div>
   </div>
 </section>
 
-
 <!-- ===== 核心流程 ===== -->
-<section i
-d="flow" class="reveal">
-  <h2 class="section
--title">核心生成流程</h2>
-  <p class="s
-ection-subtitle">从上传素材到输出成�
-��的完整链路，每一步都由 AI 驱动
-。</p>
+<section id="flow" class="reveal">
+  <h2 class="section-title">核心生成流程</h2>
+  <p class="section-subtitle">从上传素材到输出成品的完整链路，每一步都由 AI 驱动。</p>
   <div class="mermaid-container">
-   
- <pre class="mermaid">
+    <pre class="mermaid">
 flowchart LR
-    A[上
-传参考图片/手绘稿] --> B[AI提取五�
-��、外形、穿搭特征]
-    B --> C[卡�
-�Q版风格重构]
-    C --> D[轻量化3D网
-格自动建模]
-    D --> E[色彩、配饰�
-��光影材质渲染]
-    E --> F[输出高�
-�2D Q版角色插画]
-    E --> G[输出轻�
-�化可预览3D角色模型]
-    style A fill
-:#FFE4E9,stroke:#FF8FAB,stroke-width:2px,colo
-r:#4A4A6A
-    style B fill:#E3F2FD,stroke:#B4
-D7F0,stroke-width:2px,color:#4A4A6A
-    style
- C fill:#E0F2F1,stroke:#A8E6CF,stroke-width:2
-px,color:#4A4A6A
-    style D fill:#FFF8E1,str
-oke:#FFD93D,stroke-width:2px,color:#4A4A6A
-  
-  style E fill:#F3E5F5,stroke:#CE93D8,stroke-
-width:2px,color:#4A4A6A
-    style F fill:#FFE
-4E9,stroke:#FF8FAB,stroke-width:2px,color:#4A
-4A6A
-    style G fill:#E0F2F1,stroke:#A8E6CF,
-stroke-width:2px,color:#4A4A6A
+    A[上传参考图片/手绘稿] --> B[AI提取五官、外形、穿搭特征]
+    B --> C[卡通Q版风格重构]
+    C --> D[轻量化3D网格自动建模]
+    D --> E[色彩、配饰、光影材质渲染]
+    E --> F[输出高清2D Q版角色插画]
+    E --> G[输出轻量化可预览3D角色模型]
+    style A fill:#FFE4E9,stroke:#FF8FAB,stroke-width:2px,color:#4A4A6A
+    style B fill:#E3F2FD,stroke:#B4D7F0,stroke-width:2px,color:#4A4A6A
+    style C fill:#E0F2F1,stroke:#A8E6CF,stroke-width:2px,color:#4A4A6A
+    style D fill:#FFF8E1,stroke:#FFD93D,stroke-width:2px,color:#4A4A6A
+    style E fill:#F3E5F5,stroke:#CE93D8,stroke-width:2px,color:#4A4A6A
+    style F fill:#FFE4E9,stroke:#FF8FAB,stroke-width:2px,color:#4A4A6A
+    style G fill:#E0F2F1,stroke:#A8E6CF,stroke-width:2px,color:#4A4A6A
     </pre>
-  <
-/div>
+  </div>
 </section>
 
-<!-- ===== Hunyuan3D 技术演示 ===== -->
+<!-- ===== Hunyuan3D 技术演示区 ===== -->
 <section id="hunyuan3d" class="reveal">
   <h2 class="section-title">Hunyuan3D 技术演示</h2>
   <p class="section-subtitle">基于腾讯混元 3D API 的新一代 3D 建模 Pipeline，AI 直接生成完整网格，几何质量提升 25%+。</p>
-  <div class="cards-grid" style="grid-template-columns: 1fr 1fr; gap: 20px;">
-    <div class="card" style="padding: 28px; text-align: left;">
-      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-        <div class="card-icon" style="background: linear-gradient(135deg, #7c3aed, #a78bfa); width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">🧊</div>
-        <div>
-          <h4 style="font-size: 1rem; margin: 0; color: var(--text-main);">交互式 3D 预览</h4>
-          <p style="font-size: 0.8rem; color: var(--text-sub); margin: 4px 0 0;">拖拽旋转 · 缩放 · 平移</p>
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 28px; max-width: 900px; margin: 0 auto;">
+    <div class="glass-card" style="display:flex; flex-direction:column; justify-content:space-between;">
+      <div>
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+          <div class="card-icon pink" style="margin-bottom:0;">🧊</div>
+          <div>
+            <h3 style="margin:0; font-size:1.1rem;">交互式 3D 预览</h3>
+            <p style="margin:2px 0 0; font-size:0.8rem; color:var(--text-sub);">拖拽旋转 · 缩放 · 平移</p>
+          </div>
+        </div>
+        <p style="font-size:0.92rem; color:var(--text-sub); line-height:1.65;">
+          查看由混元 3D API 生成的 Q 版角色模型。支持 Three.js 实时渲染、OrbitControls 交互操作、PBR 材质展示。
+        </p>
+        <div style="display:flex; gap:14px; margin-top:14px; font-size:0.82rem;">
+          <span style="display:flex; align-items:center; gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--mint);"></span> 综合评分 5.8/10</span>
+          <span style="display:flex; align-items:center; gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--sky);"></span> +25% 提升</span>
+          <span style="display:flex; align-items:center; gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--primary);"></span> 仅 40 积分</span>
         </div>
       </div>
-      <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.6; margin-bottom: 16px;">
-        查看由混元 3D API 生成的 Q 版角色模型。支持 Three.js 实时渲染、OrbitControls 交互操作、PBR 材质展示。
-      </p>
-      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-        <a href="hunyuan3d-demo.html" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 22px; background: linear-gradient(135deg, #7c3aed, #a78bfa); color: #fff; border-radius: 999px; text-decoration: none; font-size: 0.85rem; font-weight: 600; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='scale(1.04)';this.style.boxShadow='0 8px 24px rgba(124,58,237,0.4)'" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='none'">
-          🚀 立即体验
-        </a>
-        <a href="#flow" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; background: rgba(124,58,237,0.1); color: #7c3aed; border: 1px solid rgba(124,58,237,0.3); border-radius: 999px; text-decoration: none; font-size: 0.85rem; font-weight: 500;">技术细节</a>
-      </div>
+      <a href="hunyuan3d-demo.html" target="_blank" class="hero-cta" style="align-self:flex-start; margin-top:20px; padding:12px 32px; font-size:0.95rem;">
+        🚀 立即体验
+      </a>
     </div>
-    <div class="card" style="padding: 0; overflow: hidden; background: #0d1117;">
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; background: #1a1f2a;">
-        <img src="demo/hunyuan3d/multiview/front.jpg" alt="正面" style="width: 100%; aspect-ratio: 1; object-fit: cover;" loading="lazy">
-        <img src="demo/hunyuan3d/multiview/side.jpg" alt="侧面" style="width: 100%; aspect-ratio: 1; object-fit: cover;" loading="lazy">
-        <img src="demo/hunyuan3d/multiview/back.jpg" alt="背面" style="width: 100%; aspect-ratio: 1; object-fit: cover;" loading="lazy">
+    <div class="glass-card" style="padding:0; overflow:hidden; background:rgba(255,255,255,0.5);">
+      <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:0;">
+        <img src="demo/hunyuan3d/multiview/front.jpg" alt="正面" style="width:100%; aspect-ratio:1; object-fit:cover;" loading="lazy">
+        <img src="demo/hunyuan3d/multiview/side.jpg" alt="侧面" style="width:100%; aspect-ratio:1; object-fit:cover;" loading="lazy">
+        <img src="demo/hunyuan3d/multiview/back.jpg" alt="背面" style="width:100%; aspect-ratio:1; object-fit:cover;" loading="lazy">
       </div>
-      <div style="padding: 12px 16px; display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: var(--muted);">
-        <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #34d399;"></span> 综合评分 5.8/10</span>
-        <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #06b6d4;"></span> +25% 提升</span>
-        <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #a78bfa;"></span> 仅 40 积分</span>
+      <div style="padding:10px 16px; font-size:0.78rem; color:var(--text-sub); text-align:center;">
+        三视图 → Hunyuan3D API → 完整 GLB 模型
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== 我的作品 ===== -->
-<section id="works" class="reveal">
-  
-<h2 class="section-title">我的作品</h2>
- 
- <p class="section-subtitle">所有通过 TRA
-E 生成的 Q 版形象都会收录在这里�
-��随时查看和互动。</p>
-  <div class="
-works-section">
-    <div class="works-header"
->
-      <div>
-        <span class="works-titl
-e">作品列表</span>
-        <span class="w
-orks-count">共 <span id="worksCount">0</span
-> 个</span>
+<!-- ===== Demo 交互区 ===== -->
+<section id="demo" class="reveal">
+  <h2 class="section-title">在线体验</h2>
+  <p class="section-subtitle">上传照片，选择风格，即刻预览你的 Q 版 3D 角色。</p>
+  <div class="demo-workspace">
+    <div class="demo-left">
+      <!-- 上传区 -->
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" id="fileInput" accept="image/*">
+        <div class="upload-icon">📸</div>
+        <div class="upload-text">点击或拖拽上传照片</div>
+        <div class="upload-hint">支持 JPG、PNG 格式</div>
+        <div class="upload-preview" id="uploadPreview"><img id="previewImg" src="" alt="preview"></div>
       </div>
-      <button id="r
-efreshWorks" style="padding:8px 18px;border-r
-adius:999px;border:1px solid var(--card-borde
-r);background:rgba(255,255,255,0.6);color:var
-(--text-sub);font-size:0.85rem;cursor:pointer
-;font-family:var(--font-body);transition:all 
-0.3s;">
-        🔄 刷新
+      <!-- 快捷素材 -->
+      <div>
+        <div style="font-size:0.85rem;color:var(--text-sub);margin-bottom:8px;">快捷素材</div>
+        <div class="quick-materials">
+          <button class="chip-btn" data-type="selfie">🤳 自拍</button>
+          <button class="chip-btn" data-type="draw">🎨 手绘</button>
+          <button class="chip-btn" data-type="pet">🐱 宠物</button>
+        </div>
+      </div>
+      <!-- 风格切换 -->
+      <div>
+        <div style="font-size:0.85rem;color:var(--text-sub);margin-bottom:10px;">选择风格</div>
+        <div class="style-panel" id="stylePanel">
+          <div class="style-option style-kawaii selected" data-style="kawaii">
+            <div class="check-mark">✓</div>
+            <div class="style-thumb">🌸</div>
+            <div class="style-name">软萌大头</div>
+          </div>
+          <div class="style-option style-guofeng" data-style="guofeng">
+            <div class="check-mark">✓</div>
+            <div class="style-thumb">🎋</div>
+            <div class="style-name">国风 Q 版</div>
+          </div>
+          <div class="style-option style-trendy" data-style="trendy">
+            <div class="check-mark">✓</div>
+            <div class="style-thumb">🕶️</div>
+            <div class="style-name">潮玩</div>
+          </div>
+          <div class="style-option style-simple" data-style="simple">
+            <div class="check-mark">✓</div>
+            <div class="style-thumb">🌀</div>
+            <div class="style-name">简约卡通</div>
+          </div>
+        </div>
+      </div>
+      <!-- 生成按钮 -->
+      <button class="generate-btn" id="generateBtn">
+        <span>🪄</span> 生成 Q 版角色
       </button>
- 
-   </div>
-    <div class="works-grid" id="wor
-ksGrid"></div>
-    <div class="works-empty" i
-d="worksEmpty">
-      <div class="works-empty
--icon">🎨</div>
-      <h3>还没有作品�
-�</h3>
-      <p>在 TRAE 中输入"生成我�
-�� Q 版形象"，上传照片后即可创建
-你的第一个作品~</p>
-      <a class="he
-ro-cta" href="q3d-dream-machine-app.html">�
-� 立即体验 Demo</a>
+      <!-- 进度 -->
+      <div class="gen-progress" id="genProgress">
+        <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+        <div class="progress-text" id="progressText">正在分析特征...</div>
+      </div>
+    </div>
+
+    <!-- 3D 预览 -->
+    <div class="demo-right">
+      <div class="preview-3d" id="preview3d">
+        <div class="cube" id="cube">
+          <div class="face face-front">正面</div>
+          <div class="face face-back">背面</div>
+          <div class="face face-left">左侧</div>
+          <div class="face face-right">右侧</div>
+          <div class="face face-top">顶部</div>
+          <div class="face face-bottom">底部</div>
+        </div>
+      </div>
+      <div class="preview-hint">🖱️ 拖拽旋转查看不同角度</div>
     </div>
   </div>
-<
-/section>
+</section>
 
-<!-- ===== 桌面宠物 (初始隐
-藏，生成后显示) ===== -->
-<div class="
-desktop-pet" id="desktopPet" style="display:n
-one; bottom:20px; right:20px;">
-  <div class=
-"pet-bubble" id="petBubble">你好呀！我�
-�你的 Q 版小伙伴~</div>
-  <svg viewBox=
-"0 0 120 120" id="petSvg">
-    <!-- 身体 --
->
-    <ellipse cx="60" cy="85" rx="35" ry="28
-" fill="url(#bodyGrad)" />
+<!-- ===== 桌面宠物 (初始隐藏，生成后显示) ===== -->
+<div class="desktop-pet" id="desktopPet" style="display:none; bottom:20px; right:20px;">
+  <div class="pet-bubble" id="petBubble">你好呀！我是你的 Q 版小伙伴~</div>
+  <svg viewBox="0 0 120 120" id="petSvg">
+    <!-- 身体 -->
+    <ellipse cx="60" cy="85" rx="35" ry="28" fill="url(#bodyGrad)" />
     <!-- 头 -->
- 
-   <circle cx="60" cy="48" r="32" fill="url(#
-headGrad)" />
+    <circle cx="60" cy="48" r="32" fill="url(#headGrad)" />
     <!-- 头发/装饰 -->
-    
-<path d="M28 38 Q20 20 40 22 Q35 10 55 16 Q60
- 5 75 15 Q90 10 92 30 Q100 35 90 48" fill="no
-ne" stroke="#FF8FAB" stroke-width="4" stroke-
-linecap="round" id="petHair"/>
-    <!-- 左�
-� -->
-    <ellipse cx="48" cy="45" rx="5" ry=
-"7" fill="#4A4A6A" id="eyeL"/>
-    <!-- 右�
-� -->
-    <ellipse cx="72" cy="45" rx="5" ry=
-"7" fill="#4A4A6A" id="eyeR"/>
-    <!-- 腮�
-� -->
-    <ellipse cx="40" cy="56" rx="5" ry=
-"3" fill="#FFB7C5" opacity="0.6"/>
-    <ellip
-se cx="80" cy="56" rx="5" ry="3" fill="#FFB7C
-5" opacity="0.6"/>
+    <path d="M28 38 Q20 20 40 22 Q35 10 55 16 Q60 5 75 15 Q90 10 92 30 Q100 35 90 48" fill="none" stroke="#FF8FAB" stroke-width="4" stroke-linecap="round" id="petHair"/>
+    <!-- 左眼 -->
+    <ellipse cx="48" cy="45" rx="5" ry="7" fill="#4A4A6A" id="eyeL"/>
+    <!-- 右眼 -->
+    <ellipse cx="72" cy="45" rx="5" ry="7" fill="#4A4A6A" id="eyeR"/>
+    <!-- 腮红 -->
+    <ellipse cx="40" cy="56" rx="5" ry="3" fill="#FFB7C5" opacity="0.6"/>
+    <ellipse cx="80" cy="56" rx="5" ry="3" fill="#FFB7C5" opacity="0.6"/>
     <!-- 嘴巴 -->
-    <p
-ath d="M55 58 Q60 63 65 58" fill="none" strok
-e="#4A4A6A" stroke-width="2" stroke-linecap="
-round" id="petMouth"/>
+    <path d="M55 58 Q60 63 65 58" fill="none" stroke="#4A4A6A" stroke-width="2" stroke-linecap="round" id="petMouth"/>
     <!-- 手 -->
-    <
-circle cx="30" cy="78" r="8" fill="url(#headG
-rad)"/>
-    <circle cx="90" cy="78" r="8" fil
-l="url(#headGrad)"/>
+    <circle cx="30" cy="78" r="8" fill="url(#headGrad)"/>
+    <circle cx="90" cy="78" r="8" fill="url(#headGrad)"/>
     <!-- 脚 -->
-    <el
-lipse cx="45" cy="110" rx="10" ry="6" fill="#
-FF8FAB" opacity="0.5"/>
-    <ellipse cx="75" 
-cy="110" rx="10" ry="6" fill="#FF8FAB" opacit
-y="0.5"/>
+    <ellipse cx="45" cy="110" rx="10" ry="6" fill="#FF8FAB" opacity="0.5"/>
+    <ellipse cx="75" cy="110" rx="10" ry="6" fill="#FF8FAB" opacity="0.5"/>
     <!-- 渐变定义 -->
-    <defs
->
-      <linearGradient id="headGrad" x1="0" 
-y1="0" x2="1" y2="1">
-        <stop offset="0
-%" stop-color="#FFE4E9"/>
-        <stop offse
-t="100%" stop-color="#FFB7C5"/>
-      </linea
-rGradient>
-      <linearGradient id="bodyGrad
-" x1="0" y1="0" x2="1" y2="1">
-        <stop 
-offset="0%" stop-color="#FFF0F3"/>
-        <s
-top offset="100%" stop-color="#FFE4E9"/>
-    
-  </linearGradient>
+    <defs>
+      <linearGradient id="headGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#FFE4E9"/>
+        <stop offset="100%" stop-color="#FFB7C5"/>
+      </linearGradient>
+      <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#FFF0F3"/>
+        <stop offset="100%" stop-color="#FFE4E9"/>
+      </linearGradient>
     </defs>
   </svg>
-  <!
--- 右键菜单 -->
-  <div class="pet-context
-" id="petContext">
-    <div class="pet-contex
-t-item" id="ctxPin">📌 置顶到桌面</div
->
-    <div class="pet-context-item" id="ctxSt
-yle">🎨 切换风格</div>
-    <div class="
-pet-context-item" id="ctxTalk">💬 跟我聊
-天</div>
-    <div class="pet-context-item" i
-d="ctxTrae">🚀 用 TRAE AI 对话</div>
-   
- <div class="pet-context-item" id="ctxHide">�
-��� 隐藏宠物</div>
+  <!-- 右键菜单 -->
+  <div class="pet-context" id="petContext">
+    <div class="pet-context-item" id="ctxPin">📌 置顶到桌面</div>
+    <div class="pet-context-item" id="ctxStyle">🎨 切换风格</div>
+    <div class="pet-context-item" id="ctxTalk">💬 跟我聊天</div>
+    <div class="pet-context-item" id="ctxTrae">🚀 用 TRAE AI 对话</div>
+    <div class="pet-context-item" id="ctxHide">👋 隐藏宠物</div>
   </div>
 </div>
 
-<!-- 
-===== 宠物对话面板 ===== -->
-<div class
-="pet-chat-panel" id="petChatPanel">
-  <div c
-lass="chat-header">
-    <div class="chat-head
-er-avatar">🌸</div>
-    <div class="chat-he
-ader-info">
-      <div class="chat-header-nam
-e">Q 版小伙伴</div>
-      <div class="cha
-t-header-status">在线 · 陪你聊天</div>
-
+<!-- ===== 宠物对话面板 ===== -->
+<div class="pet-chat-panel" id="petChatPanel">
+  <div class="chat-header">
+    <div class="chat-header-avatar">🌸</div>
+    <div class="chat-header-info">
+      <div class="chat-header-name">Q 版小伙伴</div>
+      <div class="chat-header-status">在线 · 陪你聊天</div>
     </div>
-    <button class="chat-header-cl
-ose" id="chatClose">×</button>
+    <button class="chat-header-close" id="chatClose">×</button>
   </div>
-  <d
-iv class="chat-messages" id="chatMessages">
- 
-   <div class="msg-bubble msg-pet">你好呀�
-��我是你的 Q 版虚拟小伙伴~ 上传�
-�片生成角色后，我就会出现陪你�
-�天哦！你可以问我关于 Q3D 的任何
-问题 💖</div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="msg-bubble msg-pet">你好呀！我是你的 Q 版虚拟小伙伴~ 上传照片生成角色后，我就会出现陪你聊天哦！你可以问我关于 Q3D 的任何问题 💖</div>
   </div>
-  <div class="chat
--input-area">
-    <button class="chat-voice-b
-tn" id="voiceBtn" title="语音输入">🎤</
-button>
-    <input type="text" class="chat-in
-put" id="chatInput" placeholder="输入消息
-..." autocomplete="off">
-    <button class="c
-hat-send-btn" id="sendBtn">➤</button>
-  </d
-iv>
+  <div class="chat-input-area">
+    <button class="chat-voice-btn" id="voiceBtn" title="语音输入">🎤</button>
+    <input type="text" class="chat-input" id="chatInput" placeholder="输入消息..." autocomplete="off">
+    <button class="chat-send-btn" id="sendBtn">➤</button>
+  </div>
   <div class="chat-trae-link">
-    <a hre
-f="solo-cn://open" id="traeLink">🚀 使用 
-TRAE AI 进行深度对话</a>
+    <a href="solo-cn://open" id="traeLink">🚀 使用 TRAE AI 进行深度对话</a>
   </div>
-</div
->
+</div>
 
 <!-- ===== 页脚 ===== -->
 <footer>
-  <p>
-Built with ❤️ using TRAE Work Auto · Q3D
- 形象造梦机</p>
-  <p style="margin-top:6
-px; font-size:0.78rem; opacity:0.7;">本页�
-�为创意概念演示，部分功能为模�
-�效果</p>
+  <p>Built with ❤️ using TRAE Work Auto · Q3D 形象造梦机</p>
+  <p style="margin-top:6px; font-size:0.78rem; opacity:0.7;">本页面为创意概念演示，部分功能为模拟效果</p>
 </footer>
 
 <!-- 返回顶部 -->
-
-<button class="back-to-top" id="backToTop" ti
-tle="返回顶部">↑</button>
-
-<!-- Toast -
-->
-<div class="toast" id="worksToast"></div>
-
+<button class="back-to-top" id="backToTop" title="返回顶部">↑</button>
 
 <script>
 // ===== 初始化 Mermaid =====
-me
-rmaid.initialize({
+mermaid.initialize({
   startOnLoad: true,
-  the
-me: 'base',
+  theme: 'base',
   themeVariables: {
-    primaryCo
-lor: '#FFF0F3',
-    primaryTextColor: '#4A4A6
-A',
+    primaryColor: '#FFF0F3',
+    primaryTextColor: '#4A4A6A',
     primaryBorderColor: '#FFB7C5',
-    li
-neColor: '#FFB7C5',
-    secondaryColor: '#E3F
-2FD',
+    lineColor: '#FFB7C5',
+    secondaryColor: '#E3F2FD',
     tertiaryColor: '#E0F2F1',
-    fontF
-amily: '"Noto Sans SC", "PingFang SC", sans-s
-erif'
+    fontFamily: '"Noto Sans SC", "PingFang SC", sans-serif'
   },
-  flowchart: { curve: 'basis', pad
-ding: 16 }
+  flowchart: { curve: 'basis', padding: 16 }
 });
 
-// ===== 滚动入场动画 =
-====
-const observer = new IntersectionObserve
-r((entries) => {
+// ===== 滚动入场动画 =====
+const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
-
     if (entry.isIntersecting) {
-      entry.
-target.classList.add('visible');
+      entry.target.classList.add('visible');
     }
   });
-
 }, { threshold: 0.12 });
-document.querySelect
-orAll('.reveal').forEach(el => observer.obser
-ve(el));
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// ===== Hero 标题逐字动画 ==
-===
-const heroTitle = document.getElementById
-('heroTitle');
-const titleText = heroTitle.te
-xtContent;
+// ===== Hero 标题逐字动画 =====
+const heroTitle = document.getElementById('heroTitle');
+const titleText = heroTitle.textContent;
 heroTitle.innerHTML = '';
-titleTex
-t.split('').forEach((char, i) => {
-  const sp
-an = document.createElement('span');
-  span.t
-extContent = char === ' ' ? '\u00A0' : char;
-
-  span.style.animationDelay = `${0.2 + i * 0.
-06}s`;
+titleText.split('').forEach((char, i) => {
+  const span = document.createElement('span');
+  span.textContent = char === ' ' ? '\u00A0' : char;
+  span.style.animationDelay = `${0.2 + i * 0.06}s`;
   heroTitle.appendChild(span);
 });
 
-//
- ===== 返回顶部 =====
-const backToTop = d
-ocument.getElementById('backToTop');
-window.a
-ddEventListener('scroll', () => {
-  backToTop
-.classList.toggle('visible', window.scrollY >
- 400);
+// ===== 返回顶部 =====
+const backToTop = document.getElementById('backToTop');
+window.addEventListener('scroll', () => {
+  backToTop.classList.toggle('visible', window.scrollY > 400);
 });
-backToTop.addEventListener('click'
-, () => window.scrollTo({ top: 0, behavior: '
-smooth' }));
+backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-// ===== 3D 立方体拖拽 ===
-==
-const cube = document.getElementById('cube
-');
-const preview3d = document.getElementById
-('preview3d');
-let isDragging3d = false, star
-tX, startY, rotX = -15, rotY = 30;
+// ===== 3D 立方体拖拽 =====
+const cube = document.getElementById('cube');
+const preview3d = document.getElementById('preview3d');
+let isDragging3d = false, startX, startY, rotX = -15, rotY = 30;
 
-preview3d
-.addEventListener('mousedown', e => {
-  isDra
-gging3d = true; startX = e.clientX; startY = 
-e.clientY;
-  preview3d.style.cursor = 'grabbi
-ng';
+preview3d.addEventListener('mousedown', e => {
+  isDragging3d = true; startX = e.clientX; startY = e.clientY;
+  preview3d.style.cursor = 'grabbing';
 });
-document.addEventListener('mousemove
-', e => {
+document.addEventListener('mousemove', e => {
   if (!isDragging3d) return;
-  rotY
- += (e.clientX - startX) * 0.5;
-  rotX -= (e.
-clientY - startY) * 0.5;
-  startX = e.clientX
-; startY = e.clientY;
-  cube.style.transform 
-= `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-
+  rotY += (e.clientX - startX) * 0.5;
+  rotX -= (e.clientY - startY) * 0.5;
+  startX = e.clientX; startY = e.clientY;
+  cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
 });
-document.addEventListener('mouseup', () =
-> { isDragging3d = false; preview3d.style.cur
-sor = 'grab'; });
+document.addEventListener('mouseup', () => { isDragging3d = false; preview3d.style.cursor = 'grab'; });
 // 触摸支持
-preview3d.a
-ddEventListener('touchstart', e => {
-  isDrag
-ging3d = true; startX = e.touches[0].clientX;
- startY = e.touches[0].clientY;
-}, { passive:
- false });
-document.addEventListener('touchmo
-ve', e => {
+preview3d.addEventListener('touchstart', e => {
+  isDragging3d = true; startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+}, { passive: false });
+document.addEventListener('touchmove', e => {
   if (!isDragging3d) return;
-  ro
-tY += (e.touches[0].clientX - startX) * 0.5;
-
-  rotX -= (e.touches[0].clientY - startY) * 0
-.5;
-  startX = e.touches[0].clientX; startY =
- e.touches[0].clientY;
-  cube.style.transform
- = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-
+  rotY += (e.touches[0].clientX - startX) * 0.5;
+  rotX -= (e.touches[0].clientY - startY) * 0.5;
+  startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+  cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
   e.preventDefault();
-}, { passive: false })
-;
-document.addEventListener('touchend', () =>
- { isDragging3d = false; });
+}, { passive: false });
+document.addEventListener('touchend', () => { isDragging3d = false; });
 
-// ===== 图片
-上传 =====
-const fileInput = document.getEl
-ementById('fileInput');
-const uploadZone = do
-cument.getElementById('uploadZone');
-const up
-loadPreview = document.getElementById('upload
-Preview');
-const previewImg = document.getEle
-mentById('previewImg');
-let uploadedImage = n
-ull;
+// ===== 图片上传 =====
+const fileInput = document.getElementById('fileInput');
+const uploadZone = document.getElementById('uploadZone');
+const uploadPreview = document.getElementById('uploadPreview');
+const previewImg = document.getElementById('previewImg');
+let uploadedImage = null;
 
-uploadZone.addEventListener('click', ()
- => fileInput.click());
-fileInput.addEventLis
-tener('change', e => {
-  const file = e.targe
-t.files[0]; if (!file) return;
-  const reader
- = new FileReader();
-  reader.onload = ev => 
-{
-    previewImg.src = ev.target.result; uplo
-adedImage = ev.target.result;
-    uploadPrevi
-ew.style.display = 'block';
-    document.quer
-ySelector('.face-front').style.backgroundImag
-e = `url(${ev.target.result})`;
-    document.
-querySelector('.face-front').style.background
-Size = 'cover';
-    document.querySelector('.
-face-front').textContent = '';
+uploadZone.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', e => {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    previewImg.src = ev.target.result; uploadedImage = ev.target.result;
+    uploadPreview.style.display = 'block';
+    document.querySelector('.face-front').style.backgroundImage = `url(${ev.target.result})`;
+    document.querySelector('.face-front').style.backgroundSize = 'cover';
+    document.querySelector('.face-front').textContent = '';
   };
-  reader.
-readAsDataURL(file);
+  reader.readAsDataURL(file);
 });
 
 // 拖拽
-uploadZon
-e.addEventListener('dragover', e => { e.preve
-ntDefault(); uploadZone.classList.add('dragov
-er'); });
-uploadZone.addEventListener('dragle
-ave', () => uploadZone.classList.remove('drag
-over'));
-uploadZone.addEventListener('drop', 
-e => {
-  e.preventDefault(); uploadZone.class
-List.remove('dragover');
-  const file = e.dat
-aTransfer.files[0]; if (!file) return;
-  cons
-t reader = new FileReader();
-  reader.onload 
-= ev => {
-    previewImg.src = ev.target.resu
-lt; uploadedImage = ev.target.result;
-    upl
-oadPreview.style.display = 'block';
-    docum
-ent.querySelector('.face-front').style.backgr
-oundImage = `url(${ev.target.result})`;
-    d
-ocument.querySelector('.face-front').style.ba
-ckgroundSize = 'cover';
-    document.querySel
-ector('.face-front').textContent = '';
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault(); uploadZone.classList.remove('dragover');
+  const file = e.dataTransfer.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    previewImg.src = ev.target.result; uploadedImage = ev.target.result;
+    uploadPreview.style.display = 'block';
+    document.querySelector('.face-front').style.backgroundImage = `url(${ev.target.result})`;
+    document.querySelector('.face-front').style.backgroundSize = 'cover';
+    document.querySelector('.face-front').textContent = '';
   };
- 
- reader.readAsDataURL(file);
+  reader.readAsDataURL(file);
 });
 
-// 快捷�
-�材
+// 快捷素材
 const presetImages = {
-  selfie: 'data:i
-mage/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZ
-WlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3
-JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGV
-pZ2h0PSIxMDAlIiBmaWxsPSIjRkZFNEU5Ii8+PHN2ZyB4
-PSI1MCIgeT0iNDAiIHdpZHRoPSIxMDAiIGhlaWdodD0iM
-TAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PGNpcmNsZS
-BjeD0iNTAiIGN5PSI0MCIgcj0iMjUiIGZpbGw9IiNGRjh
-GQUIiLz48ZWxsaXBzZSBjeD0iNDAiIGN5PSIzOCIgcng9
-IjMiIHJ5PSI1IiBmaWxsPSIjNEE0QTZBIi8+PGVsbGlwc
-2UgY3g9IjYwIiBjeT0iMzgiIHJ4PSIzIiByeT0iNSIgZm
-lsbD0iIzQ0QTQ2QSIvPjxwYXRoIGQ9Ik00NSA1NSBRNTA
-gNjAgNTUgNTUiIHN0cm9rZT0iIzQ0QTQ2QSIgc3Ryb2tl
-LXdpZHRoPSIyIiBmaWxsPSJub25lIiBzdHJva2UtbGluZ
-WNhcD0icm91bmQiLz48ZWxsaXBzZSBjeD0iMzAiIGN5PS
-I1MCIgcng9IjUiIHJ5PSIzIiBmaWxsPSIjRkY4RkFCIiB
-vcGFjaXR5PSIwLjUiLz48ZWxsaXBzZSBjeD0iNzAiIGN5
-PSI1MCIgcng9IjUiIHJ5PSIzIiBmaWxsPSIjRkY4RkFCI
-iBvcGFjaXR5PSIwLjUiLz48L3N2Zz48L3N2Zz4=',
-  d
-raw: 'data:image/svg+xml;base64,PHN2ZyB3aWR0a
-D0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly
-93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0
-iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjBGOUZG
-Ii8+PHN2ZyB4PSI0MCIgeT0iMzAiIHdpZHRoPSIxMjAiI
-GhlaWdodD0iMTQwIiB2aWV3Qm94PSIwIDAgMTIwIDE0MC
-I+PGNpcmNsZSBjeD0iNjAiIGN5PSI1MCIgcj0iMzAiIGZ
-pbGw9Im5vbmUiIHN0cm9rZT0iI0I0RDdGMCIgc3Ryb2tl
-LXdpZHRoPSIzIiBzdHJva2UtZGFzaGFycmF5PSI1LDUiL
-z48ZWxsaXBzZSBjeD0iNTAiIGN5PSI0NSIgcng9IjQiIH
-J5PSI2IiBmaWxsPSIjNEE0QTZBIi8+PGVsbGlwc2UgY3g
-9IjcwIiBjeT0iNDUiIHJ4PSI0IiByeT0iNiIgZmlsbD0i
-IzQ0QTQ2QSIvPjxwYXRoIGQ9Ik01NSA2NSBRNjAgNzAgN
-jUgNjUiIHN0cm9rZT0iIzQ0QTQ2QSIgc3Ryb2tlLXdpZH
-RoPSIyIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0
-icm91bmQiLz48ZWxsaXBzZSBjeD0iNDAiIGN5PSI4NSIg
-cng9IjQiIHJ5PSI2IiBmaWxsPSIjNEE0QTZBIi8+PGVsb
-Glwc2UgY3g9IjgwIiBjeT0iODUiIHJ4PSI0IiByeT0iNi
-IgZmlsbD0iIzQ0QTQ2QSIvPjxwYXRoIGQ9Ik01NSAxMDA
-gUTYwIDEwNSA2NSAxMDAiIHN0cm9rZT0iIzQ0QTQ2QSIg
-c3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIiBzdHJva
-2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz48L3N2Zz4=',
-
-  pet: 'data:image/svg+xml;base64,PHN2ZyB3aW
-R0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA
-6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0
-aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjFGO
-EU5Ii8+PHN2ZyB4PSI0MCIgeT0iMzAiIHdpZHRoPSIxMj
-AiIGhlaWdodD0iMTQwIiB2aWV3Qm94PSIwIDAgMTIwIDE
-0MCI+PGVsbGlwc2UgY3g9IjM1IiBjeT0iNDAiIHJ4PSIx
-MiIgcnk9IjE4IiBmaWxsPSIjRkY4RkFCIiB0cmFuc2Zvc
-m09InJvdGF0ZSgtMTUgMzUgNDApIi8+PGVsbGlwc2UgY3
-g9Ijg1IiBjeT0iNDAiIHJ4PSIxMiIgcnk9IjE4IiBmaWx
-sPSIjRkY4RkFCIiB0cmFuc2Zvcm09InJvdGF0ZSgxNSA4
-NSA0MCkiLz48Y2lyY2xlIGN4PSI2MCIgY3k9IjcwIiByP
-SIzNSIgZmlsbD0iI0ZGOEZBQiIvPjxlbGxpcHNlIGN4PS
-I1MCIgY3k9IjY1IiByeD0iNCIgcnk9IjciIGZpbGw9IiM
-0QTRBNkEiLz48ZWxsaXBzZSBjeD0iNzAiIGN5PSI2NSIg
-cng9IjQiIHJ5PSI3IiBmaWxsPSIjNEE0QTZBIi8+PHBhd
-GggZD0iTTU1IDgwIFE2MCA4NSA2NSA4MCIgc3Ryb2tlPS
-IjNEE0QTZBIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5
-vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxlbGxp
-cHNlIGN4PSI0NSIgY3k9Ijc4IiByeD0iNSIgcnk9IjMiI
-GZpbGw9IiNGRjhGQUIiIG9wYWNpdHk9IjAuNSIvPjxlbG
-xpcHNlIGN4PSI3NSIgY3k9Ijc4IiByeD0iNSIgcnk9IjM
-iIGZpbGw9IiNGRjhGQUIiIG9wYWNpdHk9IjAuNSIvPjxj
-aXJjbGUgY3g9IjYwIiBjeT0iOTUiIHI9IjQiIGZpbGw9I
-iNGRjk1OEIiIG9wYWNpdHk9IjAuNiIvPjxlbGxpcHNlIG
-N4PSI0NSIgY3k9IjEwNSIgcng9IjgiIHJ5PSI1IiBmaWx
-sPSIjRkY4RkFCIi8+PGVsbGlwc2UgY3g9Ijc1IiBjeT0i
-MTA1IiByeD0iOCIgcnk9IjUiIGZpbGw9IiNGRjhGQUIiL
-z48L3N2Zz48L3N2Zz4='
+  selfie: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRkZFNEU5Ii8+PHN2ZyB4PSI1MCIgeT0iNDAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PGNpcmNsZSBjeD0iNTAiIGN5PSI0MCIgcj0iMjUiIGZpbGw9IiNGRjhGQUIiLz48ZWxsaXBzZSBjeD0iNDAiIGN5PSIzOCIgcng9IjMiIHJ5PSI1IiBmaWxsPSIjNEE0QTZBIi8+PGVsbGlwc2UgY3g9IjYwIiBjeT0iMzgiIHJ4PSIzIiByeT0iNSIgZmlsbD0iIzQ0QTQ2QSIvPjxwYXRoIGQ9Ik00NSA1NSBRNTAgNjAgNTUgNTUiIHN0cm9rZT0iIzQ0QTQ2QSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48ZWxsaXBzZSBjeD0iMzAiIGN5PSI1MCIgcng9IjUiIHJ5PSIzIiBmaWxsPSIjRkY4RkFCIiBvcGFjaXR5PSIwLjUiLz48ZWxsaXBzZSBjeD0iNzAiIGN5PSI1MCIgcng9IjUiIHJ5PSIzIiBmaWxsPSIjRkY4RkFCIiBvcGFjaXR5PSIwLjUiLz48L3N2Zz48L3N2Zz4=',
+  draw: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjBGOUZGIi8+PHN2ZyB4PSI0MCIgeT0iMzAiIHdpZHRoPSIxMjAiIGhlaWdodD0iMTQwIiB2aWV3Qm94PSIwIDAgMTIwIDE0MCI+PGNpcmNsZSBjeD0iNjAiIGN5PSI1MCIgcj0iMzAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0I0RDdGMCIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtZGFzaGFycmF5PSI1LDUiLz48ZWxsaXBzZSBjeD0iNTAiIGN5PSI0NSIgcng9IjQiIHJ5PSI2IiBmaWxsPSIjNEE0QTZBIi8+PGVsbGlwc2UgY3g9IjcwIiBjeT0iNDUiIHJ4PSI0IiByeT0iNiIgZmlsbD0iIzQ0QTQ2QSIvPjxwYXRoIGQ9Ik01NSA2NSBRNjAgNzAgNjUgNjUiIHN0cm9rZT0iIzQ0QTQ2QSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48ZWxsaXBzZSBjeD0iNDAiIGN5PSI4NSIgcng9IjQiIHJ5PSI2IiBmaWxsPSIjNEE0QTZBIi8+PGVsbGlwc2UgY3g9IjgwIiBjeT0iODUiIHJ4PSI0IiByeT0iNiIgZmlsbD0iIzQ0QTQ2QSIvPjxwYXRoIGQ9Ik01NSAxMDAgUTYwIDEwNSA2NSAxMDAiIHN0cm9rZT0iIzQ0QTQ2QSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz48L3N2Zz4=',
+  pet: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjFGOEU5Ii8+PHN2ZyB4PSI0MCIgeT0iMzAiIHdpZHRoPSIxMjAiIGhlaWdodD0iMTQwIiB2aWV3Qm94PSIwIDAgMTIwIDE0MCI+PGVsbGlwc2UgY3g9IjM1IiBjeT0iNDAiIHJ4PSIxMiIgcnk9IjE4IiBmaWxsPSIjRkY4RkFCIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTUgMzUgNDApIi8+PGVsbGlwc2UgY3g9Ijg1IiBjeT0iNDAiIHJ4PSIxMiIgcnk9IjE4IiBmaWxsPSIjRkY4RkFCIiB0cmFuc2Zvcm09InJvdGF0ZSgxNSA4NSA0MCkiLz48Y2lyY2xlIGN4PSI2MCIgY3k9IjcwIiByPSIzNSIgZmlsbD0iI0ZGOEZBQiIvPjxlbGxpcHNlIGN4PSI1MCIgY3k9IjY1IiByeD0iNCIgcnk9IjciIGZpbGw9IiM0QTRBNkEiLz48ZWxsaXBzZSBjeD0iNzAiIGN5PSI2NSIgcng9IjQiIHJ5PSI3IiBmaWxsPSIjNEE0QTZBIi8+PHBhdGggZD0iTTU1IDgwIFE2MCA4NSA2NSA4MCIgc3Ryb2tlPSIjNEE0QTZBIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxlbGxpcHNlIGN4PSI0NSIgY3k9Ijc4IiByeD0iNSIgcnk9IjMiIGZpbGw9IiNGRjhGQUIiIG9wYWNpdHk9IjAuNSIvPjxlbGxpcHNlIGN4PSI3NSIgY3k9Ijc4IiByeD0iNSIgcnk9IjMiIGZpbGw9IiNGRjhGQUIiIG9wYWNpdHk9IjAuNSIvPjxjaXJjbGUgY3g9IjYwIiBjeT0iOTUiIHI9IjQiIGZpbGw9IiNGRjk1OEIiIG9wYWNpdHk9IjAuNiIvPjxlbGxpcHNlIGN4PSI0NSIgY3k9IjEwNSIgcng9IjgiIHJ5PSI1IiBmaWxsPSIjRkY4RkFCIi8+PGVsbGlwc2UgY3g9Ijc1IiBjeT0iMTA1IiByeD0iOCIgcnk9IjUiIGZpbGw9IiNGRjhGQUIiLz48L3N2Zz48L3N2Zz4='
 };
 
-document.querySelect
-orAll('.chip-btn').forEach(btn => {
-  btn.add
-EventListener('click', () => {
-    document.q
-uerySelectorAll('.chip-btn').forEach(b => b.c
-lassList.remove('active'));
-    btn.classList
-.add('active');
-    const type = btn.dataset.
-type;
+document.querySelectorAll('.chip-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const type = btn.dataset.type;
     const dataUrl = presetImages[type];
-
-    previewImg.src = dataUrl; uploadedImage 
-= dataUrl;
-    uploadPreview.style.display = 
-'block';
-    document.querySelector('.face-fr
-ont').style.backgroundImage = `url(${dataUrl}
-)`;
-    document.querySelector('.face-front')
-.style.backgroundSize = 'cover';
-    document
-.querySelector('.face-front').textContent = '
-';
+    previewImg.src = dataUrl; uploadedImage = dataUrl;
+    uploadPreview.style.display = 'block';
+    document.querySelector('.face-front').style.backgroundImage = `url(${dataUrl})`;
+    document.querySelector('.face-front').style.backgroundSize = 'cover';
+    document.querySelector('.face-front').textContent = '';
   });
 });
 
 // ===== 风格切换 =====
-con
-st styleOptions = document.querySelectorAll('
-.style-option');
+const styleOptions = document.querySelectorAll('.style-option');
 let currentStyle = 'kawaii';
 
-
 const styleColors = {
-  kawaii: { front: 'l
-inear-gradient(135deg, #FFE4E9, #FF8FAB)', ba
-ck: 'linear-gradient(135deg, #FFF0F3, #FFB7C5
-)', left: 'linear-gradient(135deg, #FFB7C5, #
-FFD93D)', right: 'linear-gradient(135deg, #FF
-D93D, #FFE4E9)', top: 'linear-gradient(135deg
-, #E1F5FE, #FFF0F3)', bottom: 'linear-gradien
-t(135deg, #E86A8A, #FF8FAB)', hair: '#FF8FAB'
- },
-  guofeng: { front: 'linear-gradient(135d
-eg, #E0F2F1, #A8E6CF)', back: 'linear-gradien
-t(135deg, #F1F8E9, #C8E6C9)', left: 'linear-g
-radient(135deg, #A8E6CF, #81C784)', right: 'l
-inear-gradient(135deg, #81C784, #E0F2F1)', to
-p: 'linear-gradient(135deg, #E8F5E9, #E0F2F1)
-', bottom: 'linear-gradient(135deg, #66BB6A, 
-#A8E6CF)', hair: '#81C784' },
-  trendy: { fro
-nt: 'linear-gradient(135deg, #FFF8E1, #FFD93D
-)', back: 'linear-gradient(135deg, #F3E5F5, #
-CE93D8)', left: 'linear-gradient(135deg, #FFD
-93D, #CE93D8)', right: 'linear-gradient(135de
-g, #CE93D8, #FFF8E1)', top: 'linear-gradient(
-135deg, #E1F5FE, #F3E5F5)', bottom: 'linear-g
-radient(135deg, #FBC02D, #FFD93D)', hair: '#F
-FD93D' },
-  simple: { front: 'linear-gradient
-(135deg, #E3F2FD, #B4D7F0)', back: 'linear-gr
-adient(135deg, #E8EAF6, #9FA8DA)', left: 'lin
-ear-gradient(135deg, #B4D7F0, #9FA8DA)', righ
-t: 'linear-gradient(135deg, #9FA8DA, #E3F2FD)
-', top: 'linear-gradient(135deg, #E1F5FE, #E8
-EAF6)', bottom: 'linear-gradient(135deg, #5C6
-BC0, #B4D7F0)', hair: '#B4D7F0' }
+  kawaii: { front: 'linear-gradient(135deg, #FFE4E9, #FF8FAB)', back: 'linear-gradient(135deg, #FFF0F3, #FFB7C5)', left: 'linear-gradient(135deg, #FFB7C5, #FFD93D)', right: 'linear-gradient(135deg, #FFD93D, #FFE4E9)', top: 'linear-gradient(135deg, #E1F5FE, #FFF0F3)', bottom: 'linear-gradient(135deg, #E86A8A, #FF8FAB)', hair: '#FF8FAB' },
+  guofeng: { front: 'linear-gradient(135deg, #E0F2F1, #A8E6CF)', back: 'linear-gradient(135deg, #F1F8E9, #C8E6C9)', left: 'linear-gradient(135deg, #A8E6CF, #81C784)', right: 'linear-gradient(135deg, #81C784, #E0F2F1)', top: 'linear-gradient(135deg, #E8F5E9, #E0F2F1)', bottom: 'linear-gradient(135deg, #66BB6A, #A8E6CF)', hair: '#81C784' },
+  trendy: { front: 'linear-gradient(135deg, #FFF8E1, #FFD93D)', back: 'linear-gradient(135deg, #F3E5F5, #CE93D8)', left: 'linear-gradient(135deg, #FFD93D, #CE93D8)', right: 'linear-gradient(135deg, #CE93D8, #FFF8E1)', top: 'linear-gradient(135deg, #E1F5FE, #F3E5F5)', bottom: 'linear-gradient(135deg, #FBC02D, #FFD93D)', hair: '#FFD93D' },
+  simple: { front: 'linear-gradient(135deg, #E3F2FD, #B4D7F0)', back: 'linear-gradient(135deg, #E8EAF6, #9FA8DA)', left: 'linear-gradient(135deg, #B4D7F0, #9FA8DA)', right: 'linear-gradient(135deg, #9FA8DA, #E3F2FD)', top: 'linear-gradient(135deg, #E1F5FE, #E8EAF6)', bottom: 'linear-gradient(135deg, #5C6BC0, #B4D7F0)', hair: '#B4D7F0' }
 };
 
-functio
-n applyStyle(style) {
-  const c = styleColors
-[style];
+function applyStyle(style) {
+  const c = styleColors[style];
   if (!c) return;
-  document.querySe
-lector('.face-front').style.background = c.fr
-ont;
-  document.querySelector('.face-back').s
-tyle.background = c.back;
-  document.querySel
-ector('.face-left').style.background = c.left
-;
-  document.querySelector('.face-right').sty
-le.background = c.right;
-  document.querySele
-ctor('.face-top').style.background = c.top;
- 
- document.querySelector('.face-bottom').style
-.background = c.bottom;
-  // 如果有上传�
-��图片，正面保持图片
-  if (uploadedI
-mage) {
-    document.querySelector('.face-fro
-nt').style.backgroundImage = `url(${uploadedI
-mage})`;
-    document.querySelector('.face-fr
-ont').style.backgroundSize = 'cover';
-    doc
-ument.querySelector('.face-front').textConten
-t = '';
+  document.querySelector('.face-front').style.background = c.front;
+  document.querySelector('.face-back').style.background = c.back;
+  document.querySelector('.face-left').style.background = c.left;
+  document.querySelector('.face-right').style.background = c.right;
+  document.querySelector('.face-top').style.background = c.top;
+  document.querySelector('.face-bottom').style.background = c.bottom;
+  // 如果有上传的图片，正面保持图片
+  if (uploadedImage) {
+    document.querySelector('.face-front').style.backgroundImage = `url(${uploadedImage})`;
+    document.querySelector('.face-front').style.backgroundSize = 'cover';
+    document.querySelector('.face-front').textContent = '';
   }
 }
 
 styleOptions.forEach(opt => {
-
   opt.addEventListener('click', () => {
-    s
-tyleOptions.forEach(o => o.classList.remove('
-selected'));
-    opt.classList.add('selected'
-);
+    styleOptions.forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
     currentStyle = opt.dataset.style;
-    
-applyStyle(currentStyle);
+    applyStyle(currentStyle);
   });
 });
 
-// =====
- 生成按钮 & 进度模拟 =====
-const gene
-rateBtn = document.getElementById('generateBt
-n');
-const genProgress = document.getElementB
-yId('genProgress');
-const progressFill = docu
-ment.getElementById('progressFill');
-const pr
-ogressText = document.getElementById('progres
-sText');
-const desktopPet = document.getEleme
-ntById('desktopPet');
+// ===== 生成按钮 & 进度模拟 =====
+const generateBtn = document.getElementById('generateBtn');
+const genProgress = document.getElementById('genProgress');
+const progressFill = document.getElementById('progressFill');
+const progressText = document.getElementById('progressText');
+const desktopPet = document.getElementById('desktopPet');
 
-const progressSteps = 
-[
-  { pct: 15, text: '正在分析五官特�
-�...' },
-  { pct: 35, text: '提取穿搭与�
-��形...' },
-  { pct: 55, text: 'Q 版风格�
-��构中...' },
-  { pct: 75, text: '3D 网格
-建模中...' },
-  { pct: 90, text: '材质�
-�染与光影...' },
-  { pct: 100, text: '生
-成完成！' }
+const progressSteps = [
+  { pct: 15, text: '正在分析五官特征...' },
+  { pct: 35, text: '提取穿搭与外形...' },
+  { pct: 55, text: 'Q 版风格重构中...' },
+  { pct: 75, text: '3D 网格建模中...' },
+  { pct: 90, text: '材质渲染与光影...' },
+  { pct: 100, text: '生成完成！' }
 ];
 
-generateBtn.addEventListe
-ner('click', () => {
-  generateBtn.disabled =
- true;
-  genProgress.classList.add('visible')
-;
+generateBtn.addEventListener('click', () => {
+  generateBtn.disabled = true;
+  genProgress.classList.add('visible');
   let step = 0;
-  progressFill.style.width 
-= '0%';
+  progressFill.style.width = '0%';
 
   function nextStep() {
-    if (step
- >= progressSteps.length) {
-      setTimeout(
-() => {
+    if (step >= progressSteps.length) {
+      setTimeout(() => {
         showDesktopPet();
-        gen
-Progress.classList.remove('visible');
-       
- generateBtn.disabled = false;
-        progre
-ssFill.style.width = '0%';
+        genProgress.classList.remove('visible');
+        generateBtn.disabled = false;
+        progressFill.style.width = '0%';
       }, 500);
-   
-   return;
+      return;
     }
-    const s = progressSteps[
-step];
-    progressFill.style.width = s.pct +
- '%';
+    const s = progressSteps[step];
+    progressFill.style.width = s.pct + '%';
     progressText.textContent = s.text;
-
     step++;
-    setTimeout(nextStep, 600 + Ma
-th.random() * 500);
+    setTimeout(nextStep, 600 + Math.random() * 500);
   }
   nextStep();
 });
 
-fu
-nction showDesktopPet() {
-  desktopPet.style.
-display = 'block';
-  desktopPet.classList.add
-('pet-bounce');
-  showPetBubble('角色生成
-成功！🎉 快跟我聊聊吧~');
-  spawnC
-onfetti();
+function showDesktopPet() {
+  desktopPet.style.display = 'block';
+  desktopPet.classList.add('pet-bounce');
+  showPetBubble('角色生成成功！🎉 快跟我聊聊吧~');
+  spawnConfetti();
   setTimeout(() => {
-    const cha
-tPanel = document.getElementById('petChatPane
-l');
+    const chatPanel = document.getElementById('petChatPanel');
     positionChatPanel();
-    chatPanel.c
-lassList.add('show');
-    addPetMessage('哇�
-��你的 Q 版形象太可爱了！我是你�
-��专属小伙伴，有任何问题都可以�
-��我哦~ 💕');
+    chatPanel.classList.add('show');
+    addPetMessage('哇！你的 Q 版形象太可爱了！我是你的专属小伙伴，有任何问题都可以问我哦~ 💕');
   }, 1200);
 }
 
-function spa
-wnConfetti() {
-  const colors = ['#FF8FAB', '
-#A8E6CF', '#B4D7F0', '#FFD93D', '#CE93D8'];
- 
- for (let i = 0; i < 30; i++) {
-    const c =
- document.createElement('div');
-    c.classNa
-me = 'confetti';
-    c.style.left = Math.rand
-om() * 100 + 'vw';
-    c.style.top = (Math.ra
-ndom() * 30 + 30) + 'vh';
-    c.style.backgro
-und = colors[Math.floor(Math.random() * color
-s.length)];
-    c.style.animationDuration = (
-0.8 + Math.random() * 0.6) + 's';
-    c.style
-.animationDelay = (Math.random() * 0.3) + 's'
-;
+function spawnConfetti() {
+  const colors = ['#FF8FAB', '#A8E6CF', '#B4D7F0', '#FFD93D', '#CE93D8'];
+  for (let i = 0; i < 30; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.top = (Math.random() * 30 + 30) + 'vh';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDuration = (0.8 + Math.random() * 0.6) + 's';
+    c.style.animationDelay = (Math.random() * 0.3) + 's';
     document.body.appendChild(c);
-    setTi
-meout(() => c.remove(), 1500);
+    setTimeout(() => c.remove(), 1500);
   }
 }
 
-// ====
-= 桌面宠物拖拽 =====
-let petDragging = 
-false, petStartX, petStartY, petOrigLeft, pet
-OrigTop;
-const petSvg = document.getElementBy
-Id('petSvg');
+// ===== 桌面宠物拖拽 =====
+let petDragging = false, petStartX, petStartY, petOrigLeft, petOrigTop;
+const petSvg = document.getElementById('petSvg');
 
-desktopPet.addEventListener('m
-ousedown', e => {
-  if (e.button !== 0) retur
-n;
-  petDragging = true; desktopPet.classList
-.add('dragging');
-  petStartX = e.clientX; pe
-tStartY = e.clientY;
-  const rect = desktopPe
-t.getBoundingClientRect();
-  petOrigLeft = re
-ct.left; petOrigTop = rect.top;
+desktopPet.addEventListener('mousedown', e => {
+  if (e.button !== 0) return;
+  petDragging = true; desktopPet.classList.add('dragging');
+  petStartX = e.clientX; petStartY = e.clientY;
+  const rect = desktopPet.getBoundingClientRect();
+  petOrigLeft = rect.left; petOrigTop = rect.top;
 });
-document.
-addEventListener('mousemove', e => {
-  if (!p
-etDragging) return;
-  let nx = petOrigLeft + 
-e.clientX - petStartX;
-  let ny = petOrigTop 
-+ e.clientY - petStartY;
-  const maxX = windo
-w.innerWidth - 130, maxY = window.innerHeight
- - 130;
-  nx = Math.max(0, Math.min(nx, maxX)
-);
-  ny = Math.max(0, Math.min(ny, maxY));
-  
-desktopPet.style.left = nx + 'px'; desktopPet
-.style.top = ny + 'px';
-  desktopPet.style.ri
-ght = 'auto'; desktopPet.style.bottom = 'auto
-';
-});
-document.addEventListener('mouseup', (
-) => {
+document.addEventListener('mousemove', e => {
   if (!petDragging) return;
-  petDragg
-ing = false; desktopPet.classList.remove('dra
-gging');
+  let nx = petOrigLeft + e.clientX - petStartX;
+  let ny = petOrigTop + e.clientY - petStartY;
+  const maxX = window.innerWidth - 130, maxY = window.innerHeight - 130;
+  nx = Math.max(0, Math.min(nx, maxX));
+  ny = Math.max(0, Math.min(ny, maxY));
+  desktopPet.style.left = nx + 'px'; desktopPet.style.top = ny + 'px';
+  desktopPet.style.right = 'auto'; desktopPet.style.bottom = 'auto';
+});
+document.addEventListener('mouseup', () => {
+  if (!petDragging) return;
+  petDragging = false; desktopPet.classList.remove('dragging');
   // 边缘吸附
-  const rect = des
-ktopPet.getBoundingClientRect();
-  const snap
-Dist = 60;
-  let nx = rect.left, ny = rect.to
-p;
+  const rect = desktopPet.getBoundingClientRect();
+  const snapDist = 60;
+  let nx = rect.left, ny = rect.top;
   if (nx < snapDist) nx = 10;
-  else if (n
-x > window.innerWidth - 130 - snapDist) nx = 
-window.innerWidth - 140;
-  if (ny < snapDist)
- ny = 10;
-  else if (ny > window.innerHeight 
-- 130 - snapDist) ny = window.innerHeight - 1
-40;
-  desktopPet.style.left = nx + 'px'; desk
-topPet.style.top = ny + 'px';
+  else if (nx > window.innerWidth - 130 - snapDist) nx = window.innerWidth - 140;
+  if (ny < snapDist) ny = 10;
+  else if (ny > window.innerHeight - 130 - snapDist) ny = window.innerHeight - 140;
+  desktopPet.style.left = nx + 'px'; desktopPet.style.top = ny + 'px';
 });
 
-// 宠物�
-��击 / 双击
-desktopPet.addEventListener('c
-lick', e => {
+// 宠物点击 / 双击
+desktopPet.addEventListener('click', e => {
   if (petDragging) return;
-  co
-nst chatPanel = document.getElementById('petC
-hatPanel');
+  const chatPanel = document.getElementById('petChatPanel');
   positionChatPanel();
-  chatPane
-l.classList.toggle('show');
-  if (chatPanel.c
-lassList.contains('show')) {
-    showPetBubbl
-e('我在听呢~ 👂');
+  chatPanel.classList.toggle('show');
+  if (chatPanel.classList.contains('show')) {
+    showPetBubble('我在听呢~ 👂');
   }
 });
-desktopPet.a
-ddEventListener('dblclick', () => {
-  desktop
-Pet.classList.remove('pet-bounce', 'pet-sleep
-');
+desktopPet.addEventListener('dblclick', () => {
+  desktopPet.classList.remove('pet-bounce', 'pet-sleep');
   void desktopPet.offsetWidth; // reflow
-
   desktopPet.classList.add('pet-spin');
-  set
-Timeout(() => desktopPet.classList.remove('pe
-t-spin'), 600);
-  showPetBubble('旋转跳跃
-我闭着眼~ 🎵');
+  setTimeout(() => desktopPet.classList.remove('pet-spin'), 600);
+  showPetBubble('旋转跳跃我闭着眼~ 🎵');
   spawnConfetti();
 });
 
-
 // 右键菜单
-desktopPet.addEventListener(
-'contextmenu', e => {
+desktopPet.addEventListener('contextmenu', e => {
   e.preventDefault();
- 
- const ctx = document.getElementById('petCont
-ext');
+  const ctx = document.getElementById('petContext');
   ctx.style.left = e.offsetX + 'px';
- 
- ctx.style.top = e.offsetY + 'px';
-  ctx.clas
-sList.add('show');
+  ctx.style.top = e.offsetY + 'px';
+  ctx.classList.add('show');
 });
-document.addEventListe
-ner('click', e => {
-  if (!e.target.closest('
-#petContext')) document.getElementById('petCo
-ntext').classList.remove('show');
+document.addEventListener('click', e => {
+  if (!e.target.closest('#petContext')) document.getElementById('petContext').classList.remove('show');
 });
 
-// 右
-键菜单项
-document.getElementById('ctxPin'
-).addEventListener('click', () => togglePiP()
-);
-document.getElementById('ctxStyle').addEve
-ntListener('click', () => {
-  const styles = 
-['kawaii','guofeng','trendy','simple'];
-  con
-st next = styles[(styles.indexOf(currentStyle
-) + 1) % styles.length];
-  currentStyle = nex
-t;
+// 右键菜单项
+document.getElementById('ctxPin').addEventListener('click', () => togglePiP());
+document.getElementById('ctxStyle').addEventListener('click', () => {
+  const styles = ['kawaii','guofeng','trendy','simple'];
+  const next = styles[(styles.indexOf(currentStyle) + 1) % styles.length];
+  currentStyle = next;
   applyStyle(currentStyle);
-  showPetBubbl
-e('换了一套新衣服，好看吗？✨');
-
+  showPetBubble('换了一套新衣服，好看吗？✨');
 });
-document.getElementById('ctxTalk').addEv
-entListener('click', () => {
-  const chatPane
-l = document.getElementById('petChatPanel');
-
-  positionChatPanel(); chatPanel.classList.ad
-d('show');
+document.getElementById('ctxTalk').addEventListener('click', () => {
+  const chatPanel = document.getElementById('petChatPanel');
+  positionChatPanel(); chatPanel.classList.add('show');
 });
-document.getElementById('ctxTr
-ae').addEventListener('click', () => {
-  wind
-ow.location.href = 'solo-cn://open';
+document.getElementById('ctxTrae').addEventListener('click', () => {
+  window.location.href = 'solo-cn://open';
 });
-docu
-ment.getElementById('ctxHide').addEventListen
-er('click', () => {
-  desktopPet.style.displa
-y = 'none';
+document.getElementById('ctxHide').addEventListener('click', () => {
+  desktopPet.style.display = 'none';
 });
 
 // 气泡提示
-function sho
-wPetBubble(text) {
-  const bubble = document.
-getElementById('petBubble');
-  bubble.textCon
-tent = text;
+function showPetBubble(text) {
+  const bubble = document.getElementById('petBubble');
+  bubble.textContent = text;
   bubble.classList.add('show');
-
-  setTimeout(() => bubble.classList.remove('s
-how'), 3000);
+  setTimeout(() => bubble.classList.remove('show'), 3000);
 }
 
 // 闲置动画
-let petIdleT
-imer;
+let petIdleTimer;
 function resetPetIdle() {
-  clearTimeou
-t(petIdleTimer);
-  desktopPet.classList.remov
-e('pet-sleep');
-  desktopPet.classList.add('p
-et-bounce');
-  petIdleTimer = setTimeout(() =
-> {
-    desktopPet.classList.remove('pet-boun
-ce');
-    const actions = ['pet-sleep', 'pet-
-bounce'];
-    const action = actions[Math.flo
-or(Math.random() * actions.length)];
-    desk
-topPet.classList.add(action);
-    if (action 
-=== 'pet-sleep') showPetBubble('Zzz... 打盹
-中...');
+  clearTimeout(petIdleTimer);
+  desktopPet.classList.remove('pet-sleep');
+  desktopPet.classList.add('pet-bounce');
+  petIdleTimer = setTimeout(() => {
+    desktopPet.classList.remove('pet-bounce');
+    const actions = ['pet-sleep', 'pet-bounce'];
+    const action = actions[Math.floor(Math.random() * actions.length)];
+    desktopPet.classList.add(action);
+    if (action === 'pet-sleep') showPetBubble('Zzz... 打盹中...');
   }, 5000);
 }
-document.addEventList
-ener('mousemove', resetPetIdle);
-document.add
-EventListener('click', resetPetIdle);
+document.addEventListener('mousemove', resetPetIdle);
+document.addEventListener('click', resetPetIdle);
 
-// PiP
- 置顶
+// PiP 置顶
 async function togglePiP() {
-  if (!(
-'documentPictureInPicture' in window)) {
-    
-showPetBubble('你的浏览器不支持桌面
-置顶，但我可以在这里陪你~');
-    
-return;
+  if (!('documentPictureInPicture' in window)) {
+    showPetBubble('你的浏览器不支持桌面置顶，但我可以在这里陪你~');
+    return;
   }
   try {
-    const pipWindow = awa
-it window.documentPictureInPicture.requestWin
-dow({
+    const pipWindow = await window.documentPictureInPicture.requestWindow({
       width: 200, height: 260
     });
- 
-   pipWindow.document.body.style.margin = '0'
-;
-    pipWindow.document.body.style.backgroun
-d = 'transparent';
-    pipWindow.document.bod
-y.innerHTML = `
+    pipWindow.document.body.style.margin = '0';
+    pipWindow.document.body.style.background = 'transparent';
+    pipWindow.document.body.innerHTML = `
       <style>
-        body { 
-margin:0; background:transparent; overflow:hi
-dden; display:flex; flex-direction:column; al
-ign-items:center; justify-content:center; hei
-ght:100vh; }
-        .pip-pet { width:140px; 
-height:140px; animation: bounce 2s infinite; 
-cursor:pointer; }
-        @keyframes bounce {
- 0%,100%{transform:translateY(0)} 50%{transfo
-rm:translateY(-8px)} }
-        .pip-bubble { 
-background:rgba(255,255,255,0.9); border:1px 
-solid rgba(0,0,0,0.08); border-radius:12px; p
-adding:8px 12px; font-size:12px; color:#4A4A6
-A; margin-bottom:8px; box-shadow:0 4px 12px r
-gba(0,0,0,0.1); }
+        body { margin:0; background:transparent; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; }
+        .pip-pet { width:140px; height:140px; animation: bounce 2s infinite; cursor:pointer; }
+        @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+        .pip-bubble { background:rgba(255,255,255,0.9); border:1px solid rgba(0,0,0,0.08); border-radius:12px; padding:8px 12px; font-size:12px; color:#4A4A6A; margin-bottom:8px; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
       </style>
-      <div c
-lass="pip-bubble">我在这里置顶陪你~</
-div>
-      <div class="pip-pet">${petSvg.oute
-rHTML}</div>
+      <div class="pip-bubble">我在这里置顶陪你~</div>
+      <div class="pip-pet">${petSvg.outerHTML}</div>
     `;
-    showPetBubble('已置
-顶到桌面！切换窗口也能看到我啦
- 👀');
+    showPetBubble('已置顶到桌面！切换窗口也能看到我啦 👀');
   } catch (e) {
-    showPetBubble('�
-��顶失败，再试一次吧~');
+    showPetBubble('置顶失败，再试一次吧~');
   }
 }
 
-// =
-==== 对话面板 =====
-const chatPanel = doc
-ument.getElementById('petChatPanel');
-const c
-hatMessages = document.getElementById('chatMe
-ssages');
-const chatInput = document.getEleme
-ntById('chatInput');
-const sendBtn = document
-.getElementById('sendBtn');
-const chatClose =
- document.getElementById('chatClose');
+// ===== 对话面板 =====
+const chatPanel = document.getElementById('petChatPanel');
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+const chatClose = document.getElementById('chatClose');
 
-funct
-ion positionChatPanel() {
-  const petRect = d
-esktopPet.getBoundingClientRect();
-  let left
- = petRect.left - 360;
-  if (left < 10) left 
-= petRect.right + 10;
-  if (left + 340 > wind
-ow.innerWidth) left = window.innerWidth - 350
-;
+function positionChatPanel() {
+  const petRect = desktopPet.getBoundingClientRect();
+  let left = petRect.left - 360;
+  if (left < 10) left = petRect.right + 10;
+  if (left + 340 > window.innerWidth) left = window.innerWidth - 350;
   let top = petRect.top - 380;
-  if (top < 
-10) top = petRect.bottom + 10;
-  chatPanel.st
-yle.left = left + 'px';
-  chatPanel.style.top
- = top + 'px';
+  if (top < 10) top = petRect.bottom + 10;
+  chatPanel.style.left = left + 'px';
+  chatPanel.style.top = top + 'px';
 }
 
-chatClose.addEventListener(
-'click', () => chatPanel.classList.remove('sh
-ow'));
+chatClose.addEventListener('click', () => chatPanel.classList.remove('show'));
 
 function addUserMessage(text) {
-  con
-st div = document.createElement('div');
-  div
-.className = 'msg-bubble msg-user';
-  div.tex
-tContent = text;
-  chatMessages.appendChild(d
-iv);
-  chatMessages.scrollTop = chatMessages.
-scrollHeight;
+  const div = document.createElement('div');
+  div.className = 'msg-bubble msg-user';
+  div.textContent = text;
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-function addPetMessage(text,
- delay = 0) {
+function addPetMessage(text, delay = 0) {
   setTimeout(() => {
-    const 
-div = document.createElement('div');
-    div.
-className = 'msg-bubble msg-pet typing';
-    
-chatMessages.appendChild(div);
-    chatMessag
-es.scrollTop = chatMessages.scrollHeight;
-   
- let i = 0;
-    const interval = setInterval(
-() => {
-      div.textContent = text.slice(0,
- i + 1);
+    const div = document.createElement('div');
+    div.className = 'msg-bubble msg-pet typing';
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    let i = 0;
+    const interval = setInterval(() => {
+      div.textContent = text.slice(0, i + 1);
       i++;
-      chatMessages.scroll
-Top = chatMessages.scrollHeight;
-      if (i 
->= text.length) {
-        clearInterval(inter
-val);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      if (i >= text.length) {
+        clearInterval(interval);
         div.classList.remove('typing');
-
       }
     }, 30);
   }, delay);
 }
 
-// 模�
-�问答库
+// 模拟问答库
 const qaDatabase = [
-  { keys: ['�
-��好','hi','hello','在吗'], answer: '你�
-�呀！很高兴见到你~ 有什么我可以
-帮你的吗？😊' },
-  { keys: ['功能','
-做什么','是什么','介绍'], answer: 'Q3
-D 形象造梦机可以帮你上传照片，A
-I 自动分析五官和穿搭，生成专属 
-Q 版 3D 角色！还能导出高清插画和
-可预览的 3D 模型哦~' },
-  { keys: ['�
-�格','软萌','国风','潮玩','简约'], a
-nswer: '我们有四种风格：软萌大头 
-🌸、国风 Q 版 🎋、潮玩 🕶️、�
-��约卡通 🌀。每种风格都有独特�
-�配色和造型特点，你可以随心切�
-�！' },
-  { keys: ['价格','多少钱','费
-用','贵'], answer: 'Q3D 基础功能完全�
-��费！生成个人 Q 版形象、预览 3D 
-模型都不花钱。高级定制和批量导
-出会有优惠套餐，比外包建模便宜
- 90% 以上哦~' },
-  { keys: ['时间','多�
-��','快吗','速度'], answer: '超快的！
-上传照片后，AI 分析 + 风格迁移 + 
-3D 建模 + 渲染，整个过程只需要数
-十秒，再也不用等好几天的外包交
-付啦 ⚡' },
-  { keys: ['3d','模型','立�
-��','旋转'], answer: '生成的 3D 模型�
-�持鼠标拖拽旋转查看，你可以从�
-�面、侧面、背面各个角度欣赏你�
-� Q 版形象。模型是轻量化的，可�
-�在网页端流畅预览~' },
-  { keys: ['�
-�载','导出','保存','图片'], answer: '�
-��成完成后，你可以下载高清 2D Q �
-��角色插画（PNG 格式）和轻量化 3D
- 模型文件（支持 GLB/GLTF 格式），�
-��便用在各种平台上！' },
-  { keys: [
-'trae','ai','对话','智能'], answer: 'Q3D 
-是与 TRAE 平台深度联动的创意项目
-！点击对话面板底部的"使用 TRAE AI
- 深度对话"按钮，可以直接唤起 TRA
-E IDE 的 AI 助手进行更专业的交流�
-�~' },
-  { keys: ['宠物','小伙伴','你',
-'是谁'], answer: '我是你的 Q 版虚拟�
-��伙伴！每次生成角色后，我都会�
-��那个形象出现，陪你在桌面上聊�
-��、解闷。双击我可以触发惊喜动�
-��哦~ 🎉' },
-  { keys: ['置顶','桌面',
-'pip','窗口'], answer: '右键点击我，�
-��择"置顶到桌面"，就可以在 Chrome/
-Edge 浏览器中将我固定为 always-on-to
-p 窗口，即使切换其他应用我也一�
-��陪着你！' },
-  { keys: ['笑话','搞�
-�','幽默','讲个'], answer: '为什么程�
-��员总是分不清圣诞节和万圣节？�
-��为 Oct 31 == Dec 25！哈哈~ 不好笑吗
-？那我换一个：为什么 AI 不会生�
-�？因为它有非常好的 "训练"！😂'
- },
-  { keys: ['好看','可爱','漂亮','�
-�'], answer: '谢谢夸奖！你也很可爱�
-��~ ✨ 快去生成你的专属形象吧，�
-��定会更可爱的！' },
-  { keys: ['怎�
-�用','教程','步骤','流程'], answer: '�
-��简单！① 上传照片或选择快捷素
-材 ② 选择喜欢的 Q 版风格 ③ 点�
-�"生成 Q 版角色" ④ 等待数十秒 ⑤
- 你的专属角色和桌面宠物就出现�
-�！' },
-  { keys: ['直播','虚拟','皮套
-','vtuber'], answer: '生成的 3D 模型可�
-��直接用于虚拟直播皮套！模型支�
-��骨骼绑定，可以导入到 VRoid、Live
-2D 等工具中进一步驱动，做 VTuber �
-��方便~' },
-  { keys: ['手办','文创','�
-��印','实物'], answer: 'Q3D 生成的 3D �
-��型可以直接导出为 3D 打印支持的
-格式，送到手办工厂打样，或者自
-己用 3D 打印机制作专属 Q 版手办�
-�' }
+  { keys: ['你好','hi','hello','在吗'], answer: '你好呀！很高兴见到你~ 有什么我可以帮你的吗？😊' },
+  { keys: ['功能','做什么','是什么','介绍'], answer: 'Q3D 形象造梦机可以帮你上传照片，AI 自动分析五官和穿搭，生成专属 Q 版 3D 角色！还能导出高清插画和可预览的 3D 模型哦~' },
+  { keys: ['风格','软萌','国风','潮玩','简约'], answer: '我们有四种风格：软萌大头 🌸、国风 Q 版 🎋、潮玩 🕶️、简约卡通 🌀。每种风格都有独特的配色和造型特点，你可以随心切换！' },
+  { keys: ['价格','多少钱','费用','贵'], answer: 'Q3D 基础功能完全免费！生成个人 Q 版形象、预览 3D 模型都不花钱。高级定制和批量导出会有优惠套餐，比外包建模便宜 90% 以上哦~' },
+  { keys: ['时间','多久','快吗','速度'], answer: '超快的！上传照片后，AI 分析 + 风格迁移 + 3D 建模 + 渲染，整个过程只需要数十秒，再也不用等好几天的外包交付啦 ⚡' },
+  { keys: ['3d','模型','立体','旋转'], answer: '生成的 3D 模型支持鼠标拖拽旋转查看，你可以从正面、侧面、背面各个角度欣赏你的 Q 版形象。模型是轻量化的，可以在网页端流畅预览~' },
+  { keys: ['下载','导出','保存','图片'], answer: '生成完成后，你可以下载高清 2D Q 版角色插画（PNG 格式）和轻量化 3D 模型文件（支持 GLB/GLTF 格式），方便用在各种平台上！' },
+  { keys: ['trae','ai','对话','智能'], answer: 'Q3D 是与 TRAE 平台深度联动的创意项目！点击对话面板底部的"使用 TRAE AI 深度对话"按钮，可以直接唤起 TRAE IDE 的 AI 助手进行更专业的交流哦~' },
+  { keys: ['宠物','小伙伴','你','是谁'], answer: '我是你的 Q 版虚拟小伙伴！每次生成角色后，我都会以那个形象出现，陪你在桌面上聊天、解闷。双击我可以触发惊喜动画哦~ 🎉' },
+  { keys: ['置顶','桌面','pip','窗口'], answer: '右键点击我，选择"置顶到桌面"，就可以在 Chrome/Edge 浏览器中将我固定为 always-on-top 窗口，即使切换其他应用我也一直陪着你！' },
+  { keys: ['笑话','搞笑','幽默','讲个'], answer: '为什么程序员总是分不清圣诞节和万圣节？因为 Oct 31 == Dec 25！哈哈~ 不好笑吗？那我换一个：为什么 AI 不会生气？因为它有非常好的 "训练"！😂' },
+  { keys: ['好看','可爱','漂亮','棒'], answer: '谢谢夸奖！你也很可爱呢~ ✨ 快去生成你的专属形象吧，一定会更可爱的！' },
+  { keys: ['怎么用','教程','步骤','流程'], answer: '很简单！① 上传照片或选择快捷素材 ② 选择喜欢的 Q 版风格 ③ 点击"生成 Q 版角色" ④ 等待数十秒 ⑤ 你的专属角色和桌面宠物就出现啦！' },
+  { keys: ['直播','虚拟','皮套','vtuber'], answer: '生成的 3D 模型可以直接用于虚拟直播皮套！模型支持骨骼绑定，可以导入到 VRoid、Live2D 等工具中进一步驱动，做 VTuber 超方便~' },
+  { keys: ['手办','文创','打印','实物'], answer: 'Q3D 生成的 3D 模型可以直接导出为 3D 打印支持的格式，送到手办工厂打样，或者自己用 3D 打印机制作专属 Q 版手办！' }
 ];
 
 function findAnswer(input) {
-  const
- text = input.toLowerCase();
-  for (const qa 
-of qaDatabase) {
-    if (qa.keys.some(k => te
-xt.includes(k))) return qa.answer;
+  const text = input.toLowerCase();
+  for (const qa of qaDatabase) {
+    if (qa.keys.some(k => text.includes(k))) return qa.answer;
   }
-  cons
-t defaults = [
-    '这是个好问题！我�
-��在学习中，你可以试试问我关于 
-Q3D 功能、风格、使用流程方面的�
-�题~',
-    '嗯嗯，我理解了！不过�
-�于这个，建议你点击下方的"使用 
-TRAE AI 深度对话"按钮，TRAE 的 AI 助
-手会给你更专业的回答哦！',
-    '�
-��哈，你真有意思！换个话题聊聊 
-Q3D 吧，比如你想生成什么风格的�
-�色？🌸'
+  const defaults = [
+    '这是个好问题！我还在学习中，你可以试试问我关于 Q3D 功能、风格、使用流程方面的问题~',
+    '嗯嗯，我理解了！不过关于这个，建议你点击下方的"使用 TRAE AI 深度对话"按钮，TRAE 的 AI 助手会给你更专业的回答哦！',
+    '哈哈，你真有意思！换个话题聊聊 Q3D 吧，比如你想生成什么风格的角色？🌸'
   ];
-  return defaults[Math.floo
-r(Math.random() * defaults.length)];
+  return defaults[Math.floor(Math.random() * defaults.length)];
 }
 
-funct
-ion sendMessage() {
-  const text = chatInput.
-value.trim();
+function sendMessage() {
+  const text = chatInput.value.trim();
   if (!text) return;
-  addUserM
-essage(text);
+  addUserMessage(text);
   chatInput.value = '';
-  const
- answer = findAnswer(text);
-  addPetMessage(a
-nswer, 400 + Math.random() * 400);
+  const answer = findAnswer(text);
+  addPetMessage(answer, 400 + Math.random() * 400);
 }
 
-sendBtn
-.addEventListener('click', sendMessage);
-chat
-Input.addEventListener('keydown', e => { if (
-e.key === 'Enter') sendMessage(); });
+sendBtn.addEventListener('click', sendMessage);
+chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
 
-// ===
-== 语音输入 =====
-const voiceBtn = docume
-nt.getElementById('voiceBtn');
-let recognitio
-n = null;
-if ('webkitSpeechRecognition' in wi
-ndow || 'SpeechRecognition' in window) {
-  co
-nst SR = window.SpeechRecognition || window.w
-ebkitSpeechRecognition;
-  recognition = new S
-R();
+// ===== 语音输入 =====
+const voiceBtn = document.getElementById('voiceBtn');
+let recognition = null;
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
   recognition.lang = 'zh-CN';
-  recognit
-ion.continuous = false;
-  recognition.interim
-Results = false;
-  recognition.onstart = () =
-> voiceBtn.classList.add('recording');
-  reco
-gnition.onend = () => voiceBtn.classList.remo
-ve('recording');
-  recognition.onresult = e =
-> {
-    const transcript = e.results[0][0].tr
-anscript;
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.onstart = () => voiceBtn.classList.add('recording');
+  recognition.onend = () => voiceBtn.classList.remove('recording');
+  recognition.onresult = e => {
+    const transcript = e.results[0][0].transcript;
     chatInput.value = transcript;
- 
-   sendMessage();
+    sendMessage();
   };
-  recognition.onerror 
-= () => voiceBtn.classList.remove('recording'
-);
+  recognition.onerror = () => voiceBtn.classList.remove('recording');
 } else {
-  voiceBtn.style.display = 'none'
-;
+  voiceBtn.style.display = 'none';
 }
 
-voiceBtn.addEventListener('click', () =>
- {
+voiceBtn.addEventListener('click', () => {
   if (!recognition) {
-    addPetMessage('�
-��的浏览器不支持语音输入呢，试�
-��打字吧~');
+    addPetMessage('你的浏览器不支持语音输入呢，试试打字吧~');
     return;
   }
-  try { recog
-nition.start(); } catch(e) { recognition.stop
-(); }
+  try { recognition.start(); } catch(e) { recognition.stop(); }
 });
 
 // ===== 导航高亮 =====
-const 
-sections = document.querySelectorAll('section
-[id]');
-const navLinks = document.querySelect
-orAll('.nav-links a');
-window.addEventListene
-r('scroll', () => {
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
   let current = '';
-  sec
-tions.forEach(sec => {
-    const rect = sec.g
-etBoundingClientRect();
-    if (rect.top <= 1
-00) current = sec.id;
+  sections.forEach(sec => {
+    const rect = sec.getBoundingClientRect();
+    if (rect.top <= 100) current = sec.id;
   });
-  navLinks.forEac
-h(link => {
-    link.style.color = link.getAt
-tribute('href') === '#' + current ? 'var(--pr
-imary-dark)' : '';
+  navLinks.forEach(link => {
+    link.style.color = link.getAttribute('href') === '#' + current ? 'var(--primary-dark)' : '';
   });
 });
 
-// ===== 初始
-化立方体旋转 =====
-cube.style.transform
- = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+// ===== 初始化立方体旋转 =====
+cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
 
-
-// ===== 窗口 resize 时重新定位 ====
-=
+// ===== 窗口 resize 时重新定位 =====
 window.addEventListener('resize', () => {
- 
- if (chatPanel.classList.contains('show')) po
-sitionChatPanel();
+  if (chatPanel.classList.contains('show')) positionChatPanel();
 });
-
-// ===== 作品展示
-核心逻辑 =====
-const WORKS_INDEX_URL = '.
-/works-index.json';
-const STORAGE_HIDDEN = 'q
-3d_hidden_works';
-const STYLE_MAP = {
-  kawai
-i:  { bg: '#FFE4E9', text: '#E86A8A', label: 
-'软萌大头' },
-  guofeng: { bg: '#E0F2F1',
- text: '#2E7D32', label: '国风Q版' },
-  tr
-endy:  { bg: '#FFF8E1', text: '#F9A825', labe
-l: '潮玩手办' },
-  simple:  { bg: '#E3F2F
-D', text: '#1565C0', label: '简约卡通' },
-
-};
-
-async function loadWorks() {
-  try {
-   
- const res = await fetch(WORKS_INDEX_URL + '?
-' + Date.now());
-    if (!res.ok) throw new E
-rror('not found');
-    const data = await res
-.json();
-    return Array.isArray(data.works)
- ? data.works : [];
-  } catch (e) {
-    retur
-n [];
-  }
-}
-
-function getHidden() {
-  try { r
-eturn JSON.parse(localStorage.getItem(STORAGE
-_HIDDEN) || '[]'); }
-  catch { return []; }
-}
-
-
-function hideWork(sessionId) {
-  if (!confi
-rm('确定要从展示页移除这个作品�
-�？')) return;
-  const hidden = getHidden();
-
-  if (!hidden.includes(sessionId)) hidden.pu
-sh(sessionId);
-  localStorage.setItem(STORAGE
-_HIDDEN, JSON.stringify(hidden));
-  renderWor
-ks();
-  showToast('已隐藏作品。如需�
-�底删除文件，请在 TRAE 中发送"删�
-��作品 ' + sessionId + '"');
-}
-
-function sh
-owToast(msg) {
-  const toast = document.getEl
-ementById('worksToast');
-  toast.textContent 
-= msg;
-  toast.classList.add('show');
-  setTi
-meout(() => toast.classList.remove('show'), 4
-000);
-}
-
-function formatTime(iso) {
-  const d
- = new Date(iso), now = new Date();
-  const d
-iff = now - d, mins = Math.floor(diff / 60000
-);
-  if (mins < 1) return '刚刚';
-  if (min
-s < 60) return mins + '分钟前';
-  const ho
-urs = Math.floor(diff / 3600000);
-  if (hours
- < 24) return hours + '小时前';
-  const da
-ys = Math.floor(diff / 86400000);
-  if (days 
-=== 1) return '昨天';
-  if (days < 7) retur
-n days + '天前';
-  return (d.getMonth() + 1
-) + '月' + d.getDate() + '日';
-}
-
-async fun
-ction renderWorks() {
-  const grid = document
-.getElementById('worksGrid');
-  const empty =
- document.getElementById('worksEmpty');
-  con
-st count = document.getElementById('worksCoun
-t');
-  const works = await loadWorks();
-  con
-st hidden = getHidden();
-  const visible = wo
-rks.filter(w => !hidden.includes(w.sessionId)
-);
-
-  count.textContent = visible.length;
-
-  
-if (visible.length === 0) {
-    grid.innerHTM
-L = '';
-    empty.style.display = 'flex';
-   
- return;
-  }
-  empty.style.display = 'none';
-
-
-  grid.innerHTML = visible.map(w => {
-    co
-nst s = STYLE_MAP[w.style] || STYLE_MAP.kawai
-i;
-    const thumb = w.avatarPath ? './' + w.
-avatarPath : '';
-    return `
-      <div clas
-s="work-card glass-card">
-        <div class=
-"work-thumb ${!thumb ? 'no-image' : ''}">
-   
-       ${thumb ? '<img src="' + thumb + '" al
-t="avatar" loading="lazy" onerror="this.style
-.display=\'none\';this.parentElement.classLis
-t.add(\'no-image\');">' : ''}
-        </div>
-
-        <div class="work-info">
-          <sp
-an class="work-style" style="background:' + s
-.bg + ';color:' + s.text + '">' + s.label + '
-</span>
-          <span class="work-time">' +
- formatTime(w.createdAt) + '</span>
-        <
-/div>
-        <div class="work-actions">
-    
-      ${w.previewPath ? '<a href="./' + w.pre
-viewPath + '" target="_blank" class="work-btn
-">3D预览</a>' : ''}
-          ${w.petPath ?
- '<a href="./' + w.petPath + '" target="_blan
-k" class="work-btn secondary">宠物</a>' : '
-'}
-          <button class="work-btn danger" 
-onclick="hideWork(\'' + w.sessionId + '\')">�
-��除</button>
-        </div>
-      </div>`;
-
-  }).join('');
-}
-
-// 初始化
-renderWorks();
-
-document.getElementById('refreshWorks')?.add
-EventListener('click', renderWorks);
-</script
->
+</script>
 
 </body>
 </html>
-
-
