@@ -368,9 +368,9 @@ body {
     <div class="card">
       <h3>三视图输入</h3>
       <div class="thumb-strip">
-        <img src="../q3d-test/multiview/front.jpg" alt="正面" title="正面视图" onclick="openLightbox(this.src)">
-        <img src="../q3d-test/multiview/side.jpg" alt="侧面" title="侧面视图" onclick="openLightbox(this.src)">
-        <img src="../q3d-test/multiview/back.jpg" alt="背面" title="背面视图" onclick="openLightbox(this.src)">
+        <img src="demo/hunyuan3d/multiview/front.jpg" alt="正面" title="正面视图" onclick="openLightbox(this.src)">
+        <img src="demo/hunyuan3d/multiview/side.jpg" alt="侧面" title="侧面视图" onclick="openLightbox(this.src)">
+        <img src="demo/hunyuan3d/multiview/back.jpg" alt="背面" title="背面视图" onclick="openLightbox(this.src)">
       </div>
     </div>
   </div>
@@ -473,7 +473,7 @@ loader.setDRACOLoader(draco);
 info.textContent = '加载 GLB 模型...';
 
 loader.load(
-  '../q3d-test/output/model.glb',
+  'https://github.com/ZZyyHH2332/Q3D-Dream-Machine/releases/download/assets/model.glb',
   (gltf) => {
     const model = gltf.scene;
     model.traverse((child) => {
@@ -502,7 +502,7 @@ loader.load(
   (err) => {
     info.innerHTML = '<span style="color:var(--red)">GLB 加载失败</span><br><small>' + err.message + '</small>';
     const fallback = document.createElement('img');
-    fallback.src = '../q3d-test/output/render.png';
+    fallback.src = 'https://github.com/ZZyyHH2332/Q3D-Dream-Machine/releases/download/assets/render.png';
     fallback.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:80%;max-height:80%;border-radius:12px;';
     viewer.appendChild(fallback);
   }
