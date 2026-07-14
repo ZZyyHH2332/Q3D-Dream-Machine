@@ -477,6 +477,21 @@ controls.autoRotate = true;
 controls.autoRotateSpeed = 0.3;
 controls.update();
 
+// 用户操作时暂停自动旋转，3 秒不动后恢复
+let autoRotateTimer;
+renderer.domElement.addEventListener('pointerdown', () => {
+  controls.autoRotate = false;
+  clearTimeout(autoRotateTimer);
+});
+renderer.domElement.addEventListener('pointerup', () => {
+  autoRotateTimer = setTimeout(() => { controls.autoRotate = true; }, 3000);
+});
+// 鼠标离开画布也恢复自动旋转
+renderer.domElement.addEventListener('pointerleave', () => {
+  controls.autoRotate = true;
+  clearTimeout(autoRotateTimer);
+});
+
 const loader = new GLTFLoader();
 const draco = new DRACOLoader();
 draco.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/');
