@@ -63,7 +63,7 @@ body {
   position: relative;
   background: radial-gradient(ellipse at center, #1a1f2a 0%, #0a0d14 100%);
 }
-.viewer-panel canvas { display: block; cursor: grab; }
+.viewer-panel canvas { display: block; cursor: grab; position: absolute; top: 0; left: 0; z-index: 5; }
 .viewer-panel canvas:active { cursor: grabbing; }
 
 /* Loading overlay */
@@ -508,7 +508,7 @@ window.startLoading = function() {
       model.position.set(-center.x * scale, -center.y * scale + 0.3, -center.z * scale);
       scene.add(model);
       modelLoaded = true;
-      loadOverlay.classList.add('hidden');
+      loadOverlay.remove();
       info.textContent = 'GLB 加载完成 · ' + gltf.scene.children.length + ' 个节点';
     },
     (progress) => {
