@@ -508,6 +508,8 @@ window.startLoading = function() {
     'demo/hunyuan3d/output/model.glb',
     (gltf) => {
       const model = gltf.scene;
+      // 重置 GLTF 节点自带的旋转（绕 X 轴 90°），让模型站立而非躺平
+      model.quaternion.identity();
       model.traverse((child) => {
         if (child.isMesh) {
           child.castShadow = true;
